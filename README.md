@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Myna — intonation coach (Phase 0a)
 
-## Getting Started
+> Continuing the build in another coding agent? Start with **[SPEC.md](SPEC.md)** (handoff, roadmap, acceptance criteria).
 
-First, run the development server:
+A test bed for the intonation engine. Learners **say** or **draw** a sentence's tune, and one rule engine grades both against the textbook pattern (levels 1–4; falling 2-3-1, non-final 2-3-2, rising 2-3, tag questions).
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000/lab
+npm test           # 31 unit tests: rule engine, pitch tracking, resampling, WAV, quality checks
+npm run samples    # regenerate the synthetic test recordings in public/samples
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What's in Phase 0a
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Piece | Where |
+|---|---|
+| Rule engine (start level, one peak, peak on the stressed syllable, ending, range, pause) | `src/lib/intonation/engine.ts` |
+| Test sentences from the course material, with IPA and target levels | `src/lib/intonation/lessons.ts` |
+| Drawing → contour, chart geometry | `src/lib/intonation/drawing.ts` |
+| Mic recorder (AudioWorklet, native rate, browser voice processing off) | `src/lib/audio/recorder.ts`, `public/worklets/recorder-processor.js` |
+| Pitch tracking (pitchy + octave repair, median filter, voicing gate) | `src/lib/audio/pitch.ts` |
+| 48→16 kHz resampler and WAV encoder (Azure format, for Phase 0b) | `src/lib/audio/resample.ts`, `src/lib/audio/wav.ts` |
+| Recording quality checks (too quiet, clipping, noisy room) | `src/lib/audio/quality.ts` |
+| Synthetic "robot voice" for tests and demo samples | `src/lib/synth/voice.ts`, `tools/make-samples.ts` |
+| Lab page | `src/app/lab/page.tsx`, `src/components/lab/*` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Known limits until Phase 0b (Azure): for **voice**, the "peak position" check is skipped and time is stretched per thought group, because we don't have syllable timestamps yet. Thought groups in speech are split at the longest pauses. All thresholds live in `THRESHOLDS` / `SCORE_CAP` in `engine.ts` and are first guesses.
 
-## Learn More
+## Pitch-tracker test (pitchy vs SwiftF0 vs Praat)
 
-To learn more about Next.js, take a look at the following resources:
+Collect 20–50 real recordings (download the 16 kHz WAV from the lab page after each take), put them in one folder, then:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+python -m venv C:/venvs/myna-pitch
+C:/venvs/myna-pitch/Scripts/python -m pip install -r tools/pitch-compare/requirements.txt
+npm run pitch:export -- path/to/wavs path/to/out
+C:/venvs/myna-pitch/Scripts/python tools/pitch-compare/compare.py path/to/wavs path/to/out
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+It prints voicing agreement, gross pitch errors, median cents error and — most important — whether each tracker agrees with Praat on the **final rise/fall**. Praat (Parselmouth) is GPL: keep it as a local tool, never in the web app.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+On the synthetic samples both trackers match Praat closely (median error ≈1–2 cents, final direction agrees on 29 of 30 files). Synthetic audio is easy; real voices are the real test.

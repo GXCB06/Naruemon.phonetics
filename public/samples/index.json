@@ -1,0 +1,164 @@
+{
+  "fall-pretty-woman": [
+    {
+      "file": "fall-pretty-woman--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "fall-pretty-woman--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "fall-pretty-woman--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "fall-pretty-woman--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    },
+    {
+      "file": "fall-pretty-woman--every-word.wav",
+      "label": "Tone on every word",
+      "expect": "one-peak warns"
+    }
+  ],
+  "fall-what-name": [
+    {
+      "file": "fall-what-name--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "fall-what-name--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "fall-what-name--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "fall-what-name--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    }
+  ],
+  "rise-student": [
+    {
+      "file": "rise-student--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "rise-student--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "rise-student--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "rise-student--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    }
+  ],
+  "nonfinal-rains-bus": [
+    {
+      "file": "nonfinal-rains-bus--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "nonfinal-rains-bus--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "nonfinal-rains-bus--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "nonfinal-rains-bus--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    },
+    {
+      "file": "nonfinal-rains-bus--no-pause.wav",
+      "label": "No pause at comma",
+      "expect": "pause warns"
+    }
+  ],
+  "tag-sure": [
+    {
+      "file": "tag-sure--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "tag-sure--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "tag-sure--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "tag-sure--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    },
+    {
+      "file": "tag-sure--every-word.wav",
+      "label": "Tone on every word",
+      "expect": "one-peak warns"
+    },
+    {
+      "file": "tag-sure--no-pause.wav",
+      "label": "No pause at comma",
+      "expect": "pause warns"
+    }
+  ],
+  "tag-unsure": [
+    {
+      "file": "tag-unsure--good-f.wav",
+      "label": "Correct (female)",
+      "expect": "pass"
+    },
+    {
+      "file": "tag-unsure--good-m.wav",
+      "label": "Correct (male)",
+      "expect": "pass"
+    },
+    {
+      "file": "tag-unsure--wrong-ending.wav",
+      "label": "Wrong ending",
+      "expect": "ending fails"
+    },
+    {
+      "file": "tag-unsure--flat.wav",
+      "label": "Monotone",
+      "expect": "range fails"
+    },
+    {
+      "file": "tag-unsure--every-word.wav",
+      "label": "Tone on every word",
+      "expect": "one-peak warns"
+    },
+    {
+      "file": "tag-unsure--no-pause.wav",
+      "label": "No pause at comma",
+      "expect": "pause warns"
+    }
+  ]
+}

@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
+/* Myna palette: warm paper, ink, myna-beak yellow, deep teal. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --bg: #fffbf2;
+  --card: #ffffff;
+  --ink: #1e1b2e;
+  --muted: #6b6880;
+  --line: #ece6d9;
+  --primary: #f2b705;
+  --primary-deep: #c99400;
+  --primary-ink: #3a2a00;
+  --accent: #2c6e63;
+  --accent-deep: #1f5249;
+  --accent-soft: #e3f1ee;
+  --good: #1f9d55;
+  --good-soft: #e4f5ea;
+  --warn: #b97700;
+  --warn-soft: #fdf1d8;
+  --bad: #c93c3c;
+  --bad-soft: #fbe6e6;
+  --target: #9a93b8;
+  --learner: #2c6e63;
+  --level-line: #e7e0d0;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #15131f;
+    --card: #1e1b2b;
+    --ink: #f1eefa;
+    --muted: #a7a2bd;
+    --line: #2f2b40;
+    --primary: #f2b705;
+    --primary-deep: #a67c00;
+    --primary-ink: #2a1f00;
+    --accent: #5cc0ae;
+    --accent-deep: #3a8f80;
+    --accent-soft: #1d3330;
+    --good: #4cc47f;
+    --good-soft: #17301f;
+    --warn: #f0b340;
+    --warn-soft: #33290f;
+    --bad: #ef6b6b;
+    --bad-soft: #3a1b1b;
+    --target: #7d7699;
+    --learner: #5cc0ae;
+    --level-line: #2c2840;
   }
 }
 
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-primary: var(--primary);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-ink: var(--primary-ink);
+  --color-accent: var(--accent);
+  --color-accent-deep: var(--accent-deep);
+  --color-accent-soft: var(--accent-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --font-sans: var(--nf-ui), var(--nf-thai), system-ui, sans-serif;
+  --font-ipa: var(--nf-ipa), "Doulos SIL", "Charis SIL", serif;
+  --font-thai: var(--nf-thai), var(--nf-ui), sans-serif;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--nf-ui), var(--nf-thai), system-ui, sans-serif;
+}
+
+.ipa {
+  font-family: var(--nf-ipa), "Doulos SIL", "Charis SIL", serif;
+}
+
+.thai {
+  font-family: var(--nf-thai), var(--nf-ui), sans-serif;
+}
+
+/* Chunky "pressable" buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  border: 2px solid var(--line);
+  border-bottom-width: 4px;
+  background: var(--card);
+  color: var(--ink);
+  transition: transform 0.06s ease, filter 0.15s ease;
+  user-select: none;
+}
+.btn:hover {
+  filter: brightness(0.98);
+}
+.btn:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+.btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary-deep);
+  color: var(--primary-ink);
+}
+.btn-accent {
+  background: var(--accent);
+  border-color: var(--accent-deep);
+  color: #fff;
+}
+.btn-danger {
+  background: var(--bad);
+  border-color: #9b2c2c;
+  color: #fff;
+}
+.card {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 1.25rem;
 }
