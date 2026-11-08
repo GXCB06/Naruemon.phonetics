@@ -10,6 +10,32 @@ import { graded } from "@/lib/learn/score";
 import { ListenButton } from "./ListenButton";
 import type { ExerciseApi } from "./types";
 
+/** What to draw, in words: the pattern of the sentence's groups, and (for several groups) where to lift the pen. */
+function instructions(sentence: Sentence): { en: string; th: string } {
+  const rising = sentence.groups.every((g) => g.pattern === "2-3");
+  const many = sentence.groups.length > 1;
+  if (rising) {
+    return many
+      ? {
+          en: "Draw each thought group: start at level 2, rise to 3 on the highlighted syllable and stay up. Lift your finger at the | between the groups, then draw the second one.",
+          th: "วาดทีละกลุ่มคำ เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสีแล้วค้างไว้ ยกนิ้วตรงเครื่องหมาย | ระหว่างกลุ่ม แล้วเริ่มวาดกลุ่มที่สอง",
+        }
+      : {
+          en: "Start at level 2, rise to 3 on the highlighted syllable and stay up to the end. Drag across the chart.",
+          th: "เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วค้างเสียงสูงไว้จนจบ ลากนิ้วบนกราฟ",
+        };
+  }
+  return many
+    ? {
+        en: "Follow the pattern of each thought group. Lift your finger at the | between the groups, then draw the next one.",
+        th: "วาดตามรูปแบบของแต่ละกลุ่มคำ ยกนิ้วตรงเครื่องหมาย | ระหว่างกลุ่ม แล้วเริ่มวาดกลุ่มถัดไป",
+      }
+    : {
+        en: "Start at level 2, rise to 3 on the highlighted syllable, then fall to 1. Drag across the chart.",
+        th: "เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วลงระดับ 1 ลากนิ้วบนกราฟ",
+      };
+}
+
 /** Draw it: listen, then draw the tune over the four level lines; the lab's drawing pad and rule engine grade it. */
 export function DrawIt({
   exercise,
@@ -25,6 +51,7 @@ export function DrawIt({
   const layout = useMemo(() => layoutSentence(sentence), [sentence]);
   const target = useMemo(() => targetContour(layout), [layout]);
   const pad = useRef<DrawingPadHandle>(null);
+  const how = instructions(sentence);
   const { setCheck } = api;
 
   const onInkChange = useCallback(
@@ -49,8 +76,8 @@ export function DrawIt({
         </h1>
         <p className="mt-3 text-xl font-bold">“{sentence.text}”</p>
         <p className="mt-1 text-sm text-muted">
-          Start at level 2, rise to 3 on the highlighted syllable, then fall to 1. Drag across the chart.
-          <span className="thai block">เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วลงระดับ 1 ลากนิ้วบนกราฟ</span>
+          {how.en}
+          <span className="thai block">{how.th}</span>
         </p>
       </div>
       <ListenButton sentence={sentence} />

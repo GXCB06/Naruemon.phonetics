@@ -6,16 +6,28 @@
 
 import type { Sentence } from "../intonation/types.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
+import { endingOf } from "./exercises.ts";
 import type { ClipVariant } from "./exercises.ts";
 
 export function referenceUrl(sentenceId: string, voice: "f" | "m" = "f"): string {
   return `/audio/${sentenceId}--${voice}.mp3`;
 }
 
-/** The synthetic clip for a variant: the textbook tune, or one of the typical mistakes. */
-export function placeholderClip(sentence: Sentence, variant: ClipVariant = "falling"): { samples: Float32Array; sampleRate: number } {
+/**
+ * The synthetic clip for a variant. "falling" and "rising" name how the clip ends: the one that matches the sentence's
+ * own pattern is the textbook tune (every thought group as authored, so a rising sentence rises in each group), the
+ * other flips the end of every thought group. "flat" and "busy" are the other typical mistakes.
+ * No variant means the textbook tune.
+ */
+export function placeholderClip(sentence: Sentence, variant: ClipVariant = endingOf(sentence)): { samples: Float32Array; sampleRate: number } {
   const transform =
-    variant === "rising" ? ERROR_STYLES.wrongEnding : variant === "flat" ? ERROR_STYLES.flat : variant === "busy" ? ERROR_STYLES.everyWordTone : undefined;
+    variant === "flat"
+      ? ERROR_STYLES.flat
+      : variant === "busy"
+        ? ERROR_STYLES.everyWordTone
+        : variant === endingOf(sentence)
+          ? undefined
+          : ERROR_STYLES.wrongEnding;
   // 210 Hz ≈ a female level-2 pitch, close to what the reference mp3 will be.
   return synthesizeSentence(sentence, { baseHz: 210, transform });
 }

@@ -2,7 +2,7 @@
 // placeholder voice (src/lib/learn/reference.ts), always through Web Audio at the device's native sample rate.
 // Call `playReference` straight from a tap handler: the AudioContext is created/resumed before the first `await` (iOS).
 
-import type { ClipVariant } from "@/lib/learn/exercises";
+import { endingOf, type ClipVariant } from "@/lib/learn/exercises";
 import { placeholderClip, referenceUrl } from "@/lib/learn/reference";
 import type { Sentence } from "@/lib/intonation/types";
 
@@ -72,7 +72,7 @@ export function stopReference(): void {
 }
 
 /**
- * Play a sentence. The textbook ("falling") variant uses the reference mp3 when there is one; the mistake variants
+ * Play a sentence. The textbook variant (the one that ends the way the sentence should: "falling", or "rising" for 2-3 sentences; the default) uses the reference mp3 when there is one; the mistake variants
  * (used by "Hear it") and sentences without an mp3 use the placeholder voice. `forceSynth` skips the mp3 so that both
  * clips of a "Hear it" pair have the same voice. Throws when the browser has no Web Audio.
  */
@@ -80,7 +80,8 @@ export async function playReference(
   sentence: Sentence,
   opts: { variant?: ClipVariant; forceSynth?: boolean } = {},
 ): Promise<Playing> {
-  const variant = opts.variant ?? "falling";
+  const textbook = endingOf(sentence);
+  const variant = opts.variant ?? textbook;
   const c = audioContext(); // before any await: still inside the user's tap
   if (!c) throw new Error("This browser can't play audio.");
   stopReference();
@@ -88,7 +89,7 @@ export async function playReference(
 
   let source: ReferenceSource = "placeholder";
   let buffer: AudioBuffer | null = null;
-  if (variant === "falling" && !opts.forceSynth) {
+  if (variant === textbook && !opts.forceSynth) {
     buffer = await loadFile(c, sentence.id);
     if (buffer) source = "file";
   }

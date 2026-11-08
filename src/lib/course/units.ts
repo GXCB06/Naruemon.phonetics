@@ -36,7 +36,16 @@ export const UNITS: UnitMeta[] = [
       { id: "falling-3", title: { en: "Commands and exclamations", th: "คำสั่งและประโยคอุทาน" } },
     ],
   },
-  { id: "rising", title: { en: "Rising 2-3", th: "เสียงขึ้น 2-3" }, blurb: { en: "Yes/no questions, names, interjections.", th: "คำถาม Yes/No การเรียกชื่อ คำอุทาน" }, locked: true, lessons: [] },
+  {
+    id: "rising",
+    title: { en: "Rising 2-3", th: "เสียงขึ้น 2-3" },
+    blurb: { en: "Yes/no questions, names, interjections.", th: "คำถาม Yes/No การเรียกชื่อ คำอุทาน" },
+    locked: false,
+    lessons: [
+      { id: "rising-1", title: { en: "Yes/no questions", th: "คำถาม Yes/No" } },
+      { id: "rising-2", title: { en: "Names and interjections", th: "การเรียกชื่อและคำอุทาน" } },
+    ],
+  },
   { id: "lists", title: { en: "Lists and choices", th: "รายการและตัวเลือก" }, blurb: { en: "Rise on each item, fall on the last.", th: "ขึ้นเสียงทุกรายการ ตกที่รายการสุดท้าย" }, locked: true, lessons: [] },
   { id: "nonfinal", title: { en: "Non-final 2-3-2", th: "ยังไม่จบ 2-3-2" }, blurb: { en: "Clauses that aren't finished yet.", th: "อนุประโยคที่ยังพูดไม่จบ" }, locked: true, lessons: [] },
   { id: "tags", title: { en: "Tag questions", th: "Tag question" }, blurb: { en: "Sure falls, not sure rises.", th: "มั่นใจ = ตก ไม่แน่ใจ = ขึ้น" }, locked: true, lessons: [] },

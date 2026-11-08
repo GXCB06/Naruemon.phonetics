@@ -1,0 +1,24 @@
+{
+  "id": "rising-2",
+  "unit": "rising",
+  "sentences": [
+    { "id": "rising-2-john", "text": "John, do you understand?", "kind": "address", "groupSizes": [1, 3], "nucleusWord": [0, 3], "spelling": { "understand": "un-der-stand" } },
+    {
+      "id": "rising-2-professor",
+      "text": "Professor, can I go to the hospital?",
+      "kind": "address",
+      "groupSizes": [1, 6],
+      "nucleusWord": [0, 6],
+      "spelling": { "professor": "pro-fes-sor", "hospital": "hos-pi-tal" }
+    },
+    { "id": "rising-2-mrs-smith", "text": "Mrs. Smith, can I call you later?", "kind": "address", "groupSizes": [2, 5], "nucleusWord": [1, 6], "spelling": { "mrs": "Mr-s", "later": "la-ter" } },
+    {
+      "id": "rising-2-wow",
+      "text": "Wow! Isn't that fascinating?",
+      "kind": "interjection",
+      "groupSizes": [1, 3],
+      "nucleusWord": [0, 3],
+      "spelling": { "isn't": "is-n't", "fascinating": "fas-ci-nat-ing" }
+    }
+  ]
+}
