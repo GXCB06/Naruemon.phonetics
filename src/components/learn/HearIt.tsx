@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
 import { endingOf, type Ending, type HearExercise } from "@/lib/learn/exercises";
 import { hearFeedback } from "@/lib/learn/feedback";
+import { isTagSentence, tagHearFeedback, tagHearHint, tagHearQuestion } from "@/lib/learn/meaning";
 import { rightWrong } from "@/lib/learn/score";
 import { ListenButton, PlaceholderBadge } from "./ListenButton";
 import type { ExerciseApi } from "./types";
@@ -69,15 +70,19 @@ export function HearIt({
   const ask = exercise.ask;
   const textbook = endingOf(sentence);
   const tune = ask === "rising" ? "rising" : "falling";
+  const tag = isTagSentence(sentence); // tag questions ask "which one sounds sure / like a real question?"
+  const question = tag ? tagHearQuestion(ask) : QUESTION[ask];
+  const hintText = tag ? tagHearHint(ask) : hint(ask, textbook, sentence.groups.length);
 
   useEffect(() => {
     if (picked === null) return setCheck(null);
     setCheck(() => {
       const right = picked === exercise.correct;
       const other = exercise.clips[exercise.correct === 0 ? 1 : 0];
-      return { outcome: rightWrong(exercise.id, "hear", right), feedback: hearFeedback(right, other, ask, textbook) };
+      const feedback = tag ? tagHearFeedback(right, ask, other) : hearFeedback(right, other, ask, textbook);
+      return { outcome: rightWrong(exercise.id, "hear", right), feedback };
     });
-  }, [picked, exercise, ask, textbook, setCheck]);
+  }, [picked, exercise, ask, textbook, tag, setCheck]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -89,17 +94,17 @@ export function HearIt({
       )}
       <div>
         <h1 className="text-2xl font-black leading-snug">
-          {QUESTION[ask].en}
-          <span className="thai block text-lg font-bold text-muted">{QUESTION[ask].th}</span>
+          {question.en}
+          <span className="thai block text-lg font-bold text-muted">{question.th}</span>
         </h1>
         <p className="mt-3 text-xl font-bold">“{sentence.text}”</p>
         <p className="mt-1 text-sm text-muted">
-          {hint(ask, textbook, sentence.groups.length).en}
-          <span className="thai block">{hint(ask, textbook, sentence.groups.length).th}</span>
+          {hintText.en}
+          <span className="thai block">{hintText.th}</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={`Pick the ${tune} clip`}>
+      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={tag ? (ask === "falling" ? "Pick the clip that sounds sure" : "Pick the clip that sounds like a real question") : `Pick the ${tune} clip`}>
         {([0, 1] as const).map((i) => {
           const isPicked = picked === i;
           const isRight = i === exercise.correct;
@@ -128,7 +133,7 @@ export function HearIt({
                 type="button"
                 role="radio"
                 aria-checked={isPicked}
-                aria-label={`Clip ${NAMES[i]} is the ${tune} tune`}
+                aria-label={tag ? `Clip ${NAMES[i]} is the answer` : `Clip ${NAMES[i]} is the ${tune} tune`}
                 disabled={locked}
                 onClick={() => setPicked(i)}
                 className={`btn w-full flex-col gap-0 leading-tight ${isPicked ? "btn-primary" : ""}`}

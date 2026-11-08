@@ -6,12 +6,26 @@ import { layoutSentence, targetContour } from "@/lib/intonation/contour";
 import type { Sentence } from "@/lib/intonation/types";
 import type { DrawExercise } from "@/lib/learn/exercises";
 import { analysisFeedback } from "@/lib/learn/feedback";
+import { tagReadingOf } from "@/lib/learn/meaning";
 import { graded } from "@/lib/learn/score";
 import { ListenButton } from "./ListenButton";
 import type { ExerciseApi } from "./types";
 
 /** What to draw, in words: the pattern of the sentence's groups, and (for several groups) where to lift the pen. */
 function instructions(sentence: Sentence): { en: string; th: string } {
+  const reading = tagReadingOf(sentence);
+  if (reading === "sure") {
+    return {
+      en: "Draw the statement first: level 2, rise to 3 on the highlighted syllable, fall to 1. Lift your finger at the |. Then the tag starts HIGH (3) on the first word and falls to 1.",
+      th: "วาดประโยคแรกก่อน: เริ่มระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วลงระดับ 1 ยกนิ้วตรงเครื่องหมาย | จากนั้น tag เริ่มสูง (ระดับ 3) ที่คำแรกแล้วลงระดับ 1",
+    };
+  }
+  if (reading === "unsure") {
+    return {
+      en: "Draw the statement first: level 2, rise to 3 on the highlighted syllable, fall to 1. Lift your finger at the |. Then the tag starts at 2, rises to 3 and stays up, like a real question.",
+      th: "วาดประโยคแรกก่อน: เริ่มระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วลงระดับ 1 ยกนิ้วตรงเครื่องหมาย | จากนั้น tag เริ่มที่ระดับ 2 ขึ้นไประดับ 3 แล้วค้างไว้ เหมือนถามจริง ๆ",
+    };
+  }
   const rising = sentence.groups.every((g) => g.pattern === "2-3");
   const many = sentence.groups.length > 1;
   if (rising) {

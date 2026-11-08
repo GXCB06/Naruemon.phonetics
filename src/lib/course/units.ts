@@ -48,7 +48,20 @@ export const UNITS: UnitMeta[] = [
   },
   { id: "lists", title: { en: "Lists and choices", th: "รายการและตัวเลือก" }, blurb: { en: "Rise on each item, fall on the last.", th: "ขึ้นเสียงทุกรายการ ตกที่รายการสุดท้าย" }, locked: true, lessons: [] },
   { id: "nonfinal", title: { en: "Non-final 2-3-2", th: "ยังไม่จบ 2-3-2" }, blurb: { en: "Clauses that aren't finished yet.", th: "อนุประโยคที่ยังพูดไม่จบ" }, locked: true, lessons: [] },
-  { id: "tags", title: { en: "Tag questions", th: "Tag question" }, blurb: { en: "Sure falls, not sure rises.", th: "มั่นใจ = ตก ไม่แน่ใจ = ขึ้น" }, locked: true, lessons: [] },
+  {
+    id: "tags",
+    title: { en: "Tag questions", th: "Tag question" },
+    blurb: {
+      en: "Same words, two meanings: sure falls, not sure rises.",
+      th: "คำเดียวกัน สองความหมาย: มั่นใจ = ตก ไม่แน่ใจ = ขึ้น",
+    },
+    locked: false,
+    lessons: [
+      { id: "tags-1", title: { en: "Sure: the tag falls", th: "มั่นใจ: tag ตก" } },
+      { id: "tags-2", title: { en: "Not sure: the tag rises", th: "ไม่แน่ใจ: tag ขึ้น" } },
+      { id: "tags-3", title: { en: "Which do you mean?", th: "คุณหมายถึงแบบไหน?" } },
+    ],
+  },
   { id: "review", title: { en: "Mixed review", th: "ทบทวนรวม" }, blurb: { en: "All patterns together.", th: "ทุกรูปแบบรวมกัน" }, locked: true, lessons: [] },
 ];
 

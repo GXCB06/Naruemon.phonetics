@@ -1,0 +1,89 @@
+{
+  "id": "tags-2",
+  "unit": "tags",
+  "sentences": [
+    {
+      "id": "tags-2-harry",
+      "text": "Harry is coming, isn't he?",
+      "kind": "tag",
+      "groupSizes": [
+        3,
+        2
+      ],
+      "groupPatterns": [
+        "2-3-1",
+        "2-3"
+      ],
+      "nucleusWord": [
+        2,
+        3
+      ],
+      "spelling": {
+        "harry": "har-ry",
+        "coming": "com-ing",
+        "isn't": "is-n't"
+      }
+    },
+    {
+      "id": "tags-2-late",
+      "text": "He is always late, isn't he?",
+      "kind": "tag",
+      "groupSizes": [
+        4,
+        2
+      ],
+      "groupPatterns": [
+        "2-3-1",
+        "2-3"
+      ],
+      "nucleusWord": [
+        3,
+        4
+      ],
+      "spelling": {
+        "always": "al-ways",
+        "isn't": "is-n't"
+      }
+    },
+    {
+      "id": "tags-2-susan",
+      "text": "Susan will help me with this work, won't she?",
+      "kind": "tag",
+      "groupSizes": [
+        7,
+        2
+      ],
+      "groupPatterns": [
+        "2-3-1",
+        "2-3"
+      ],
+      "nucleusWord": [
+        6,
+        7
+      ],
+      "spelling": {
+        "susan": "su-san"
+      }
+    },
+    {
+      "id": "tags-2-hungry",
+      "text": "You are not hungry, are you?",
+      "kind": "tag",
+      "groupSizes": [
+        4,
+        2
+      ],
+      "groupPatterns": [
+        "2-3-1",
+        "2-3"
+      ],
+      "nucleusWord": [
+        3,
+        4
+      ],
+      "spelling": {
+        "hungry": "hun-gry"
+      }
+    }
+  ]
+}

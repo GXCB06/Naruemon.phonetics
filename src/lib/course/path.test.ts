@@ -13,9 +13,14 @@ describe("buildPath", () => {
     expect(path.units[1].nodes.map((n) => n.state)).toEqual(["available", "available"]); // rising is open too
     expect(path.next).toEqual({ unitId: "falling", lessonId: "falling-1" });
     for (const u of path.units.slice(2)) {
-      expect(u.locked).toBe(true);
-      expect(u.nodes.every((n) => n.state === "locked")).toBe(true);
+      const meta = UNITS.find((m) => m.id === u.id)!;
+      expect(u.locked).toBe(meta.locked);
+      if (meta.locked) expect(u.nodes.every((n) => n.state === "locked")).toBe(true);
     }
+    const tags = path.units.find((u) => u.id === "tags")!; // the tags unit is open: three lessons
+    expect(tags.locked).toBe(false);
+    expect(tags.nodes.map((n) => n.state)).toEqual(["available", "available", "available"]);
+    expect(tags.total).toBe(3);
   });
 
   it("a finished lesson is done with its stars and best score; the next one becomes current", () => {
@@ -42,7 +47,8 @@ describe("buildPath", () => {
   });
 
   it("when every open lesson is done there is no next", () => {
-    const all = { "falling-1": result(3), "falling-2": result(1), "falling-3": result(2), "rising-1": result(3), "rising-2": result(2) };
+    const all: Progress["lessons"] = {};
+    for (const u of UNITS.filter((m) => !m.locked)) for (const l of u.lessons) all[l.id] = result(2);
     const path = buildPath(all);
     expect(path.next).toBeNull();
     expect(states(all)).toEqual(["done", "done", "done"]);

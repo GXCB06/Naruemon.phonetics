@@ -11,6 +11,7 @@ import { DrawIt } from "./DrawIt";
 import { FindPeak } from "./FindPeak";
 import { HearIt } from "./HearIt";
 import { LessonComplete } from "./LessonComplete";
+import { MeaningMatch } from "./MeaningMatch";
 import { ShadowIt } from "./ShadowIt";
 import type { Checked, ExerciseApi } from "./types";
 
@@ -56,7 +57,7 @@ export function LessonPlayer({
   const onCheck = () => {
     const result = check?.();
     if (!result) return;
-    recordExerciseAttempt(sentence, exercise.type, { passed: result.outcome.passed, analysis: result.analysis }); // C5/D2: never throws
+    recordExerciseAttempt(sentence, exercise.type === "meaning" ? "hear" : exercise.type, { passed: result.outcome.passed, analysis: result.analysis }); // C5/D2: never throws
     setChecked(result);
     setPhase("feedback");
   };
@@ -163,6 +164,7 @@ export function LessonPlayer({
               notice={swapped.has(exercise.id) ? NO_MIC_NOTICE : undefined}
             />
           )}
+          {exercise.type === "meaning" && <MeaningMatch exercise={exercise} sentence={sentence} locked={locked} api={api} />}
           {exercise.type === "peak" && <FindPeak exercise={exercise} sentence={sentence} locked={locked} api={api} />}
           {exercise.type === "draw" && <DrawIt exercise={exercise} sentence={sentence} locked={locked} api={api} />}
           {exercise.type === "shadow" && (

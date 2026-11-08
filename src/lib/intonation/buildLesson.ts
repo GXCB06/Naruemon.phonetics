@@ -11,9 +11,12 @@ import { normalizeWord } from "../ipa/words.ts";
 import type { WordIpa } from "../ipa/words.ts";
 import type { Bilingual, PatternId, Sentence, Syllable, ThoughtGroup, Word } from "./types.ts";
 
-export type SentenceKind = "statement" | "wh" | "command" | "exclamation" | "yesno" | "address" | "interjection";
+export type SentenceKind = "statement" | "wh" | "command" | "exclamation" | "yesno" | "address" | "interjection" | "tag";
 
-/** Every thought group of a sentence of this kind uses this pattern. */
+/**
+ * Every thought group of a sentence of this kind uses this pattern, unless the source lists `groupPatterns`.
+ * (A "tag" sentence always lists them: the statement is 2-3-1, the tag is 3-1 when the speaker is sure, 2-3 when not.)
+ */
 export function patternForKind(kind: SentenceKind): PatternId {
   return kind === "yesno" || kind === "address" || kind === "interjection" ? "2-3" : "2-3-1";
 }
@@ -30,6 +33,8 @@ export interface SentenceSource {
   nucleusWord: number | number[];
   /** Words in each thought group, in order (they add up to the word count). Omit for a single group. */
   groupSizes?: number[];
+  /** Pattern of each thought group, in order (same length as `groupSizes`). Omit to give every group the pattern of its kind. */
+  groupPatterns?: PatternId[];
   /** Syllable spelling chunks for words of 2+ syllables, keyed by the lower-case word: `{ "table": "ta-ble" }`. */
   spelling?: Record<string, string>;
 }
@@ -80,6 +85,29 @@ export function levelsForRisingGroup(syllableCount: number, nucleusIndex: number
   });
 }
 
+/**
+ * Target levels for the tag of a SURE tag question (3-1): the tag starts HIGH, on the stressed auxiliary, and falls.
+ * Syllables before the nucleus (none in the course tags) stay at 3, the nucleus is 3, everything after it is 1.
+ * When the nucleus is the last syllable it glides [3, 1] inside the syllable.
+ */
+export function levelsForFallingTag(syllableCount: number, nucleusIndex: number): number[][] {
+  if (!Number.isInteger(syllableCount) || syllableCount < 1) throw new Error(`Bad syllable count ${syllableCount}`);
+  if (!Number.isInteger(nucleusIndex) || nucleusIndex < 0 || nucleusIndex >= syllableCount) {
+    throw new Error(`Nucleus ${nucleusIndex} is outside 0..${syllableCount - 1}`);
+  }
+  return Array.from({ length: syllableCount }, (_, i) =>
+    i < nucleusIndex ? [3] : i === nucleusIndex ? (i === syllableCount - 1 ? [3, 1] : [3]) : [1],
+  );
+}
+
+/** Target levels of a thought group of any pattern the lessons use. 2-3-2 is not built yet and throws. */
+export function levelsForPattern(pattern: PatternId, syllableCount: number, nucleusIndex: number): number[][] {
+  if (pattern === "2-3") return levelsForRisingGroup(syllableCount, nucleusIndex);
+  if (pattern === "3-1") return levelsForFallingTag(syllableCount, nucleusIndex);
+  if (pattern === "2-3-1") return levelsForGroup(syllableCount, nucleusIndex);
+  throw new Error(`No level builder for pattern ${pattern}`);
+}
+
 const KIND_LABEL: Record<SentenceKind, string> = {
   statement: "Statement",
   wh: "Wh-question",
@@ -88,6 +116,7 @@ const KIND_LABEL: Record<SentenceKind, string> = {
   yesno: "Yes/no question",
   address: "Direct address",
   interjection: "Interjection",
+  tag: "Tag question",
 };
 
 /** "TA-", "-RIVE", "-TU-" or "NAME": how the nucleus chunk is written in the hint. */
@@ -97,8 +126,8 @@ export function nucleusLabel(chunks: string[], index: number): string {
   return `${index > 0 ? "-" : ""}${c}${index < chunks.length - 1 ? "-" : ""}`;
 }
 
-/** `labels` has one entry per thought group (a plain string for a single group). */
-export function noteFor(kind: SentenceKind, labels: string | string[]): Bilingual {
+/** `labels` has one entry per thought group (a plain string for a single group). `tagPattern`: the pattern of a tag's last group. */
+export function noteFor(kind: SentenceKind, labels: string | string[], tagPattern?: PatternId): Bilingual {
   const all = Array.isArray(labels) ? labels : [labels];
   const label = all[0];
   switch (kind) {
@@ -127,6 +156,18 @@ export function noteFor(kind: SentenceKind, labels: string | string[]): Bilingua
         en: `Yes/no questions RISE (2-3). Rise on ${label} and stay up to the end.`,
         th: `คำถาม Yes/No ใช้เสียงขึ้น 2-3 ขึ้นที่ ${label} และค้างเสียงสูงไว้จนจบ`,
       };
+    case "tag": {
+      const tag = all[1] ?? label;
+      return tagPattern === "3-1"
+        ? {
+            en: `You are SURE and want agreement. The statement is 2-3-1 (peak on ${label}), then the tag falls 3-1: start high on ${tag} and drop to 1.`,
+            th: `ถ้ามั่นใจและต้องการให้อีกฝ่ายเห็นด้วย ประโยคแรกใช้ 2-3-1 (ขึ้นสูงที่ ${label}) แล้ว tag ตก 3-1 เริ่มสูงที่ ${tag} แล้วลงต่ำ`,
+          }
+        : {
+            en: `You are NOT sure and really asking. The statement is 2-3-1 (peak on ${label}), then the tag rises 2-3: rise on ${tag} and stay up.`,
+            th: `ถ้าไม่แน่ใจและถามจริง ๆ ประโยคแรกใช้ 2-3-1 (ขึ้นสูงที่ ${label}) แล้ว tag ขึ้น 2-3 ขึ้นที่ ${tag} และค้างเสียงสูงไว้`,
+          };
+    }
     case "address":
     case "interjection": {
       const first = kind === "address" ? { en: "The name", th: "ชื่อที่เรียก" } : { en: "The interjection", th: "คำอุทาน" };
@@ -191,7 +232,11 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     return { raw, key, entry, chunks: chunksFor(raw, key, entry.syllables.length, src.spelling) };
   });
 
-  const pattern = patternForKind(src.kind);
+  const patterns = src.groupPatterns ?? sizes.map(() => patternForKind(src.kind));
+  if (patterns.length !== sizes.length) {
+    throw new Error(`${src.id}: ${sizes.length} thought group(s) need ${sizes.length} groupPatterns value(s), got ${patterns.length}`);
+  }
+  if (src.kind === "tag" && !src.groupPatterns) throw new Error(`${src.id}: a tag question needs groupPatterns (e.g. ["2-3-1", "3-1"])`);
   const labels: string[] = [];
   let first = 0;
   const groups: ThoughtGroup[] = sizes.map((size, gi) => {
@@ -209,7 +254,8 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     let flatNucleus = nSyl;
     for (let i = 0; i < nucleusWord; i++) flatNucleus += group[i].entry.syllables.length;
     const total = group.reduce((n, e) => n + e.entry.syllables.length, 0);
-    const levels = pattern === "2-3" ? levelsForRisingGroup(total, flatNucleus) : levelsForGroup(total, flatNucleus);
+    const pattern = patterns[gi];
+    const levels = levelsForPattern(pattern, total, flatNucleus);
 
     let flat = 0;
     const words: Word[] = group.map((e, wi) => {
@@ -227,8 +273,8 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
   return {
     id: src.id,
     text: src.text,
-    kind: KIND_LABEL[src.kind],
-    note: noteFor(src.kind, labels),
+    kind: src.kind === "tag" ? (patterns[patterns.length - 1] === "3-1" ? "Tag question (sure)" : "Tag question (not sure)") : KIND_LABEL[src.kind],
+    note: noteFor(src.kind, labels, patterns[patterns.length - 1]),
     groups,
   };
 }
