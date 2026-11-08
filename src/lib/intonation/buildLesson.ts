@@ -5,17 +5,43 @@
 // with several thought groups) how many words each group has, and (for words of 2+ syllables) how to spell the syllable
 // chunks, e.g. "ta-ble". Everything else is generated: IPA and syllable count come from the word table, the nucleus
 // syllable is the dictionary's primary-stress syllable of that word, and the pitch levels come from `levelsForGroup`
-// (falling 2-3-1) or `levelsForRisingGroup` (rising 2-3). The kind decides the pattern of every group.
+// (falling 2-3-1), `levelsForRisingGroup` (rising 2-3) or `levelsForNonFinalGroup` (non-final 2-3-2). The kind decides
+// the pattern of every group, unless the source authors one pattern per group (`patterns`), which lists and non-final
+// sentences need because their groups differ.
 
 import { normalizeWord } from "../ipa/words.ts";
 import type { WordIpa } from "../ipa/words.ts";
 import type { Bilingual, PatternId, Sentence, Syllable, ThoughtGroup, Word } from "./types.ts";
 
-export type SentenceKind = "statement" | "wh" | "command" | "exclamation" | "yesno" | "address" | "interjection";
+export type SentenceKind =
+  | "statement"
+  | "wh"
+  | "command"
+  | "exclamation"
+  | "yesno"
+  | "address"
+  | "interjection"
+  | "list"
+  | "choice"
+  | "nonfinal";
 
-/** Every thought group of a sentence of this kind uses this pattern. */
+/**
+ * Every thought group of a sentence of this kind uses this pattern. The kinds whose groups differ ("list", "nonfinal")
+ * name the pattern of their NON-FINAL groups here; `patternsFor` decides the last group.
+ */
 export function patternForKind(kind: SentenceKind): PatternId {
-  return kind === "yesno" || kind === "address" || kind === "interjection" ? "2-3" : "2-3-1";
+  if (kind === "nonfinal") return "2-3-2";
+  return kind === "yesno" || kind === "address" || kind === "interjection" || kind === "list" || kind === "choice" ? "2-3" : "2-3-1";
+}
+
+/**
+ * The pattern of each thought group. An authored `patterns` list wins. Otherwise lists and non-final sentences use their
+ * kind's pattern for every group except the last, which falls (2-3-1); every other kind uses one pattern throughout.
+ */
+export function patternsFor(kind: SentenceKind, groups: number, authored?: PatternId[]): PatternId[] {
+  if (authored) return authored;
+  const base = patternForKind(kind);
+  return Array.from({ length: groups }, (_, i) => ((kind === "list" || kind === "nonfinal") && i === groups - 1 ? "2-3-1" : base));
 }
 
 export interface SentenceSource {
@@ -30,6 +56,11 @@ export interface SentenceSource {
   nucleusWord: number | number[];
   /** Words in each thought group, in order (they add up to the word count). Omit for a single group. */
   groupSizes?: number[];
+  /**
+   * The pattern of each thought group ("2-3-1", "2-3-2" or "2-3"), one per group. Omit to use the kind's default (see
+   * `patternsFor`). Author it where the course leaves a choice to the teacher, e.g. whether the last item of a list falls.
+   */
+  patterns?: PatternId[];
   /** Syllable spelling chunks for words of 2+ syllables, keyed by the lower-case word: `{ "table": "ta-ble" }`. */
   spelling?: Record<string, string>;
 }
@@ -80,6 +111,41 @@ export function levelsForRisingGroup(syllableCount: number, nucleusIndex: number
   });
 }
 
+/**
+ * Target levels for one NON-FINAL (2-3-2) thought group, one entry per syllable. Start at 2, rise to 3 on the nucleus and
+ * come back to 2 (NOT 1: the sentence is not finished):
+ *  - before the nucleus: 2
+ *  - the nucleus: 3. When it is the last syllable it glides back down inside the syllable: [3, 2]. When it is the first of
+ *    several syllables it glides up from 2: [2, 3], so the group still starts at 2.
+ *  - after the nucleus: 2
+ */
+export function levelsForNonFinalGroup(syllableCount: number, nucleusIndex: number): number[][] {
+  if (!Number.isInteger(syllableCount) || syllableCount < 1) throw new Error(`Bad syllable count ${syllableCount}`);
+  if (!Number.isInteger(nucleusIndex) || nucleusIndex < 0 || nucleusIndex >= syllableCount) {
+    throw new Error(`Nucleus ${nucleusIndex} is outside 0..${syllableCount - 1}`);
+  }
+  const last = syllableCount - 1;
+  return Array.from({ length: syllableCount }, (_, i) => {
+    if (i < nucleusIndex) return [2];
+    if (i === nucleusIndex) return i === last ? [3, 2] : i === 0 ? [2, 3] : [3];
+    return [2];
+  });
+}
+
+/** The levels of one thought group for its pattern. */
+export function levelsForPattern(pattern: PatternId, syllableCount: number, nucleusIndex: number): number[][] {
+  switch (pattern) {
+    case "2-3-1":
+      return levelsForGroup(syllableCount, nucleusIndex);
+    case "2-3":
+      return levelsForRisingGroup(syllableCount, nucleusIndex);
+    case "2-3-2":
+      return levelsForNonFinalGroup(syllableCount, nucleusIndex);
+    case "3-1":
+      throw new Error("The tag pattern 3-1 cannot be generated from a lesson source yet");
+  }
+}
+
 const KIND_LABEL: Record<SentenceKind, string> = {
   statement: "Statement",
   wh: "Wh-question",
@@ -88,7 +154,13 @@ const KIND_LABEL: Record<SentenceKind, string> = {
   yesno: "Yes/no question",
   address: "Direct address",
   interjection: "Interjection",
+  list: "List",
+  choice: "Choice question",
+  nonfinal: "Non-final thought group",
 };
+
+/** The `Sentence.kind` labels of sentences with one item per thought group: lists and choices. */
+export const LIST_KIND_LABELS: readonly string[] = [KIND_LABEL.list, KIND_LABEL.choice];
 
 /** "TA-", "-RIVE", "-TU-" or "NAME": how the nucleus chunk is written in the hint. */
 export function nucleusLabel(chunks: string[], index: number): string {
@@ -97,8 +169,14 @@ export function nucleusLabel(chunks: string[], index: number): string {
   return `${index > 0 ? "-" : ""}${c}${index < chunks.length - 1 ? "-" : ""}`;
 }
 
-/** `labels` has one entry per thought group (a plain string for a single group). */
-export function noteFor(kind: SentenceKind, labels: string | string[]): Bilingual {
+const joinEn = (l: string[]) => (l.length <= 1 ? (l[0] ?? "") : `${l.slice(0, -1).join(", ")} and ${l[l.length - 1]}`);
+const joinTh = (l: string[]) => (l.length <= 1 ? (l[0] ?? "") : `${l.slice(0, -1).join(", ")} และ ${l[l.length - 1]}`);
+
+/**
+ * `labels` has one entry per thought group (a plain string for a single group). `patterns` (one per group) tells the
+ * list note whether the last item falls.
+ */
+export function noteFor(kind: SentenceKind, labels: string | string[], patterns?: PatternId[]): Bilingual {
   const all = Array.isArray(labels) ? labels : [labels];
   const label = all[0];
   switch (kind) {
@@ -127,6 +205,33 @@ export function noteFor(kind: SentenceKind, labels: string | string[]): Bilingua
         en: `Yes/no questions RISE (2-3). Rise on ${label} and stay up to the end.`,
         th: `คำถาม Yes/No ใช้เสียงขึ้น 2-3 ขึ้นที่ ${label} และค้างเสียงสูงไว้จนจบ`,
       };
+    case "list": {
+      const lastFalls = (patterns ?? ["2-3-1"]).at(-1) === "2-3-1";
+      const items = lastFalls ? all.slice(0, -1) : all;
+      const end = all[all.length - 1];
+      return lastFalls
+        ? {
+            en: `Each item of a list is its own thought group and RISES (2-3): peaks on ${joinEn(items)}. The last item comes down to finish the statement (2-3-1) on ${end}.`,
+            th: `แต่ละรายการในลิสต์เป็นกลุ่มคำของตัวเองและใช้เสียงขึ้น 2-3 ขึ้นที่ ${joinTh(items)} ส่วนรายการสุดท้ายลงเสียงให้จบประโยค 2-3-1 ที่ ${end}`,
+          }
+        : {
+            en: `Each item of a list is its own thought group and RISES (2-3): peaks on ${joinEn(items)}.`,
+            th: `แต่ละรายการในลิสต์เป็นกลุ่มคำของตัวเองและใช้เสียงขึ้น 2-3 ขึ้นที่ ${joinTh(items)}`,
+          };
+    }
+    case "choice":
+      return {
+        en: `Each choice is its own thought group and RISES (2-3), the last one too: peaks on ${joinEn(all)}.`,
+        th: `แต่ละตัวเลือกเป็นกลุ่มคำของตัวเองและใช้เสียงขึ้น 2-3 รวมถึงตัวเลือกสุดท้ายด้วย ขึ้นที่ ${joinTh(all)}`,
+      };
+    case "nonfinal": {
+      const open = all.slice(0, -1);
+      const end = all[all.length - 1];
+      return {
+        en: `A part that is not finished rises to 3 and comes back to 2, not 1 (2-3-2): peaks on ${joinEn(open)}. Only the last part falls to 1 (2-3-1) on ${end}.`,
+        th: `ส่วนที่ยังพูดไม่จบขึ้นระดับ 3 แล้วกลับมาที่ระดับ 2 ไม่ใช่ 1 (2-3-2) ขึ้นที่ ${joinTh(open)} มีเพียงส่วนสุดท้ายที่ลงระดับ 1 (2-3-1) ที่ ${end}`,
+      };
+    }
     case "address":
     case "interjection": {
       const first = kind === "address" ? { en: "The name", th: "ชื่อที่เรียก" } : { en: "The interjection", th: "คำอุทาน" };
@@ -191,7 +296,10 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     return { raw, key, entry, chunks: chunksFor(raw, key, entry.syllables.length, src.spelling) };
   });
 
-  const pattern = patternForKind(src.kind);
+  const patterns = patternsFor(src.kind, sizes.length, src.patterns);
+  if (patterns.length !== sizes.length || patterns.some((p) => p !== "2-3-1" && p !== "2-3-2" && p !== "2-3")) {
+    throw new Error(`${src.id}: ${sizes.length} thought group(s) need ${sizes.length} pattern(s) from 2-3-1, 2-3-2, 2-3; got [${patterns.join(", ")}]`);
+  }
   const labels: string[] = [];
   let first = 0;
   const groups: ThoughtGroup[] = sizes.map((size, gi) => {
@@ -209,7 +317,8 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     let flatNucleus = nSyl;
     for (let i = 0; i < nucleusWord; i++) flatNucleus += group[i].entry.syllables.length;
     const total = group.reduce((n, e) => n + e.entry.syllables.length, 0);
-    const levels = pattern === "2-3" ? levelsForRisingGroup(total, flatNucleus) : levelsForGroup(total, flatNucleus);
+    const pattern = patterns[gi];
+    const levels = levelsForPattern(pattern, total, flatNucleus);
 
     let flat = 0;
     const words: Word[] = group.map((e, wi) => {
@@ -228,7 +337,7 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     id: src.id,
     text: src.text,
     kind: KIND_LABEL[src.kind],
-    note: noteFor(src.kind, labels),
+    note: noteFor(src.kind, labels, patterns),
     groups,
   };
 }

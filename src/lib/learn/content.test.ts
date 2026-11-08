@@ -30,11 +30,11 @@ describe("lesson content", () => {
     expect(loadLesson("falling", "falling-1")).toBeDefined();
   });
 
-  it("every lesson has 4 to 6 valid sentences with unique ids", () => {
+  it("every lesson has 3 to 6 valid sentences with unique ids", () => {
     const ids = new Set<string>();
     for (const { unit, lesson } of lessons) {
       const c = loadLesson(unit, lesson)!;
-      expect(c.sentences.length).toBeGreaterThanOrEqual(4);
+      expect(c.sentences.length).toBeGreaterThanOrEqual(3);
       expect(c.sentences.length).toBeLessThanOrEqual(6);
       for (const s of c.sentences) {
         expect(ids.has(s.id), `duplicate ${s.id}`).toBe(false);

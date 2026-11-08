@@ -4,6 +4,7 @@
 // Real reference clips (Azure TTS, task B6) will be saved as /audio/<sentenceId>--f.mp3 (female) and --m.mp3 (male).
 // Until they exist the app plays the synthetic voice and labels it as a placeholder.
 
+import { levelsForGroup } from "../intonation/buildLesson.ts";
 import type { Sentence } from "../intonation/types.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
 import { endingOf } from "./exercises.ts";
@@ -14,12 +15,34 @@ export function referenceUrl(sentenceId: string, voice: "f" | "m" = "f"): string
 }
 
 /**
+ * The same sentence with EVERY thought group falling (2-3-1) on its own nucleus: the parts that should stay open (non-final
+ * 2-3-2 parts, list items) now drop to low and sound finished. Groups that already fall are unchanged.
+ */
+export function allFalling(sentence: Sentence): Sentence {
+  return {
+    ...sentence,
+    groups: sentence.groups.map((g) => {
+      const total = g.words.reduce((n, w) => n + w.syllables.length, 0);
+      const nucleus = g.words.slice(0, g.nucleus.word).reduce((n, w) => n + w.syllables.length, 0) + g.nucleus.syllable;
+      const levels = levelsForGroup(total, nucleus);
+      let flat = 0;
+      return {
+        ...g,
+        pattern: "2-3-1" as const,
+        words: g.words.map((w) => ({ ...w, syllables: w.syllables.map((s) => ({ ...s, levels: levels[flat++] })) })),
+      };
+    }),
+  };
+}
+
+/**
  * The synthetic clip for a variant. "falling" and "rising" name how the clip ends: the one that matches the sentence's
  * own pattern is the textbook tune (every thought group as authored, so a rising sentence rises in each group), the
  * other flips the end of every thought group. "flat" and "busy" are the other typical mistakes.
  * No variant means the textbook tune.
  */
 export function placeholderClip(sentence: Sentence, variant: ClipVariant = endingOf(sentence)): { samples: Float32Array; sampleRate: number } {
+  if (variant === "finished") return synthesizeSentence(allFalling(sentence), { baseHz: 210 });
   const transform =
     variant === "flat"
       ? ERROR_STYLES.flat

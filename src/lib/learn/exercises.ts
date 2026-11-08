@@ -1,6 +1,7 @@
 // Exercise generation for the lesson player. Pure and deterministic: the same sentences always give the same lesson,
 // so server and client render the same first screen and tests can pin the order.
 
+import { LIST_KIND_LABELS } from "../intonation/buildLesson.ts";
 import type { Sentence } from "../intonation/types.ts";
 
 /**
@@ -10,8 +11,10 @@ import type { Sentence } from "../intonation/types.ts";
  *  - flat: monotone, no clear peak
  *  - busy: a little rise on every stressed word ("a tone on every word")
  * Which of "falling" and "rising" is the textbook one depends on the sentence: see `endingOf`.
+ *  - finished: every thought group drops to low (2-3-1), so the parts that should stay open (non-final 2-3-2 parts, list
+ *    items) sound finished: the typical mistake in the lists and non-final units
  */
-export type ClipVariant = "falling" | "rising" | "flat" | "busy";
+export type ClipVariant = "falling" | "rising" | "flat" | "busy" | "finished";
 
 /** How a sentence ends when it is said the textbook way. */
 export type Ending = "falling" | "rising";
@@ -21,15 +24,46 @@ export function endingOf(sentence: Sentence): Ending {
   return sentence.groups[sentence.groups.length - 1].pattern === "2-3" ? "rising" : "falling";
 }
 
+/**
+ * What a "Hear it" exercise asks for: the textbook ending (`Ending`), or, for sentences with several kinds of thought group:
+ *  - unfinished: the clip where the non-final parts come back to mid (2-3-2), so more is coming
+ *  - finished: the clip where the non-final parts drop to low, so they sound finished (the mistake)
+ *  - lifting: the clip that rises on every item of a list or choice
+ */
+export type HearAsk = Ending | "unfinished" | "finished" | "lifting";
+
+/** A sentence whose earlier thought groups are non-final (2-3-2): "If it rains, I will take the bus." */
+export function hasOpenGroup(sentence: Sentence): boolean {
+  return sentence.groups.slice(0, -1).some((g) => g.pattern === "2-3-2");
+}
+
+/** A list or a question with choices: one item per thought group. */
+export function isListSentence(sentence: Sentence): boolean {
+  return LIST_KIND_LABELS.includes(sentence.kind);
+}
+
+/** What a "Hear it" exercise on this sentence asks when nothing says otherwise. */
+export function defaultAsk(sentence: Sentence): HearAsk {
+  if (hasOpenGroup(sentence)) return "unfinished";
+  if (isListSentence(sentence)) return "lifting";
+  return endingOf(sentence);
+}
+
+/** The clip variant that has the tune `ask` is asking for. */
+export function askedClip(ask: HearAsk, sentence: Sentence): ClipVariant {
+  if (ask === "finished") return "finished";
+  return ask === "unfinished" || ask === "lifting" ? endingOf(sentence) : ask;
+}
+
 export interface HearExercise {
   type: "hear";
   id: string;
   sentenceId: string;
   /** Which tune the learner is asked to find: "Which one is the falling / rising tune?". */
-  ask: Ending;
+  ask: HearAsk;
   /** The two clips, in the order shown (A, B). */
   clips: [ClipVariant, ClipVariant];
-  /** Index (0 = A, 1 = B) of the clip that has the asked-for ending (`clips[correct] === ask`). */
+  /** Index (0 = A, 1 = B) of the clip that has the asked-for tune (`clips[correct] === askedClip(ask, sentence)`). */
   correct: 0 | 1;
 }
 export interface PeakExercise {
@@ -80,7 +114,9 @@ export function hasBusyVariant(sentence: Sentence): boolean {
  */
 export function distractorFor(sentence: Sentence, k: number): ClipVariant {
   const rising = endingOf(sentence) === "rising";
-  const pool: readonly ClipVariant[] = rising ? ["falling", "flat"] : ["rising", "flat", "busy"];
+  // Lists and non-final sentences: the typical mistake is to drop on every group ("finished"); "busy" would still rise on items.
+  const groups = hasOpenGroup(sentence) || isListSentence(sentence);
+  const pool: readonly ClipVariant[] = groups ? ["finished", "flat"] : rising ? ["falling", "flat"] : ["rising", "flat", "busy"];
   for (let i = 0; i < pool.length; i++) {
     const d = pool[(k + i) % pool.length];
     if (d !== "busy" || hasBusyVariant(sentence)) return d;
@@ -90,20 +126,21 @@ export function distractorFor(sentence: Sentence, k: number): ClipVariant {
 
 /**
  * A "hear it" exercise; `k` decides which mistake is the distractor and whether the right clip is A or B.
- * `ask` is the tune the learner must find (default: the sentence's textbook ending). Asking for the OTHER ending
- * ("which one falls?" on a yes/no question) pairs the mistake with the textbook clip.
+ * `ask` is the tune the learner must find (default: `defaultAsk`). Asking for the OTHER ending ("which one falls?" on a
+ * yes/no question) or for the "finished" clip pairs the mistake with the textbook clip.
  */
-export function makeHear(sentence: Sentence, k: number, id: string, ask?: Ending): HearExercise {
+export function makeHear(sentence: Sentence, k: number, id: string, ask?: HearAsk): HearExercise {
   const textbook = endingOf(sentence);
-  const wanted = ask ?? textbook;
-  const other: ClipVariant = wanted === textbook ? distractorFor(sentence, k) : textbook;
+  const wanted = ask ?? defaultAsk(sentence);
+  const target = askedClip(wanted, sentence);
+  const other: ClipVariant = target === textbook ? distractorFor(sentence, k) : textbook;
   const correct: 0 | 1 = k % 2 === 0 ? 1 : 0; // B, A, B ...: the answer is not always in the same place
   return {
     type: "hear",
     id,
     sentenceId: sentence.id,
     ask: wanted,
-    clips: correct === 1 ? [other, wanted] : [wanted, other],
+    clips: correct === 1 ? [other, target] : [target, other],
     correct,
   };
 }
@@ -123,7 +160,10 @@ export function buildExercises(sentences: readonly Sentence[], lessonId: string)
     if (type === "hear") {
       const k = hearCount++;
       const textbook = endingOf(sentence);
-      const ask: Ending = mixed && k % 2 === 1 ? (textbook === "rising" ? "falling" : "rising") : textbook;
+      const base = defaultAsk(sentence);
+      // non-final sentences alternate "which sounds unfinished?" / "which sounds finished?"; rising-2 alternates rising / falling
+      const ask: HearAsk =
+        base === "unfinished" ? (k % 2 === 1 ? "finished" : base) : mixed && k % 2 === 1 ? (textbook === "rising" ? "falling" : "rising") : base;
       return makeHear(sentence, k, id, ask);
     }
     return { type, id, sentenceId: sentence.id };

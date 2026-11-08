@@ -1,0 +1,41 @@
+{
+  "id": "nonfinal-1",
+  "unit": "nonfinal",
+  "sentences": [
+    {
+      "id": "nonfinal-1-fact",
+      "text": "As a matter of fact, I do know where she lives.",
+      "kind": "nonfinal",
+      "groupSizes": [5, 6],
+      "nucleusWord": [4, 10],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "matter": "mat-ter" }
+    },
+    {
+      "id": "nonfinal-1-opinion",
+      "text": "In my opinion, this car is way too expensive.",
+      "kind": "nonfinal",
+      "groupSizes": [3, 6],
+      "nucleusWord": [2, 8],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "opinion": "o-pin-ion", "expensive": "ex-pen-sive" }
+    },
+    {
+      "id": "nonfinal-1-rains",
+      "text": "If it rains, I will take the bus.",
+      "kind": "nonfinal",
+      "groupSizes": [3, 5],
+      "nucleusWord": [2, 7],
+      "patterns": ["2-3-2", "2-3-1"]
+    },
+    {
+      "id": "nonfinal-1-picnic",
+      "text": "If the weather is nice, we will go on a picnic.",
+      "kind": "nonfinal",
+      "groupSizes": [5, 6],
+      "nucleusWord": [4, 10],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "weather": "weath-er", "picnic": "pic-nic" }
+    }
+  ]
+}

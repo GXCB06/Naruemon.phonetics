@@ -16,4 +16,8 @@ export const OVERRIDES: Record<string, Override> = {
     arpabet: "Y ER0",
     reason: "CMUdict has the strong form Y AO1 R; in running speech 'your' is the weak form /jɚ/ (function word).",
   },
+  amad: {
+    arpabet: "AA1 M AA0 D",
+    reason: "A name (Mr. Amad, nonfinal-2): not in CMUdict. Stress on the first syllable is our choice; it is not the nucleus of its group, so the contour does not depend on it.",
+  },
 };
