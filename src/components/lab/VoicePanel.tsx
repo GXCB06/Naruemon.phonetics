@@ -335,7 +335,7 @@ export function VoicePanel({
             </div>
           </div>
           {playbackUrl && <audio controls src={playbackUrl} className="w-full" />}
-          <AzurePanel key={wav16Url} wav16k={analysis.wav16k} referenceText={sentence.text} />
+          <AzurePanel key={wav16Url} wav16k={analysis.wav16k} referenceText={sentence.text} voice={analysis} sentence={sentence} />
           {analysis.quality.issues.length > 0 && (
             <ul className="flex flex-col gap-2">
               {analysis.quality.issues.map((q, i) => (
