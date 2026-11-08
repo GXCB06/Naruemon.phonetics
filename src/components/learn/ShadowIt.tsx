@@ -78,7 +78,7 @@ export function ShadowIt({
     if (!result) return setCheck(null);
     setCheck(() => {
       const feedback = analysisFeedback(result);
-      return { outcome: graded(exercise.id, "shadow", result.overall, feedback.passed), feedback };
+      return { outcome: graded(exercise.id, "shadow", result.overall, feedback.passed), feedback, analysis: result };
     });
   }, [result, exercise.id, setCheck]);
 

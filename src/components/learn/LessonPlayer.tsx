@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useMemo, useState } from "react";
+import { recordExerciseAttempt } from "@/lib/attempts";
 import type { LessonContent } from "@/lib/learn/content";
 import { buildExercises, listeningFallback, type Exercise } from "@/lib/learn/exercises";
 import { summarize, type ExerciseOutcome, type LessonSummary } from "@/lib/learn/score";
@@ -55,6 +56,7 @@ export function LessonPlayer({
   const onCheck = () => {
     const result = check?.();
     if (!result) return;
+    recordExerciseAttempt(sentence, exercise.type, { passed: result.outcome.passed, analysis: result.analysis }); // C5/D2: never throws
     setChecked(result);
     setPhase("feedback");
   };

@@ -1,3 +1,4 @@
+import type { AnalysisResult } from "@/lib/intonation/types";
 import type { Feedback } from "@/lib/learn/feedback";
 import type { ExerciseOutcome } from "@/lib/learn/score";
 
@@ -5,6 +6,8 @@ import type { ExerciseOutcome } from "@/lib/learn/score";
 export interface Checked {
   outcome: ExerciseOutcome;
   feedback: Feedback;
+  /** The rule engine's result (draw it, shadow it only); the player saves it as an attempt. Numbers only, no audio. */
+  analysis?: AnalysisResult;
 }
 
 /** How an exercise tells the player whether CHECK can be pressed, and what it does. Stable identity. */
