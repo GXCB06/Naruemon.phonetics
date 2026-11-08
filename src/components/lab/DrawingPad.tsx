@@ -1,7 +1,7 @@
 "use client";
 
 import { getStroke } from "perfect-freehand";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from "react";
 import { analyze } from "@/lib/intonation/engine";
 import { CHART, strokesToContour, type StrokePoint } from "@/lib/intonation/drawing";
 import type { AnalysisResult, Contour, Layout, Sentence } from "@/lib/intonation/types";
@@ -20,17 +20,38 @@ function freehandPath(points: StrokePoint[]): string {
   );
 }
 
-/** Drawing quiz: drag a line over the sentence, then score it with the same rule engine as the voice. */
+/** What the lesson player can do to a pad it renders in `compact` mode. */
+export interface DrawingPadHandle {
+  /** Score the drawing now and reveal the target line. Null when nothing is drawn. */
+  check: () => AnalysisResult | null;
+  clear: () => void;
+}
+
+/**
+ * Drawing quiz: drag a line over the sentence, then score it with the same rule engine as the voice.
+ * `compact` (used by the lesson player) hides the help text, the Check/Show-answer/Snap controls and the result card:
+ * the player owns the big CHECK button and the feedback sheet, and calls `handleRef.check()`.
+ */
 export function DrawingPad({
   sentence,
   layout,
   target,
   onResult,
+  compact = false,
+  readOnly = false,
+  onInkChange,
+  handleRef,
 }: {
   sentence: Sentence;
   layout: Layout;
   target: Contour;
   onResult?: (r: AnalysisResult) => void;
+  compact?: boolean;
+  /** No more drawing (e.g. while the feedback sheet is open). */
+  readOnly?: boolean;
+  /** Called when the pad gains or loses ink. */
+  onInkChange?: (hasInk: boolean) => void;
+  handleRef?: Ref<DrawingPadHandle>;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [strokes, setStrokes] = useState<StrokePoint[][]>([]);
@@ -59,6 +80,7 @@ export function DrawingPad({
     setResult(r);
     setShowAnswer(true);
     onResult?.(r);
+    return r;
   };
 
   const clear = () => {
@@ -67,12 +89,20 @@ export function DrawingPad({
     setShowAnswer(false);
   };
 
+  const hasInk = strokes.length > 0;
+  useEffect(() => {
+    onInkChange?.(hasInk);
+  }, [hasInk, onInkChange]);
+  useImperativeHandle(handleRef, () => ({ check: () => (strokes.length ? check() : null), clear }));
+
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-muted">
-        Drag your finger or mouse across the chart to draw the tune. Lift the pen at the <b>|</b> between thought groups.
-        <span className="thai block text-sm">ลากนิ้วหรือเมาส์บนกราฟเพื่อวาดทำนองเสียง ยกปากกาตรงเครื่องหมาย | ระหว่างกลุ่มคำ</span>
-      </p>
+      {!compact && (
+        <p className="text-muted">
+          Drag your finger or mouse across the chart to draw the tune. Lift the pen at the <b>|</b> between thought groups.
+          <span className="thai block text-sm">ลากนิ้วหรือเมาส์บนกราฟเพื่อวาดทำนองเสียง ยกปากกาตรงเครื่องหมาย | ระหว่างกลุ่มคำ</span>
+        </p>
+      )}
       <div className="card overflow-hidden p-2">
         <ContourChart
           layout={layout}
@@ -85,6 +115,7 @@ export function DrawingPad({
             ref: svgRef,
             style: { cursor: "crosshair", touchAction: "none" },
             onPointerDown: (e) => {
+              if (readOnly) return;
               const p = toChart(e);
               if (!p || p.y > CHART.height) return;
               (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
@@ -116,22 +147,30 @@ export function DrawingPad({
           <rect x={0} y={CHART.height} width={CHART.width} height={LABEL_H} fill="transparent" pointerEvents="none" />
         </ContourChart>
       </div>
-      <div className="flex flex-wrap items-center gap-3">
-        <button className="btn btn-primary" onClick={check} disabled={!strokes.length}>
-          Check
-        </button>
-        <button className="btn" onClick={clear} disabled={!strokes.length}>
-          Clear
-        </button>
-        <button className="btn" onClick={() => setShowAnswer((v) => !v)}>
-          {showAnswer ? "Hide answer" : "Show answer"}
-        </button>
-        <label className="ml-auto flex cursor-pointer items-center gap-2 font-bold">
-          <input type="checkbox" checked={snap} onChange={(e) => setSnap(e.target.checked)} className="h-5 w-5 accent-[var(--accent)]" />
-          Snap to levels
-        </label>
-      </div>
-      {result && (
+      {compact ? (
+        <div className="flex">
+          <button className="btn" onClick={clear} disabled={!strokes.length || readOnly}>
+            Clear <span className="thai text-sm font-semibold">ลบ</span>
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center gap-3">
+          <button className="btn btn-primary" onClick={check} disabled={!strokes.length}>
+            Check
+          </button>
+          <button className="btn" onClick={clear} disabled={!strokes.length}>
+            Clear
+          </button>
+          <button className="btn" onClick={() => setShowAnswer((v) => !v)}>
+            {showAnswer ? "Hide answer" : "Show answer"}
+          </button>
+          <label className="ml-auto flex cursor-pointer items-center gap-2 font-bold">
+            <input type="checkbox" checked={snap} onChange={(e) => setSnap(e.target.checked)} className="h-5 w-5 accent-[var(--accent)]" />
+            Snap to levels
+          </label>
+        </div>
+      )}
+      {!compact && result && (
         <div className="card p-4 sm:p-5">
           <ResultPanel result={result} />
           {result.syllableLevels && (

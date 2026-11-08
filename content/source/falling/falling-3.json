@@ -1,0 +1,12 @@
+{
+  "id": "falling-3",
+  "unit": "falling",
+  "sentences": [
+    { "id": "falling-3-speak-loudly", "text": "Speak loudly.", "kind": "command", "nucleusWord": 1, "spelling": { "loudly": "loud-ly" } },
+    { "id": "falling-3-come-see-me", "text": "Come to see me.", "kind": "command", "nucleusWord": 2 },
+    { "id": "falling-3-let-her-go", "text": "Let her go.", "kind": "command", "nucleusWord": 2 },
+    { "id": "falling-3-beautiful-day", "text": "What a beautiful day!", "kind": "exclamation", "nucleusWord": 3, "spelling": { "beautiful": "beau-ti-ful" } },
+    { "id": "falling-3-just-what-need", "text": "That's just what I need!", "kind": "exclamation", "nucleusWord": 4 },
+    { "id": "falling-3-how-nice", "text": "How nice of you!", "kind": "exclamation", "nucleusWord": 1 }
+  ]
+}
