@@ -1,8 +1,46 @@
-import type { Sentence } from "./types.ts";
+import { normalizeWord } from "../ipa/words.ts";
+import type { WordIpa } from "../ipa/words.ts";
+import ipaTable from "./ipa.generated.json" with { type: "json" };
+import type { Sentence, Syllable, ThoughtGroup, Word } from "./types.ts";
 
 // Phase 0a test sentences, taken from the course material (Sentence Intonation, pp. 74–80, and the Intonation slides).
 // Rule used for every group: the rising point is on the stressed syllable of the LAST content (strong-form) word.
-// IPA is US English, written per syllable; stress marks are added when displayed.
+//
+// IPA is US English, written per syllable; stress marks are added when displayed. It is NOT hand-typed: it comes from
+// ipa.generated.json (CMUdict -> own syllabifier -> ARPAbet-to-IPA map; run `npm run build:ipa`, see tools/build-ipa.ts).
+// Only the spelling chunks and the target `levels` are written by hand. `stressed` is the dictionary's primary stress
+// for words of 2+ syllables; a one-syllable word counts as stressed only when it carries the nucleus of its group
+// (sentence stress, not lexical stress: "take" and "What" stay unstressed).
+//
+// Differences from the previous hand-typed IPA (everything else was reproduced exactly):
+//   - "pretty": prɪ.ti -> pɹɪ.ti (the old string used r where every other word uses ɹ; now one symbol set).
+//   - "Harry" (hæ.ɹi) and "your" (jɚ) match through documented OVERRIDES in src/lib/ipa/overrides.ts, because CMUdict has
+//     HH EH1 R IY0 and the strong form Y AO1 R.
+
+type SyllableSpec = readonly [spelling: string, levels: number[]];
+
+const WORDS = ipaTable.words as Record<string, WordIpa>;
+
+/** A word from its spelling chunks (one per syllable) and target levels; IPA and stress come from the generated table. */
+function w(text: string, parts: readonly SyllableSpec[]): Word {
+  const key = normalizeWord(text);
+  const entry = WORDS[key];
+  if (!entry) throw new Error(`No generated IPA for "${key}". Run \`npm run build:ipa\`.`);
+  if (entry.syllables.length !== parts.length) {
+    throw new Error(`"${key}" has ${entry.syllables.length} syllable(s) in CMUdict but ${parts.length} spelling chunk(s).`);
+  }
+  const syllables: Syllable[] = parts.map(([spelling, levels], i) => {
+    const s: Syllable = { text: spelling, ipa: entry.syllables[i].ipa, levels };
+    if (parts.length > 1 && entry.syllables[i].stress === 1) s.stressed = true;
+    return s;
+  });
+  return { text, syllables };
+}
+
+/** The nucleus syllable carries sentence stress even in a one-syllable word. */
+function markNucleusStress(group: ThoughtGroup): void {
+  group.words[group.nucleus.word].syllables[group.nucleus.syllable].stressed = true;
+}
 
 export const SENTENCES: Sentence[] = [
   {
@@ -18,23 +56,11 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3-1",
         nucleus: { word: 4, syllable: 0 },
         words: [
-          { text: "She", syllables: [{ text: "She", ipa: "ʃi", levels: [2] }] },
-          { text: "is", syllables: [{ text: "is", ipa: "ɪz", levels: [2] }] },
-          { text: "a", syllables: [{ text: "a", ipa: "ə", levels: [2] }] },
-          {
-            text: "pretty",
-            syllables: [
-              { text: "pre", ipa: "prɪ", stressed: true, levels: [2] },
-              { text: "tty", ipa: "ti", levels: [2] },
-            ],
-          },
-          {
-            text: "woman.",
-            syllables: [
-              { text: "wo", ipa: "wʊ", stressed: true, levels: [3] },
-              { text: "man", ipa: "mən", levels: [1] },
-            ],
-          },
+          w("She", [["She", [2]]]),
+          w("is", [["is", [2]]]),
+          w("a", [["a", [2]]]),
+          w("pretty", [["pre", [2]], ["tty", [2]]]),
+          w("woman.", [["wo", [3]], ["man", [1]]]),
         ],
       },
     ],
@@ -52,10 +78,10 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3-1",
         nucleus: { word: 3, syllable: 0 },
         words: [
-          { text: "What", syllables: [{ text: "What", ipa: "wʌt", levels: [2] }] },
-          { text: "is", syllables: [{ text: "is", ipa: "ɪz", levels: [2] }] },
-          { text: "your", syllables: [{ text: "your", ipa: "jɚ", levels: [2] }] },
-          { text: "name?", syllables: [{ text: "name", ipa: "neɪm", stressed: true, levels: [3, 1] }] },
+          w("What", [["What", [2]]]),
+          w("is", [["is", [2]]]),
+          w("your", [["your", [2]]]),
+          w("name?", [["name", [3, 1]]]),
         ],
       },
     ],
@@ -73,16 +99,10 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3",
         nucleus: { word: 3, syllable: 0 },
         words: [
-          { text: "Are", syllables: [{ text: "Are", ipa: "ɑɹ", levels: [2] }] },
-          { text: "you", syllables: [{ text: "you", ipa: "ju", levels: [2] }] },
-          { text: "a", syllables: [{ text: "a", ipa: "ə", levels: [2] }] },
-          {
-            text: "student?",
-            syllables: [
-              { text: "stu", ipa: "stu", stressed: true, levels: [3] },
-              { text: "dent", ipa: "dənt", levels: [3, 3.4] },
-            ],
-          },
+          w("Are", [["Are", [2]]]),
+          w("you", [["you", [2]]]),
+          w("a", [["a", [2]]]),
+          w("student?", [["stu", [3]], ["dent", [3, 3.4]]]),
         ],
       },
     ],
@@ -100,20 +120,20 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3-2",
         nucleus: { word: 2, syllable: 0 },
         words: [
-          { text: "If", syllables: [{ text: "If", ipa: "ɪf", levels: [2] }] },
-          { text: "it", syllables: [{ text: "it", ipa: "ɪt", levels: [2] }] },
-          { text: "rains,", syllables: [{ text: "rains", ipa: "ɹeɪnz", stressed: true, levels: [3, 2] }] },
+          w("If", [["If", [2]]]),
+          w("it", [["it", [2]]]),
+          w("rains,", [["rains", [3, 2]]]),
         ],
       },
       {
         pattern: "2-3-1",
         nucleus: { word: 4, syllable: 0 },
         words: [
-          { text: "I", syllables: [{ text: "I", ipa: "aɪ", levels: [2] }] },
-          { text: "will", syllables: [{ text: "will", ipa: "wɪl", levels: [2] }] },
-          { text: "take", syllables: [{ text: "take", ipa: "teɪk", levels: [2] }] },
-          { text: "the", syllables: [{ text: "the", ipa: "ðə", levels: [2] }] },
-          { text: "bus.", syllables: [{ text: "bus", ipa: "bʌs", stressed: true, levels: [3, 1] }] },
+          w("I", [["I", [2]]]),
+          w("will", [["will", [2]]]),
+          w("take", [["take", [2]]]),
+          w("the", [["the", [2]]]),
+          w("bus.", [["bus", [3, 1]]]),
         ],
       },
     ],
@@ -131,35 +151,17 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3-1",
         nucleus: { word: 2, syllable: 0 },
         words: [
-          {
-            text: "Harry",
-            syllables: [
-              { text: "Ha", ipa: "hæ", stressed: true, levels: [2] },
-              { text: "rry", ipa: "ɹi", levels: [2] },
-            ],
-          },
-          { text: "is", syllables: [{ text: "is", ipa: "ɪz", levels: [2] }] },
-          {
-            text: "coming,",
-            syllables: [
-              { text: "com", ipa: "kʌ", stressed: true, levels: [3] },
-              { text: "ing", ipa: "mɪŋ", levels: [1] },
-            ],
-          },
+          w("Harry", [["Ha", [2]], ["rry", [2]]]),
+          w("is", [["is", [2]]]),
+          w("coming,", [["com", [3]], ["ing", [1]]]),
         ],
       },
       {
         pattern: "3-1",
         nucleus: { word: 0, syllable: 0 },
         words: [
-          {
-            text: "isn't",
-            syllables: [
-              { text: "is", ipa: "ɪ", stressed: true, levels: [3] },
-              { text: "n't", ipa: "zənt", levels: [1] },
-            ],
-          },
-          { text: "he?", syllables: [{ text: "he", ipa: "hi", levels: [1] }] },
+          w("isn't", [["is", [3]], ["n't", [1]]]),
+          w("he?", [["he", [1]]]),
         ],
       },
     ],
@@ -177,40 +179,24 @@ export const SENTENCES: Sentence[] = [
         pattern: "2-3-1",
         nucleus: { word: 2, syllable: 0 },
         words: [
-          {
-            text: "Harry",
-            syllables: [
-              { text: "Ha", ipa: "hæ", stressed: true, levels: [2] },
-              { text: "rry", ipa: "ɹi", levels: [2] },
-            ],
-          },
-          { text: "is", syllables: [{ text: "is", ipa: "ɪz", levels: [2] }] },
-          {
-            text: "coming,",
-            syllables: [
-              { text: "com", ipa: "kʌ", stressed: true, levels: [3] },
-              { text: "ing", ipa: "mɪŋ", levels: [1] },
-            ],
-          },
+          w("Harry", [["Ha", [2]], ["rry", [2]]]),
+          w("is", [["is", [2]]]),
+          w("coming,", [["com", [3]], ["ing", [1]]]),
         ],
       },
       {
         pattern: "2-3",
         nucleus: { word: 0, syllable: 0 },
         words: [
-          {
-            text: "isn't",
-            syllables: [
-              { text: "is", ipa: "ɪ", stressed: true, levels: [2, 3] },
-              { text: "n't", ipa: "zənt", levels: [3] },
-            ],
-          },
-          { text: "he?", syllables: [{ text: "he", ipa: "hi", levels: [3, 3.4] }] },
+          w("isn't", [["is", [2, 3]], ["n't", [3]]]),
+          w("he?", [["he", [3, 3.4]]]),
         ],
       },
     ],
   },
 ];
+
+for (const sentence of SENTENCES) sentence.groups.forEach(markNucleusStress);
 
 export function getSentence(id: string): Sentence | undefined {
   return SENTENCES.find((s) => s.id === id);
