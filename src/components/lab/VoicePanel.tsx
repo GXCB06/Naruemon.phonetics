@@ -7,6 +7,7 @@ import { makeLivePitch } from "@/lib/audio/pitch";
 import { decodeAudioFile, MicError, MicRecorder } from "@/lib/audio/recorder";
 import { decodeWav } from "@/lib/audio/wav";
 import type { Contour, Layout, Sentence } from "@/lib/intonation/types";
+import { AzurePanel } from "./AzurePanel";
 import { ContourChart } from "./ContourChart";
 import { Countdown } from "./Countdown";
 import { KaraokeSentence } from "./KaraokeSentence";
@@ -334,6 +335,7 @@ export function VoicePanel({
             </div>
           </div>
           {playbackUrl && <audio controls src={playbackUrl} className="w-full" />}
+          <AzurePanel key={wav16Url} wav16k={analysis.wav16k} referenceText={sentence.text} />
           {analysis.quality.issues.length > 0 && (
             <ul className="flex flex-col gap-2">
               {analysis.quality.issues.map((q, i) => (
