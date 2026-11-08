@@ -34,7 +34,7 @@ export function DrawIt({
         const r = pad.current?.check();
         if (!r) return null;
         const feedback = analysisFeedback(r);
-        return { outcome: graded(exercise.id, "draw", r.overall, feedback.passed), feedback };
+        return { outcome: graded(exercise.id, "draw", r.overall, feedback.passed), feedback, analysis: r };
       });
     },
     [exercise.id, setCheck],

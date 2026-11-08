@@ -89,3 +89,18 @@ Open <http://localhost:3400/login>, sign in, and you should land on `/me` showin
 
 For authorization in server code use `supabase.auth.getUser()` (validated by the Auth server) or `getClaims()` (verifies the
 JWT signature); never trust `getSession()` on the server.
+
+## 8. Attempts and skill mastery (C5, D2)
+
+Run **`supabase/migrations/0002_attempt_client_id.sql`** (SQL editor, after `0001_init.sql`). It adds `attempts.client_id` and a
+unique `(user_id, client_id)` index so a retried upload can never insert the same attempt twice.
+
+How it behaves (`src/lib/attempts/`):
+
+- After each CHECK in a lesson the app builds an `attempts` row (checks, levels, scores: **numbers only, never audio**) and keeps it
+  in `localStorage` (`myna.attempts.v1`, newest 200). Skill mastery for this device is kept in `myna.mastery.v1`.
+- With the two Supabase env vars set **and** a signed-in user, the queue is flushed in the background: each attempt is inserted
+  (`on conflict do nothing`), then the affected `skill_mastery` rows are upserted. Signed out or offline, attempts simply wait in
+  the queue and are sent after the next sign-in. With no Supabase configured, nothing is sent and everything stays local.
+- To test: run the migration, sign in, finish a lesson, then check `attempts` and `skill_mastery` in Table Editor (you should see
+  one row per exercise; `listening` rows for Hear it / Find the peak, `draw` and `speak` rows for Draw it / Shadow it).
