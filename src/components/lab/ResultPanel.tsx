@@ -1,4 +1,5 @@
 import { PATTERN_LABEL } from "@/lib/intonation/lessons";
+import { pickTopTip, type TopTip } from "@/lib/intonation/tips";
 import type { AnalysisResult, Check } from "@/lib/intonation/types";
 
 const ICON: Record<Check["status"], string> = { pass: "✓", warn: "!", fail: "✗", skip: "–" };
@@ -35,7 +36,36 @@ function CheckRow({ c }: { c: Check }) {
   );
 }
 
+/** The one thing to work on next: big icon, English line, Thai line. */
+function TipCard({ tip, multiGroup }: { tip: TopTip; multiGroup: boolean }) {
+  const praise = tip.kind === "praise";
+  const status: Check["status"] = praise ? "pass" : tip.check.status;
+  const message = praise ? tip.message : tip.check.message;
+  const label = praise
+    ? "Nice work"
+    : `${NAME[tip.check.id]}${multiGroup && tip.groupIndex !== null ? ` · Part ${tip.groupIndex + 1}` : ""}`;
+  return (
+    <section
+      aria-label="Top tip"
+      className={`flex gap-3 rounded-2xl border-2 border-current p-4 ${TONE[status]}`}
+    >
+      <span
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-card text-xl font-black"
+        aria-label={praise ? "pass" : status}
+      >
+        {ICON[status]}
+      </span>
+      <div className="min-w-0">
+        <div className="text-xs font-extrabold uppercase tracking-wide">{praise ? "Great!" : `Top tip · ${label}`}</div>
+        <div className="text-lg font-black leading-snug text-ink">{message.en}</div>
+        <div className="thai mt-1 text-base text-ink/80">{message.th}</div>
+      </div>
+    </section>
+  );
+}
+
 export function ResultPanel({ result }: { result: AnalysisResult }) {
+  const tip = pickTopTip(result);
   const tone = result.overall >= 80 ? "text-good" : result.overall >= 55 ? "text-warn" : "text-bad";
   const headline =
     result.overall >= 80 ? "Great intonation!" : result.overall >= 55 ? "Almost there" : "Let's try that again";
@@ -49,31 +79,44 @@ export function ResultPanel({ result }: { result: AnalysisResult }) {
           <div className="thai text-muted">{headlineTh}</div>
         </div>
       </div>
-      {result.sentenceChecks.length > 0 && (
-        <ul className="flex flex-col gap-3">
-          {result.sentenceChecks.map((c, i) => (
-            <CheckRow key={i} c={c} />
+      <TipCard tip={tip} multiGroup={result.groups.length > 1} />
+      <details className="group rounded-2xl border-2 border-line">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 px-4 py-2 font-extrabold [&::-webkit-details-marker]:hidden">
+          <span>
+            See details <span className="thai font-semibold text-muted">/ ดูรายละเอียด</span>
+          </span>
+          <span aria-hidden className="text-muted transition-transform group-open:rotate-180">
+            ▾
+          </span>
+        </summary>
+        <div className="flex flex-col gap-4 border-t-2 border-line p-4">
+          {result.sentenceChecks.length > 0 && (
+            <ul className="flex flex-col gap-3">
+              {result.sentenceChecks.map((c, i) => (
+                <CheckRow key={i} c={c} />
+              ))}
+            </ul>
+          )}
+          {result.groups.map((g) => (
+            <div key={g.groupIndex} className="rounded-2xl border-2 border-line p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <span className="font-black">
+                  {result.groups.length > 1 ? `Part ${g.groupIndex + 1}: ` : ""}
+                  {PATTERN_LABEL[g.pattern].en}
+                </span>
+                <span className="rounded-full bg-accent-soft px-3 py-1 text-sm font-extrabold text-accent">
+                  Shape match {g.shapeScore}%
+                </span>
+              </div>
+              <ul className="flex flex-col gap-3">
+                {g.checks.map((c, i) => (
+                  <CheckRow key={i} c={c} />
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
-      )}
-      {result.groups.map((g) => (
-        <div key={g.groupIndex} className="rounded-2xl border-2 border-line p-4">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <span className="font-black">
-              {result.groups.length > 1 ? `Part ${g.groupIndex + 1}: ` : ""}
-              {PATTERN_LABEL[g.pattern].en}
-            </span>
-            <span className="rounded-full bg-accent-soft px-3 py-1 text-sm font-extrabold text-accent">
-              Shape match {g.shapeScore}%
-            </span>
-          </div>
-          <ul className="flex flex-col gap-3">
-            {g.checks.map((c, i) => (
-              <CheckRow key={i} c={c} />
-            ))}
-          </ul>
         </div>
-      ))}
+      </details>
     </div>
   );
 }
