@@ -1,0 +1,11 @@
+{
+  "id": "rising-1",
+  "unit": "rising",
+  "sentences": [
+    { "id": "rising-1-student", "text": "Are you a student?", "kind": "yesno", "nucleusWord": 3, "spelling": { "student": "stu-dent" } },
+    { "id": "rising-1-guitar", "text": "Do you play guitar?", "kind": "yesno", "nucleusWord": 3, "spelling": { "guitar": "gui-tar" } },
+    { "id": "rising-1-come-with-me", "text": "Will you come with me?", "kind": "yesno", "nucleusWord": 2 },
+    { "id": "rising-1-ask-question", "text": "Can I ask you a question?", "kind": "yesno", "nucleusWord": 5, "spelling": { "question": "ques-tion" } },
+    { "id": "rising-1-be-there", "text": "Are you going to be there?", "kind": "yesno", "nucleusWord": 5, "spelling": { "going": "go-ing" } }
+  ]
+}

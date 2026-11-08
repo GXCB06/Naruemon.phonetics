@@ -43,8 +43,8 @@ describe("lesson content", () => {
     }
   });
 
-  it("each sentence is one falling thought group with the nucleus in range, matching levels and IPA everywhere", () => {
-    for (const { unit, lesson } of lessons) {
+  it("each falling sentence is one falling thought group with the nucleus in range, matching levels and IPA everywhere", () => {
+    for (const { unit, lesson } of lessons.filter((l) => l.unit === "falling")) {
       for (const s of loadLesson(unit, lesson)!.sentences) {
         expect(s.groups, s.id).toHaveLength(1);
         const g = s.groups[0];
@@ -75,6 +75,30 @@ describe("lesson content", () => {
         }
         expect(s.note.en.length).toBeGreaterThan(0);
         expect(s.note.th.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("each rising sentence has 1 or 2 rising 2-3 groups with the nucleus in range, matching levels, IPA and spelling", () => {
+    const rising = lessons.filter((l) => l.unit === "rising");
+    expect(rising.map((l) => l.lesson)).toEqual(["rising-1", "rising-2"]);
+    for (const { unit, lesson } of rising) {
+      for (const s of loadLesson(unit, lesson)!.sentences) {
+        expect(s.groups.length, s.id).toBeGreaterThanOrEqual(1);
+        expect(s.groups.length, s.id).toBeLessThanOrEqual(2);
+        for (const g of s.groups) {
+          expect(g.pattern, s.id).toBe("2-3");
+          const nuc = g.words[g.nucleus.word].syllables[g.nucleus.syllable];
+          expect(nuc.stressed, s.id).toBe(true);
+          for (const w of g.words) {
+            for (const y of w.syllables) expect(y.ipa.length, `${s.id} ${y.text}`).toBeGreaterThan(0);
+            expect(w.syllables.map((y) => y.text).join("").toLowerCase()).toBe(w.text.replace(/[^A-Za-z']/g, "").toLowerCase());
+          }
+        }
+        // the sentence text is the groups' words, in order
+        expect(s.groups.flatMap((g) => g.words.map((w) => w.text)).join(" "), s.id).toBe(s.text);
+        expect(s.note.en.length).toBeGreaterThan(0);
+        expect(s.note.th).toMatch(/[฀-๿]/);
       }
     }
   });
@@ -125,6 +149,13 @@ describe("lessonProblems", () => {
     const c = good();
     c.sentences[0].groups[0].words[0].syllables[0].levels = [3];
     expect(lessonProblems(c).join()).toMatch(/2-3-1/);
+  });
+
+  it("catches levels that do not follow 2-3 around the nucleus", () => {
+    const c = structuredClone(loadLesson("rising", "rising-1")!);
+    c.sentences[0].groups[0].words[3].syllables[1].levels = [1];
+    expect(lessonProblems(c).join()).toMatch(/2-3 around/);
+    expect(lessonProblems(structuredClone(loadLesson("rising", "rising-2")!))).toEqual([]);
   });
 
   it("catches duplicate ids, empty lessons and junk", () => {

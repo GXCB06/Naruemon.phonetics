@@ -4,7 +4,8 @@
 //
 // Reads the authored sources in content/source/<unit>/<lesson>.json (text, nucleus word, kind, spelling chunks)
 // and writes content/units/<unit>/<lesson>.json: full `Sentence` objects with IPA and syllables from CMUdict
-// (via src/lib/ipa/) and pitch levels from levelsForGroup. Deterministic: same input, same bytes.
+// (via src/lib/ipa/) and pitch levels from levelsForGroup (falling 2-3-1) or levelsForRisingGroup (rising 2-3).
+// A sentence may have several thought groups (`groupSizes` + one `nucleusWord` per group). Deterministic: same input, same bytes.
 // A word that is not in CMUdict (and has no override) stops the build; we never guess.
 
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
-import type { ClipVariant, HearExercise } from "@/lib/learn/exercises";
+import { endingOf, type Ending, type HearExercise } from "@/lib/learn/exercises";
 import { hearFeedback } from "@/lib/learn/feedback";
 import { rightWrong } from "@/lib/learn/score";
 import { ListenButton, PlaceholderBadge } from "./ListenButton";
@@ -10,7 +10,46 @@ import type { ExerciseApi } from "./types";
 
 const NAMES = ["A", "B"] as const;
 
-/** Hear it: two clips of the same sentence, pick the one with the falling (2-3-1) tune. */
+const QUESTION: Record<Ending, { en: string; th: string }> = {
+  falling: { en: "Which one is the falling tune?", th: "อันไหนคือเสียงตก?" },
+  rising: { en: "Which one is the rising tune?", th: "อันไหนคือเสียงขึ้น?" },
+};
+
+/** The one-line reminder under the question: what the asked-for tune sounds like, for this kind of sentence. */
+function hint(ask: Ending, textbook: Ending, groups: number): { en: string; th: string } {
+  if (ask === "falling" && textbook === "falling") {
+    return {
+      en: "A falling sentence goes up to one peak, then ends low (2-3-1).",
+      th: "เสียงตกจะขึ้นสูงที่จุดเดียวแล้วจบด้วยเสียงต่ำ (2-3-1)",
+    };
+  }
+  if (ask === "rising" && textbook === "rising") {
+    return groups > 1
+      ? {
+          en: "Each part goes up on its last important word and stays up at the end (2-3). Which clip does that?",
+          th: "แต่ละกลุ่มคำขึ้นสูงที่คำสำคัญคำสุดท้ายแล้วค้างเสียงสูงไว้ (2-3) เสียงไหนเป็นแบบนั้น?",
+        }
+      : {
+          en: "A rising sentence goes up on its last important word and stays up at the end (2-3).",
+          th: "เสียงขึ้นจะขึ้นสูงที่คำสำคัญคำสุดท้ายแล้วค้างเสียงสูงไว้จนจบ (2-3)",
+        };
+  }
+  if (ask === "falling") {
+    return {
+      en: "A yes/no question or a name should NOT fall. Find the clip that ends low.",
+      th: "คำถาม Yes/No และการเรียกชื่อไม่ควรลงต่ำ หาเสียงที่จบด้วยเสียงต่ำ",
+    };
+  }
+  return {
+    en: "This sentence should fall. Find the clip that ends high.",
+    th: "ประโยคนี้ต้องลงต่ำ หาเสียงที่จบด้วยเสียงสูง",
+  };
+}
+
+/**
+ * Hear it: two clips of the same sentence, pick the one with the asked-for tune: falling (2-3-1) in falling lessons,
+ * rising (2-3) in rising lessons (which also ask "which one falls?" now and then to catch the typical mistake).
+ */
 export function HearIt({
   exercise,
   sentence,
@@ -27,15 +66,18 @@ export function HearIt({
 }) {
   const [picked, setPicked] = useState<0 | 1 | null>(null);
   const { setCheck } = api;
+  const ask = exercise.ask;
+  const textbook = endingOf(sentence);
+  const tune = ask === "rising" ? "rising" : "falling";
 
   useEffect(() => {
     if (picked === null) return setCheck(null);
     setCheck(() => {
       const right = picked === exercise.correct;
-      const wrong = exercise.clips[exercise.correct === 0 ? 1 : 0] as Exclude<ClipVariant, "falling">;
-      return { outcome: rightWrong(exercise.id, "hear", right), feedback: hearFeedback(right, wrong) };
+      const other = exercise.clips[exercise.correct === 0 ? 1 : 0];
+      return { outcome: rightWrong(exercise.id, "hear", right), feedback: hearFeedback(right, other, ask, textbook) };
     });
-  }, [picked, exercise, setCheck]);
+  }, [picked, exercise, ask, textbook, setCheck]);
 
   return (
     <div className="flex flex-col gap-5">
@@ -47,17 +89,17 @@ export function HearIt({
       )}
       <div>
         <h1 className="text-2xl font-black leading-snug">
-          Which one is the falling tune?
-          <span className="thai block text-lg font-bold text-muted">อันไหนคือเสียงตก?</span>
+          {QUESTION[ask].en}
+          <span className="thai block text-lg font-bold text-muted">{QUESTION[ask].th}</span>
         </h1>
         <p className="mt-3 text-xl font-bold">“{sentence.text}”</p>
         <p className="mt-1 text-sm text-muted">
-          A falling sentence goes up to one peak, then ends low (2-3-1).
-          <span className="thai block">เสียงตกจะขึ้นสูงที่จุดเดียวแล้วจบด้วยเสียงต่ำ (2-3-1)</span>
+          {hint(ask, textbook, sentence.groups.length).en}
+          <span className="thai block">{hint(ask, textbook, sentence.groups.length).th}</span>
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Pick the falling clip">
+      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={`Pick the ${tune} clip`}>
         {([0, 1] as const).map((i) => {
           const isPicked = picked === i;
           const isRight = i === exercise.correct;
@@ -86,7 +128,7 @@ export function HearIt({
                 type="button"
                 role="radio"
                 aria-checked={isPicked}
-                aria-label={`Clip ${NAMES[i]} is the falling tune`}
+                aria-label={`Clip ${NAMES[i]} is the ${tune} tune`}
                 disabled={locked}
                 onClick={() => setPicked(i)}
                 className={`btn w-full flex-col gap-0 leading-tight ${isPicked ? "btn-primary" : ""}`}

@@ -21,7 +21,7 @@ export function PlaceholderBadge() {
  */
 export function ListenButton({
   sentence,
-  variant = "falling",
+  variant,
   forceSynth = false,
   label,
   ariaLabel,
@@ -29,6 +29,7 @@ export function ListenButton({
   onPlay,
 }: {
   sentence: Sentence;
+  /** Which clip to play; omit for the sentence's textbook tune. */
   variant?: ClipVariant;
   forceSynth?: boolean;
   label?: { en: string; th: string };
