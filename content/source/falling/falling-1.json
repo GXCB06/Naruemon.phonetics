@@ -1,0 +1,12 @@
+{
+  "id": "falling-1",
+  "unit": "falling",
+  "sentences": [
+    { "id": "falling-1-book-table", "text": "The book is on my table.", "kind": "statement", "nucleusWord": 5, "spelling": { "table": "ta-ble" } },
+    { "id": "falling-1-situation", "text": "This situation is difficult.", "kind": "statement", "nucleusWord": 3, "spelling": { "situation": "si-tu-a-tion", "difficult": "dif-fi-cult" } },
+    { "id": "falling-1-drink-tea", "text": "I like to drink tea.", "kind": "statement", "nucleusWord": 4 },
+    { "id": "falling-1-buy-house", "text": "He wants to buy a house.", "kind": "statement", "nucleusWord": 5 },
+    { "id": "falling-1-notebook", "text": "This is not my notebook.", "kind": "statement", "nucleusWord": 4, "spelling": { "notebook": "note-book" } },
+    { "id": "falling-1-work-tomorrow", "text": "I won't go to work tomorrow.", "kind": "statement", "nucleusWord": 5, "spelling": { "tomorrow": "to-mor-row" } }
+  ]
+}

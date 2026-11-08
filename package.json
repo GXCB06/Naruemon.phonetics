@@ -10,7 +10,8 @@
     "test": "vitest run",
     "samples": "node tools/make-samples.ts",
     "pitch:export": "node tools/pitch-compare/export-pitchy.ts",
-    "build:ipa": "node tools/build-ipa.ts"
+    "build:ipa": "node tools/build-ipa.ts",
+    "build:lessons": "node tools/build-lessons.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
