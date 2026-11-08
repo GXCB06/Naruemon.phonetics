@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { VoiceAnalysis } from "@/lib/audio/analyzeVoice";
+import { analyzeVoiceAligned } from "@/lib/azure/align";
 import type { AzureAssessment } from "@/lib/azure/parse";
+import { layoutSentence, targetContour } from "@/lib/intonation/contour";
+import type { Sentence } from "@/lib/intonation/types";
+import { ContourChart } from "./ContourChart";
+import { IpaLayer } from "./IpaLayer";
+import { ResultPanel } from "./ResultPanel";
 
 type State =
   | { kind: "idle" }
@@ -21,14 +28,23 @@ function tone(score: number | null): string {
   if (score === null) return "text-muted";
   return score >= 80 ? "text-good" : score >= 60 ? "text-warn" : "text-bad";
 }
-function toneBg(score: number | null): string {
-  if (score === null) return "bg-accent-soft text-muted";
-  return score >= 80 ? "bg-good-soft text-good" : score >= 60 ? "bg-warn-soft text-warn" : "bg-bad-soft text-bad";
-}
 const fmt = (n: number | null) => (n === null ? "—" : String(Math.round(n)));
 
-/** Optional "Score with Azure (beta)" button and a read-only result panel. Needs AZURE_SPEECH_KEY on the server. */
-export function AzurePanel({ wav16k, referenceText }: { wav16k: Uint8Array; referenceText: string }) {
+/**
+ * Optional "Score with Azure (beta)" button and a read-only result panel. Needs AZURE_SPEECH_KEY on the server.
+ * With `voice` and `sentence`, a successful score also re-analyses the take with Azure's syllable timing.
+ */
+export function AzurePanel({
+  wav16k,
+  referenceText,
+  voice,
+  sentence,
+}: {
+  wav16k: Uint8Array;
+  referenceText: string;
+  voice?: VoiceAnalysis;
+  sentence?: Sentence;
+}) {
   const [state, setState] = useState<State>({ kind: "idle" });
 
   const run = async () => {
@@ -74,12 +90,13 @@ export function AzurePanel({ wav16k, referenceText }: { wav16k: Uint8Array; refe
           <span className="thai block font-normal">{state.th}</span>
         </p>
       )}
-      {state.kind === "done" && <AzureResult a={state.result} />}
+      {state.kind === "done" && <AzureResultView a={state.result} voice={voice} sentence={sentence} />}
     </div>
   );
 }
 
-function AzureResult({ a }: { a: AzureAssessment }) {
+/** The read-only result: scores, intonation flags, the take re-analysed with Azure's timing, and the IPA layer. */
+export function AzureResultView({ a, voice, sentence }: { a: AzureAssessment; voice?: VoiceAnalysis; sentence?: Sentence }) {
   const scores: [string, number | null][] = [
     ["Overall", a.pronScore],
     ["Accuracy", a.accuracy],
@@ -116,28 +133,74 @@ function AzureResult({ a }: { a: AzureAssessment }) {
             .join("; ")}
         </p>
       )}
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {a.words.map((w, i) => {
-          const ipa = w.syllables.length ? w.syllables.map((s) => s.ipa).join(".") : w.phonemes.map((p) => p.ipa).join("");
-          return (
-            <li key={i} className={`rounded-xl px-3 py-2 ${toneBg(w.accuracy)}`}>
-              <div className="font-bold">{w.word}</div>
-              <div className="font-ipa text-sm">/{ipa}/</div>
-              <div className="text-xs">
-                {fmt(w.accuracy)}
-                {w.errorType !== "None" && w.errorType !== "Monotone" ? ` · ${w.errorType}` : ""}
-              </div>
-              <div className="mt-1 flex flex-wrap gap-1">
-                {w.phonemes.map((p, j) => (
-                  <span key={j} className={`font-ipa rounded px-1 text-xs ${toneBg(p.accuracy)}`} title={`${fmt(p.accuracy)}`}>
-                    {p.ipa}
-                  </span>
-                ))}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      {voice && sentence && <AlignedResult a={a} voice={voice} sentence={sentence} />}
+      <div className="mt-4">
+        <IpaLayer assessment={a} />
+      </div>
     </details>
+  );
+}
+
+/** The same rule engine, now fed Azure's word/syllable timing: the peak-position check runs for voice. */
+function AlignedResult({ a, voice, sentence }: { a: AzureAssessment; voice: VoiceAnalysis; sentence: Sentence }) {
+  const aligned = useMemo(() => analyzeVoiceAligned(voice, a, sentence), [voice, a, sentence]);
+  const layout = useMemo(() => layoutSentence(sentence), [sentence]);
+  const target = useMemo(() => targetContour(layout), [layout]);
+  if (!aligned) return null;
+  const note =
+    aligned.mode === "aligned"
+      ? null
+      : aligned.mode === "partial"
+        ? {
+            en: "Part of this take could not be matched to Azure's words, so the peak position was only checked where it could.",
+            th: "จับคู่บางส่วนของเทคนี้กับคำของ Azure ไม่ได้ จึงตรวจตำแหน่งจุดสูงสุดได้เฉพาะบางส่วน",
+          }
+        : {
+            en: "Azure's words could not be matched to the sentence, so this is the same stretched result as above.",
+            th: "จับคู่คำของ Azure กับประโยคไม่ได้ ผลนี้จึงเหมือนผลด้านบนที่ยืดเวลา",
+          };
+  return (
+    <section aria-label="Aligned with Azure" className="mt-4 flex flex-col gap-3 rounded-2xl border-2 border-accent p-3 sm:p-4">
+      <div>
+        <h3 className="font-extrabold text-accent">
+          Aligned with Azure <span className="thai font-semibold">/ จัดเวลาตาม Azure</span>
+        </h3>
+        <p className="text-sm text-muted">
+          Each syllable is placed where Azure heard it, so the peak position is checked too.
+          <span className="thai block">วางแต่ละพยางค์ตามเวลาที่ Azure ได้ยิน จึงตรวจตำแหน่งจุดสูงสุดได้ด้วย</span>
+        </p>
+      </div>
+      <div className="card overflow-hidden p-2">
+        <ContourChart
+          layout={layout}
+          lines={[
+            { contour: target, color: "var(--target)", dashed: true, width: 4 },
+            { contour: aligned.aligned, color: "var(--learner)", width: 5 },
+          ]}
+          className="w-full"
+        />
+      </div>
+      {note && (
+        <p className="rounded-xl bg-warn-soft p-3 text-sm font-semibold text-warn">
+          {note.en}
+          <span className="thai block font-normal">{note.th}</span>
+        </p>
+      )}
+      {aligned.warnings.length > 0 && (
+        <details className="text-xs text-muted">
+          <summary className="cursor-pointer font-bold">
+            Alignment notes ({aligned.warnings.length}) <span className="thai">/ หมายเหตุการจัดเวลา</span>
+          </summary>
+          <ul className="mt-1 list-disc pl-5">
+            {aligned.warnings.map((w, i) => (
+              <li key={i}>
+                {w.message.en} <span className="thai">{w.message.th}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      <ResultPanel result={aligned} />
+    </section>
   );
 }
