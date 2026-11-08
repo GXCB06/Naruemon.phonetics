@@ -2,14 +2,19 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { analyzeVoice, type VoiceAnalysis } from "@/lib/audio/analyzeVoice";
+import { chunkLevel, EMPTY_SNAPSHOT, liveSnapshot, type LevelSample, type LiveSnapshot } from "@/lib/audio/liveDirection";
 import { makeLivePitch } from "@/lib/audio/pitch";
 import { decodeAudioFile, MicError, MicRecorder } from "@/lib/audio/recorder";
 import { decodeWav } from "@/lib/audio/wav";
 import type { Contour, Layout, Sentence } from "@/lib/intonation/types";
 import { ContourChart } from "./ContourChart";
+import { Countdown } from "./Countdown";
+import { KaraokeSentence } from "./KaraokeSentence";
+import { LiveChips } from "./LiveChips";
 import { ResultPanel } from "./ResultPanel";
 
 const MAX_SEC = 12;
+const COUNTDOWN_FROM = 3;
 
 export interface SampleInfo {
   file: string;
@@ -17,7 +22,7 @@ export interface SampleInfo {
   expect: string;
 }
 
-type Phase = "idle" | "recording" | "analyzing" | "done" | "error";
+type Phase = "idle" | "starting" | "countdown" | "recording" | "analyzing" | "done" | "error";
 
 /** Calls `onTick(seconds)` every 100 ms; returns the interval id. */
 function startElapsedTimer(onTick: (sec: number) => void): number {
@@ -41,11 +46,19 @@ export function VoicePanel({
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
   const [rawWarning, setRawWarning] = useState(false);
   const [elapsed, setElapsed] = useState(0);
+  const [count, setCount] = useState(COUNTDOWN_FROM);
+  const [live, setLive] = useState<LiveSnapshot>(EMPTY_SNAPSHOT);
   const [source, setSource] = useState<string>("");
   const recRef = useRef<MicRecorder | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const liveRef = useRef<{ t: number; hz: number | null }[]>([]);
   const timerRef = useRef<number | null>(null);
+  const countdownRef = useRef<number | null>(null);
+  const levelsRef = useRef<LevelSample[]>([]);
+  /** Total samples received so far (countdown included). */
+  const seenRef = useRef(0);
+  /** Sample index where "Go" happened; null until the countdown ends. Samples before it are discarded. */
+  const goSamplesRef = useRef<number | null>(null);
 
   const playbackUrl = useMemo(
     () => (analysis ? URL.createObjectURL(new Blob([analysis.playback as BlobPart], { type: "audio/wav" })) : null),
@@ -59,6 +72,17 @@ export function VoicePanel({
   useEffect(() => () => void (wav16Url && URL.revokeObjectURL(wav16Url)), [wav16Url]);
 
   // (The parent remounts this panel per sentence via `key`, so a new sentence starts clean.)
+  // If the panel goes away mid-take (switching sentence or tab), release the microphone.
+  useEffect(
+    () => () => {
+      if (timerRef.current) window.clearInterval(timerRef.current);
+      if (countdownRef.current) window.clearInterval(countdownRef.current);
+      const rec = recRef.current;
+      recRef.current = null;
+      void rec?.stop().catch(() => undefined);
+    },
+    [],
+  );
 
   const runAnalysis = (raw: Float32Array, sr: number, label: string) => {
     setPhase("analyzing");
@@ -112,35 +136,85 @@ export function VoicePanel({
   const start = async () => {
     setError(null);
     setAnalysis(null);
+    setElapsed(0);
+    setLive(EMPTY_SNAPSHOT);
     liveRef.current = [];
+    levelsRef.current = [];
+    seenRef.current = 0;
+    goSamplesRef.current = null;
+    setPhase("starting");
     const rec = new MicRecorder();
     recRef.current = rec;
-    let live: ReturnType<typeof makeLivePitch> | null = null;
+    let livePitch: ReturnType<typeof makeLivePitch> | null = null;
     let ring = new Float32Array(0);
-    let samplesSeen = 0;
     try {
+      // The mic starts now, during the countdown, so it can settle. Samples before "Go" are dropped.
       await rec.start({
         onChunk: (chunk, sr) => {
-          live ??= makeLivePitch(sr);
+          livePitch ??= makeLivePitch(sr);
           const merged = new Float32Array(ring.length + chunk.length);
           merged.set(ring);
           merged.set(chunk, ring.length);
-          ring = merged.slice(Math.max(0, merged.length - live.windowLength));
-          samplesSeen += chunk.length;
-          if (ring.length === live.windowLength) {
-            liveRef.current.push({ t: samplesSeen / sr, hz: live.detect(ring) });
+          ring = merged.slice(Math.max(0, merged.length - livePitch.windowLength));
+          seenRef.current += chunk.length;
+          const go = goSamplesRef.current;
+          if (go === null) return; // still counting down
+          const t = (seenRef.current - go) / sr;
+          let voiced = false;
+          if (ring.length === livePitch.windowLength) {
+            const hz = livePitch.detect(ring);
+            voiced = hz !== null;
+            liveRef.current.push({ t, hz });
             drawLive();
           }
-          if (samplesSeen / sr >= MAX_SEC) void stop();
+          levelsRef.current.push({ t, ...chunkLevel(chunk), voiced });
+          if (t >= MAX_SEC) void stop();
         },
       });
+      if (recRef.current !== rec) {
+        // Cancelled while the browser was asking for the mic.
+        await rec.stop().catch(() => undefined);
+        return;
+      }
       setRawWarning(!rec.rawAudio);
-      setPhase("recording");
-      timerRef.current = startElapsedTimer(setElapsed);
+      beginCountdown();
     } catch (e) {
+      recRef.current = null;
       setPhase("error");
       setError(e instanceof MicError ? e.message : String(e));
     }
+  };
+
+  const beginCountdown = () => {
+    let n = COUNTDOWN_FROM;
+    setCount(n);
+    setPhase("countdown");
+    countdownRef.current = window.setInterval(() => {
+      n -= 1;
+      if (n > 0) {
+        setCount(n);
+        return;
+      }
+      if (countdownRef.current) window.clearInterval(countdownRef.current);
+      countdownRef.current = null;
+      goSamplesRef.current = seenRef.current;
+      setPhase("recording");
+      timerRef.current = startElapsedTimer((sec) => {
+        setElapsed(sec);
+        setLive(liveSnapshot(liveRef.current, levelsRef.current));
+      });
+    }, 1000);
+  };
+
+  /** Abort during the countdown: nothing is analysed. */
+  const cancel = async () => {
+    if (countdownRef.current) window.clearInterval(countdownRef.current);
+    countdownRef.current = null;
+    const rec = recRef.current;
+    recRef.current = null;
+    goSamplesRef.current = null;
+    setPhase("idle");
+    await rec?.stop().catch(() => undefined);
   };
 
   const stop = async () => {
@@ -148,8 +222,10 @@ export function VoicePanel({
     if (!rec) return;
     recRef.current = null;
     if (timerRef.current) window.clearInterval(timerRef.current);
+    const go = goSamplesRef.current ?? 0;
+    goSamplesRef.current = null;
     const raw = await rec.stop();
-    runAnalysis(raw, rec.sampleRate, "Your recording");
+    runAnalysis(raw.subarray(Math.min(go, raw.length)), rec.sampleRate, "Your recording");
   };
 
   const loadSample = async (s: SampleInfo) => {
@@ -173,8 +249,12 @@ export function VoicePanel({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        {phase !== "recording" ? (
-          <button className="btn btn-accent text-lg" onClick={start} disabled={phase === "analyzing"}>
+        {phase === "countdown" ? (
+          <button className="btn text-lg" onClick={() => void cancel()}>
+            ✕ Cancel <span className="thai text-base">ยกเลิก</span>
+          </button>
+        ) : phase !== "recording" ? (
+          <button className="btn btn-accent text-lg" onClick={start} disabled={phase === "analyzing" || phase === "starting"}>
             🎙️ Record
           </button>
         ) : (
@@ -182,11 +262,18 @@ export function VoicePanel({
             ■ Stop ({elapsed.toFixed(1)}s)
           </button>
         )}
-        <span className="text-sm text-muted">
+        <span className={`text-sm text-muted ${phase === "countdown" || phase === "recording" ? "hidden" : ""}`}>
           Tap, read the sentence once, tap again. Quiet room, wired or built-in mic (not Bluetooth).
           <span className="thai block">กดอัด อ่านประโยคหนึ่งครั้ง แล้วกดหยุด ใช้ไมค์ในตัวหรือแบบมีสาย (ไม่ใช่บลูทูธ)</span>
         </span>
       </div>
+
+      {(phase === "countdown" || phase === "recording") && (
+        <div className="card flex flex-col gap-4 p-4 sm:p-5">
+          <KaraokeSentence sentence={sentence} elapsedSec={phase === "recording" ? elapsed : null} />
+          {phase === "countdown" ? <Countdown count={count} /> : <LiveChips snapshot={live} />}
+        </div>
+      )}
 
       <div className={phase === "recording" ? "card p-2" : "hidden"}>
         <canvas ref={canvasRef} width={1000} height={220} className="h-40 w-full" />
