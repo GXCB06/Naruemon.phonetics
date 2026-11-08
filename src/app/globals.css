@@ -134,3 +134,15 @@ body {
   border: 2px solid var(--line);
   border-radius: 1.25rem;
 }
+
+/* Countdown number pops in (only applied under motion-safe) */
+@keyframes countdown-pop {
+  from {
+    transform: scale(0.7);
+    opacity: 0.4;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
