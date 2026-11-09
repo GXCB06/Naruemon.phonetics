@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { ProgressIcon } from "@/components/progress/icons";
 import type { Progress } from "@/lib/progress/store.ts";
 import { BoltIcon, FlameIcon, MynaMark } from "./icons";
 import { LangToggle, useLang } from "./lang";
@@ -18,6 +20,13 @@ export function TopBar({ progress, streak }: { progress: Progress; streak: numbe
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">
+          <Link
+            href="/progress"
+            aria-label={lang === "th" ? "ความก้าวหน้าของฉัน" : "My Progress"}
+            className="flex size-9 items-center justify-center rounded-xl border-2 border-line bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            <ProgressIcon />
+          </Link>
           <div
             role="status"
             aria-label={streakLabel}
