@@ -10,7 +10,10 @@ import lists1 from "../../../content/units/lists/lists-1.json" with { type: "jso
 import lists2 from "../../../content/units/lists/lists-2.json" with { type: "json" };
 import nonfinal1 from "../../../content/units/nonfinal/nonfinal-1.json" with { type: "json" };
 import nonfinal2 from "../../../content/units/nonfinal/nonfinal-2.json" with { type: "json" };
-import { levelsForGroup, levelsForNonFinalGroup, levelsForRisingGroup } from "../intonation/buildLesson.ts";
+import tags1 from "../../../content/units/tags/tags-1.json" with { type: "json" };
+import tags2 from "../../../content/units/tags/tags-2.json" with { type: "json" };
+import tags3 from "../../../content/units/tags/tags-3.json" with { type: "json" };
+import { levelsForFallingTag, levelsForGroup, levelsForNonFinalGroup, levelsForRisingGroup } from "../intonation/buildLesson.ts";
 import type { PatternId, Sentence } from "../intonation/types.ts";
 
 export interface LessonContent {
@@ -32,6 +35,9 @@ const REGISTRY: Record<string, unknown> = {
   "lists/lists-2": lists2,
   "nonfinal/nonfinal-1": nonfinal1,
   "nonfinal/nonfinal-2": nonfinal2,
+  "tags/tags-1": tags1,
+  "tags/tags-2": tags2,
+  "tags/tags-3": tags3,
 };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);
@@ -89,7 +95,7 @@ export function lessonProblems(data: unknown): string[] {
       if (!inRange) return void out.push(`${gat}.nucleus is outside the group`);
       const total = words.reduce((n, w) => n + (w.syllables?.length ?? 0), 0);
       // only compare levels when every syllable was readable (otherwise the errors above already say what is wrong)
-      if ((g.pattern === "2-3-1" || g.pattern === "2-3" || g.pattern === "2-3-2") && flat.length === total) {
+      if ((g.pattern === "2-3-1" || g.pattern === "2-3" || g.pattern === "2-3-2" || g.pattern === "3-1") && flat.length === total) {
         let idx = 0;
         for (let wi = 0; wi < nw; wi++) idx += words[wi].syllables?.length ?? 0;
         idx += ns;
@@ -98,6 +104,8 @@ export function lessonProblems(data: unknown): string[] {
             ? levelsForRisingGroup(flat.length, idx)
             : g.pattern === "2-3-2"
               ? levelsForNonFinalGroup(flat.length, idx)
+              : g.pattern === "3-1"
+                ? levelsForFallingTag(flat.length, idx)
               : levelsForGroup(flat.length, idx);
         if (flat.some((f, k) => f.levels.join() !== want[k].join())) {
           out.push(`${gat}: levels do not follow ${g.pattern} around the nucleus`);

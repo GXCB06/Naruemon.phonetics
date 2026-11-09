@@ -66,7 +66,20 @@ export const UNITS: UnitMeta[] = [
       { id: "nonfinal-2", title: { en: "Compound and complex sentences", th: "ประโยคความรวมและประโยคความซ้อน" } },
     ],
   },
-  { id: "tags", title: { en: "Tag questions", th: "Tag question" }, blurb: { en: "Sure falls, not sure rises.", th: "มั่นใจ = ตก ไม่แน่ใจ = ขึ้น" }, locked: true, lessons: [] },
+  {
+    id: "tags",
+    title: { en: "Tag questions", th: "Tag question" },
+    blurb: {
+      en: "Same words, two meanings: sure falls, not sure rises.",
+      th: "คำเดียวกัน สองความหมาย: มั่นใจ = ตก ไม่แน่ใจ = ขึ้น",
+    },
+    locked: false,
+    lessons: [
+      { id: "tags-1", title: { en: "Sure: the tag falls", th: "มั่นใจ: tag ตก" } },
+      { id: "tags-2", title: { en: "Not sure: the tag rises", th: "ไม่แน่ใจ: tag ขึ้น" } },
+      { id: "tags-3", title: { en: "Which do you mean?", th: "คุณหมายถึงแบบไหน?" } },
+    ],
+  },
   { id: "review", title: { en: "Mixed review", th: "ทบทวนรวม" }, blurb: { en: "All patterns together.", th: "ทุกรูปแบบรวมกัน" }, locked: true, lessons: [] },
 ];
 

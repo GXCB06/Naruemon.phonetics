@@ -9,6 +9,7 @@ import type { Sentence } from "../intonation/types.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
 import { endingOf } from "./exercises.ts";
 import type { ClipVariant } from "./exercises.ts";
+import { isTagSentence, otherReading, tagReading, tagReadingOf } from "./meaning.ts";
 
 export function referenceUrl(sentenceId: string, voice: "f" | "m" = "f"): string {
   return `/audio/${sentenceId}--${voice}.mp3`;
@@ -43,6 +44,11 @@ export function allFalling(sentence: Sentence): Sentence {
  */
 export function placeholderClip(sentence: Sentence, variant: ClipVariant = endingOf(sentence)): { samples: Float32Array; sampleRate: number } {
   if (variant === "finished") return synthesizeSentence(allFalling(sentence), { baseHz: 210 });
+  if (variant !== "flat" && variant !== "busy" && variant !== endingOf(sentence) && isTagSentence(sentence)) {
+    // a tag question's "other ending" is the OTHER MEANING: only the tag changes, the statement keeps its 2-3-1
+    const other = tagReading(sentence, otherReading(tagReadingOf(sentence)!));
+    return synthesizeSentence(other, { baseHz: 210 });
+  }
   const transform =
     variant === "flat"
       ? ERROR_STYLES.flat

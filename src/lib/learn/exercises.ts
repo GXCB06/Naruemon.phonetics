@@ -3,6 +3,7 @@
 
 import { LIST_KIND_LABELS } from "../intonation/buildLesson.ts";
 import type { Sentence } from "../intonation/types.ts";
+import { isTagSentence } from "./meaning.ts";
 
 /**
  * How a practice clip sounds. The first two name how the clip ENDS:
@@ -81,7 +82,13 @@ export interface ShadowExercise {
   id: string;
   sentenceId: string;
 }
-export type Exercise = HearExercise | PeakExercise | DrawExercise | ShadowExercise;
+/** Meaning match (tag questions): hear one clip and say what the speaker means. The meaning comes from the sentence's own tag group. */
+export interface MeaningExercise {
+  type: "meaning";
+  id: string;
+  sentenceId: string;
+}
+export type Exercise = HearExercise | PeakExercise | DrawExercise | ShadowExercise | MeaningExercise;
 export type ExerciseType = Exercise["type"];
 
 /** Listening first, then reading the tune, then producing it. 10 exercises. */
@@ -93,6 +100,11 @@ export const PLAN: readonly ExerciseType[] = ["hear", "hear", "hear", "peak", "p
  * exercises from `buildExercises(sentences, lessonId)` alone.)
  */
 export const MIXED_HEAR_LESSONS: readonly string[] = ["rising-2"];
+
+/** Lessons with their own exercise order instead of `PLAN`. Tags 3 is a "which do you mean?" lesson: one Meaning match per sentence. */
+export const PLAN_BY_LESSON: Readonly<Record<string, readonly ExerciseType[]>> = {
+  "tags-3": ["meaning", "meaning", "meaning", "meaning", "meaning", "meaning", "draw", "draw", "shadow", "shadow"],
+};
 
 /**
  * True when "a tone on every word" would sound different from the textbook tune for this sentence: some stressed
@@ -152,9 +164,10 @@ export function makeHear(sentence: Sentence, k: number, id: string, ask?: HearAs
 export function buildExercises(sentences: readonly Sentence[], lessonId: string): Exercise[] {
   if (sentences.length === 0) throw new Error(`Lesson ${lessonId} has no sentences`);
   const mixed = MIXED_HEAR_LESSONS.includes(lessonId);
+  const plan = Object.hasOwn(PLAN_BY_LESSON, lessonId) ? PLAN_BY_LESSON[lessonId] : PLAN;
   let cursor = 0;
   let hearCount = 0;
-  return PLAN.map((type, i) => {
+  return plan.map((type, i) => {
     const sentence = sentences[cursor++ % sentences.length];
     const id = `${lessonId}-${i + 1}-${type}`;
     if (type === "hear") {
@@ -163,7 +176,7 @@ export function buildExercises(sentences: readonly Sentence[], lessonId: string)
       const base = defaultAsk(sentence);
       // non-final sentences alternate "which sounds unfinished?" / "which sounds finished?"; rising-2 alternates rising / falling
       const ask: HearAsk =
-        base === "unfinished" ? (k % 2 === 1 ? "finished" : base) : mixed && k % 2 === 1 ? (textbook === "rising" ? "falling" : "rising") : base;
+        base === "unfinished" ? (k % 2 === 1 ? "finished" : base) : (mixed || isTagSentence(sentence)) && k % 2 === 1 ? (textbook === "rising" ? "falling" : "rising") : base;
       return makeHear(sentence, k, id, ask);
     }
     return { type, id, sentenceId: sentence.id };

@@ -23,11 +23,14 @@ export type SentenceKind =
   | "interjection"
   | "list"
   | "choice"
-  | "nonfinal";
+  | "nonfinal"
+  | "tag";
 
 /**
- * Every thought group of a sentence of this kind uses this pattern. The kinds whose groups differ ("list", "nonfinal")
- * name the pattern of their NON-FINAL groups here; `patternsFor` decides the last group.
+ * Every thought group of a sentence of this kind uses this pattern, unless the source lists `patterns` (alias `groupPatterns`).
+ * The kinds whose groups differ ("list", "nonfinal") name the pattern of their NON-FINAL groups here; `patternsFor`
+ * decides the last group. A "tag" sentence always lists its patterns: the statement is 2-3-1, the tag is 3-1 when the
+ * speaker is sure and 2-3 when not.
  */
 export function patternForKind(kind: SentenceKind): PatternId {
   if (kind === "nonfinal") return "2-3-2";
@@ -61,6 +64,8 @@ export interface SentenceSource {
    * `patternsFor`). Author it where the course leaves a choice to the teacher, e.g. whether the last item of a list falls.
    */
   patterns?: PatternId[];
+  /** Alias of `patterns` (the tag lessons use this name). */
+  groupPatterns?: PatternId[];
   /** Syllable spelling chunks for words of 2+ syllables, keyed by the lower-case word: `{ "table": "ta-ble" }`. */
   spelling?: Record<string, string>;
 }
@@ -112,6 +117,21 @@ export function levelsForRisingGroup(syllableCount: number, nucleusIndex: number
 }
 
 /**
+ * Target levels for the tag of a SURE tag question (3-1): the tag starts HIGH, on the stressed auxiliary, and falls.
+ * Syllables before the nucleus (none in the course tags) stay at 3, the nucleus is 3, everything after it is 1.
+ * When the nucleus is the last syllable it glides [3, 1] inside the syllable.
+ */
+export function levelsForFallingTag(syllableCount: number, nucleusIndex: number): number[][] {
+  if (!Number.isInteger(syllableCount) || syllableCount < 1) throw new Error(`Bad syllable count ${syllableCount}`);
+  if (!Number.isInteger(nucleusIndex) || nucleusIndex < 0 || nucleusIndex >= syllableCount) {
+    throw new Error(`Nucleus ${nucleusIndex} is outside 0..${syllableCount - 1}`);
+  }
+  return Array.from({ length: syllableCount }, (_, i) =>
+    i < nucleusIndex ? [3] : i === nucleusIndex ? (i === syllableCount - 1 ? [3, 1] : [3]) : [1],
+  );
+}
+
+/**
  * Target levels for one NON-FINAL (2-3-2) thought group, one entry per syllable. Start at 2, rise to 3 on the nucleus and
  * come back to 2 (NOT 1: the sentence is not finished):
  *  - before the nucleus: 2
@@ -142,7 +162,7 @@ export function levelsForPattern(pattern: PatternId, syllableCount: number, nucl
     case "2-3-2":
       return levelsForNonFinalGroup(syllableCount, nucleusIndex);
     case "3-1":
-      throw new Error("The tag pattern 3-1 cannot be generated from a lesson source yet");
+      return levelsForFallingTag(syllableCount, nucleusIndex);
   }
 }
 
@@ -157,6 +177,7 @@ const KIND_LABEL: Record<SentenceKind, string> = {
   list: "List",
   choice: "Choice question",
   nonfinal: "Non-final thought group",
+  tag: "Tag question",
 };
 
 /** The `Sentence.kind` labels of sentences with one item per thought group: lists and choices. */
@@ -174,7 +195,7 @@ const joinTh = (l: string[]) => (l.length <= 1 ? (l[0] ?? "") : `${l.slice(0, -1
 
 /**
  * `labels` has one entry per thought group (a plain string for a single group). `patterns` (one per group) tells the
- * list note whether the last item falls.
+ * list note whether the last item falls and the tag note whether the tag falls (3-1) or rises (2-3).
  */
 export function noteFor(kind: SentenceKind, labels: string | string[], patterns?: PatternId[]): Bilingual {
   const all = Array.isArray(labels) ? labels : [labels];
@@ -231,6 +252,18 @@ export function noteFor(kind: SentenceKind, labels: string | string[], patterns?
         en: `A part that is not finished rises to 3 and comes back to 2, not 1 (2-3-2): peaks on ${joinEn(open)}. Only the last part falls to 1 (2-3-1) on ${end}.`,
         th: `ส่วนที่ยังพูดไม่จบขึ้นระดับ 3 แล้วกลับมาที่ระดับ 2 ไม่ใช่ 1 (2-3-2) ขึ้นที่ ${joinTh(open)} มีเพียงส่วนสุดท้ายที่ลงระดับ 1 (2-3-1) ที่ ${end}`,
       };
+    }
+    case "tag": {
+      const tag = all[1] ?? label;
+      return patterns?.at(-1) === "3-1"
+        ? {
+            en: `You are SURE and want agreement. The statement is 2-3-1 (peak on ${label}), then the tag falls 3-1: start high on ${tag} and drop to 1.`,
+            th: `ถ้ามั่นใจและต้องการให้อีกฝ่ายเห็นด้วย ประโยคแรกใช้ 2-3-1 (ขึ้นสูงที่ ${label}) แล้ว tag ตก 3-1 เริ่มสูงที่ ${tag} แล้วลงต่ำ`,
+          }
+        : {
+            en: `You are NOT sure and really asking. The statement is 2-3-1 (peak on ${label}), then the tag rises 2-3: rise on ${tag} and stay up.`,
+            th: `ถ้าไม่แน่ใจและถามจริง ๆ ประโยคแรกใช้ 2-3-1 (ขึ้นสูงที่ ${label}) แล้ว tag ขึ้น 2-3 ขึ้นที่ ${tag} และค้างเสียงสูงไว้`,
+          };
     }
     case "address":
     case "interjection": {
@@ -296,9 +329,11 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     return { raw, key, entry, chunks: chunksFor(raw, key, entry.syllables.length, src.spelling) };
   });
 
-  const patterns = patternsFor(src.kind, sizes.length, src.patterns);
-  if (patterns.length !== sizes.length || patterns.some((p) => p !== "2-3-1" && p !== "2-3-2" && p !== "2-3")) {
-    throw new Error(`${src.id}: ${sizes.length} thought group(s) need ${sizes.length} pattern(s) from 2-3-1, 2-3-2, 2-3; got [${patterns.join(", ")}]`);
+  const authored = src.patterns ?? src.groupPatterns;
+  if (src.kind === "tag" && !authored) throw new Error(`${src.id}: a tag question needs patterns (e.g. ["2-3-1", "3-1"])`);
+  const patterns = patternsFor(src.kind, sizes.length, authored);
+  if (patterns.length !== sizes.length || patterns.some((p) => p !== "2-3-1" && p !== "2-3-2" && p !== "2-3" && p !== "3-1")) {
+    throw new Error(`${src.id}: ${sizes.length} thought group(s) need ${sizes.length} pattern(s) from 2-3-1, 2-3-2, 2-3, 3-1; got [${patterns.join(", ")}]`);
   }
   const labels: string[] = [];
   let first = 0;
@@ -336,7 +371,7 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
   return {
     id: src.id,
     text: src.text,
-    kind: KIND_LABEL[src.kind],
+    kind: src.kind === "tag" ? (patterns[patterns.length - 1] === "3-1" ? "Tag question (sure)" : "Tag question (not sure)") : KIND_LABEL[src.kind],
     note: noteFor(src.kind, labels, patterns),
     groups,
   };
