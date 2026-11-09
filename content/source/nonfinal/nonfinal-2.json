@@ -1,0 +1,43 @@
+{
+  "_comment": "Mr. Amad ... however: three thought groups (the clause before the semicolon, the introductory 'however,', the last clause). The first two come back to 2 (2-3-2); only the last falls (2-3-1).",
+  "id": "nonfinal-2",
+  "unit": "nonfinal",
+  "sentences": [
+    {
+      "id": "nonfinal-2-bobby",
+      "text": "Bobby likes to fish, and he is going fishing on Saturday.",
+      "kind": "nonfinal",
+      "groupSizes": [4, 7],
+      "nucleusWord": [3, 10],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "bobby": "bob-by", "going": "go-ing", "fishing": "fish-ing", "saturday": "sat-ur-day" }
+    },
+    {
+      "id": "nonfinal-2-amad",
+      "text": "Mr. Amad wants to go to Japan; however, he has a meeting.",
+      "kind": "nonfinal",
+      "groupSizes": [7, 1, 4],
+      "nucleusWord": [6, 7, 11],
+      "patterns": ["2-3-2", "2-3-2", "2-3-1"],
+      "spelling": { "mr": "M-r", "amad": "a-mad", "japan": "ja-pan", "however": "how-ev-er", "meeting": "meet-ing" }
+    },
+    {
+      "id": "nonfinal-2-movies",
+      "text": "She is going to the movies, or she is going to the mall.",
+      "kind": "nonfinal",
+      "groupSizes": [6, 7],
+      "nucleusWord": [5, 12],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "going": "go-ing", "movies": "mov-ies" }
+    },
+    {
+      "id": "nonfinal-2-smart",
+      "text": "I am very smart, yet I do not enjoy school.",
+      "kind": "nonfinal",
+      "groupSizes": [4, 6],
+      "nucleusWord": [3, 9],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "very": "ve-ry", "enjoy": "en-joy" }
+    }
+  ]
+}

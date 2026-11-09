@@ -1,0 +1,42 @@
+{
+  "_comment": "Choices: every item of a question with choices is its own thought group and rises 2-3, the last item too (course rule). No assumption needed here; the final-item assumption applies to the statement lists in lists-1.json.",
+  "id": "lists-2",
+  "unit": "lists",
+  "sentences": [
+    {
+      "id": "lists-2-coffee",
+      "text": "Would you like coffee, hot chocolate, or milk?",
+      "kind": "choice",
+      "groupSizes": [4, 2, 2],
+      "nucleusWord": [3, 5, 7],
+      "patterns": ["2-3", "2-3", "2-3"],
+      "spelling": { "coffee": "cof-fee", "chocolate": "choco-late" }
+    },
+    {
+      "id": "lists-2-red",
+      "text": "Do you prefer red or navy blue?",
+      "kind": "choice",
+      "groupSizes": [4, 3],
+      "nucleusWord": [3, 6],
+      "patterns": ["2-3", "2-3"],
+      "spelling": { "prefer": "pre-fer", "navy": "na-vy" }
+    },
+    {
+      "id": "lists-2-read",
+      "text": "Do you want to eat or read a newspaper?",
+      "kind": "choice",
+      "groupSizes": [5, 4],
+      "nucleusWord": [4, 8],
+      "patterns": ["2-3", "2-3"],
+      "spelling": { "newspaper": "news-pa-per" }
+    },
+    {
+      "id": "lists-2-inout",
+      "text": "Did you say in or out?",
+      "kind": "choice",
+      "groupSizes": [4, 2],
+      "nucleusWord": [3, 5],
+      "patterns": ["2-3", "2-3"]
+    }
+  ]
+}

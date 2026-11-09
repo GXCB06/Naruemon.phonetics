@@ -1,0 +1,34 @@
+{
+  "_comment": "ASSUMPTION TO CONFIRM WITH THE TEACHER: the course slides say each list item is its own thought group and rises 2-3, but they do not say whether the LAST item of a STATEMENT list falls. Here the non-final items rise (2-3) and the last item falls (2-3-1), the usual textbook reading. To change it, edit the last entry of `patterns` of a sentence to \"2-3\" and run npm run build:lessons.",
+  "id": "lists-1",
+  "unit": "lists",
+  "sentences": [
+    {
+      "id": "lists-1-pasta",
+      "text": "I love eating pasta, pizza, potato salad, and hamburger.",
+      "kind": "list",
+      "groupSizes": [4, 1, 2, 2],
+      "nucleusWord": [3, 4, 6, 8],
+      "patterns": ["2-3", "2-3", "2-3", "2-3-1"],
+      "spelling": { "eating": "eat-ing", "pasta": "pas-ta", "pizza": "piz-za", "potato": "po-ta-to", "salad": "sal-ad", "hamburger": "ham-bur-ger" }
+    },
+    {
+      "id": "lists-1-need",
+      "text": "I need pasta, ham, tomato, and bacon.",
+      "kind": "list",
+      "groupSizes": [3, 1, 1, 2],
+      "nucleusWord": [2, 3, 4, 6],
+      "patterns": ["2-3", "2-3", "2-3", "2-3-1"],
+      "spelling": { "pasta": "pas-ta", "tomato": "to-ma-to", "bacon": "ba-con" }
+    },
+    {
+      "id": "lists-1-store",
+      "text": "Can you get two bananas, an avocado, and limes from the store?",
+      "kind": "list",
+      "groupSizes": [5, 2, 5],
+      "nucleusWord": [4, 6, 11],
+      "patterns": ["2-3", "2-3", "2-3-1"],
+      "spelling": { "bananas": "ba-na-nas", "avocado": "av-o-ca-do" }
+    }
+  ]
+}

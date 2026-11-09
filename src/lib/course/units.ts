@@ -46,8 +46,26 @@ export const UNITS: UnitMeta[] = [
       { id: "rising-2", title: { en: "Names and interjections", th: "การเรียกชื่อและคำอุทาน" } },
     ],
   },
-  { id: "lists", title: { en: "Lists and choices", th: "รายการและตัวเลือก" }, blurb: { en: "Rise on each item, fall on the last.", th: "ขึ้นเสียงทุกรายการ ตกที่รายการสุดท้าย" }, locked: true, lessons: [] },
-  { id: "nonfinal", title: { en: "Non-final 2-3-2", th: "ยังไม่จบ 2-3-2" }, blurb: { en: "Clauses that aren't finished yet.", th: "อนุประโยคที่ยังพูดไม่จบ" }, locked: true, lessons: [] },
+  {
+    id: "lists",
+    title: { en: "Lists and choices", th: "รายการและตัวเลือก" },
+    blurb: { en: "Rise on each item, fall on the last.", th: "ขึ้นเสียงทุกรายการ ตกที่รายการสุดท้าย" },
+    locked: false,
+    lessons: [
+      { id: "lists-1", title: { en: "Statement lists", th: "รายการในประโยคบอกเล่า" } },
+      { id: "lists-2", title: { en: "Choices", th: "ประโยคที่มีตัวเลือก" } },
+    ],
+  },
+  {
+    id: "nonfinal",
+    title: { en: "Non-final 2-3-2", th: "ยังไม่จบ 2-3-2" },
+    blurb: { en: "Clauses that aren't finished yet.", th: "อนุประโยคที่ยังพูดไม่จบ" },
+    locked: false,
+    lessons: [
+      { id: "nonfinal-1", title: { en: "Introductory phrases and conditionals", th: "วลีนำและประโยคเงื่อนไข" } },
+      { id: "nonfinal-2", title: { en: "Compound and complex sentences", th: "ประโยคความรวมและประโยคความซ้อน" } },
+    ],
+  },
   { id: "tags", title: { en: "Tag questions", th: "Tag question" }, blurb: { en: "Sure falls, not sure rises.", th: "มั่นใจ = ตก ไม่แน่ใจ = ขึ้น" }, locked: true, lessons: [] },
   { id: "review", title: { en: "Mixed review", th: "ทบทวนรวม" }, blurb: { en: "All patterns together.", th: "ทุกรูปแบบรวมกัน" }, locked: true, lessons: [] },
 ];

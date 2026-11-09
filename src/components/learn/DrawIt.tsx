@@ -25,6 +25,19 @@ function instructions(sentence: Sentence): { en: string; th: string } {
           th: "เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วค้างเสียงสูงไว้จนจบ ลากนิ้วบนกราฟ",
         };
   }
+  const last = sentence.groups[sentence.groups.length - 1].pattern;
+  if (many && last === "2-3-1" && sentence.groups.some((g) => g.pattern === "2-3-2")) {
+    return {
+      en: "Draw each thought group. Before the last one: start at level 2, rise to 3 on the highlighted syllable and come BACK to 2, not 1. In the last group, rise to 3 then fall to 1. Lift your finger at each |.",
+      th: "วาดทีละกลุ่มคำ กลุ่มก่อนสุดท้าย: เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วกลับมาที่ระดับ 2 ไม่ใช่ 1 กลุ่มสุดท้าย: ขึ้นระดับ 3 แล้วลงระดับ 1 ยกนิ้วตรงเครื่องหมาย | แต่ละอัน",
+    };
+  }
+  if (many && last === "2-3-1" && sentence.groups.slice(0, -1).every((g) => g.pattern === "2-3")) {
+    return {
+      en: "Draw each item. For every item but the last: start at level 2, rise to 3 on the highlighted syllable and stay up. For the last item, rise to 3 then fall to 1. Lift your finger at each |.",
+      th: "วาดทีละรายการ ทุกรายการยกเว้นรายการสุดท้าย: เริ่มที่ระดับ 2 ขึ้นไประดับ 3 ที่พยางค์ที่เน้นสี แล้วค้างไว้ รายการสุดท้าย: ขึ้นระดับ 3 แล้วลงระดับ 1 ยกนิ้วตรงเครื่องหมาย | แต่ละอัน",
+    };
+  }
   return many
     ? {
         en: "Follow the pattern of each thought group. Lift your finger at the | between the groups, then draw the next one.",

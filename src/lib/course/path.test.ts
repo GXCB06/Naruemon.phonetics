@@ -10,10 +10,15 @@ describe("buildPath", () => {
   it("with no progress: first lesson is current, the rest of the open units available, the other units locked", () => {
     const path = buildPath({});
     expect(states({})).toEqual(["current", "available", "available"]);
-    expect(path.units[1].nodes.map((n) => n.state)).toEqual(["available", "available"]); // rising is open too
+    for (const id of ["rising", "lists", "nonfinal"]) {
+      // these units are open too
+      const u = path.units.find((x) => x.id === id)!;
+      expect(u.locked, id).toBe(false);
+      expect(u.nodes.map((n) => n.state), id).toEqual(["available", "available"]);
+      expect(u.total, id).toBe(2);
+    }
     expect(path.next).toEqual({ unitId: "falling", lessonId: "falling-1" });
-    for (const u of path.units.slice(2)) {
-      expect(u.locked).toBe(true);
+    for (const u of path.units.filter((x) => x.locked)) {
       expect(u.nodes.every((n) => n.state === "locked")).toBe(true);
     }
   });
@@ -42,11 +47,23 @@ describe("buildPath", () => {
   });
 
   it("when every open lesson is done there is no next", () => {
-    const all = { "falling-1": result(3), "falling-2": result(1), "falling-3": result(2), "rising-1": result(3), "rising-2": result(2) };
+    const all = Object.fromEntries(UNITS.filter((u) => !u.locked).flatMap((u) => u.lessons.map((l) => [l.id, result(2)])));
+    for (const id of ["falling-1", "rising-2", "lists-1", "lists-2", "nonfinal-1", "nonfinal-2"]) expect(all[id], id).toBeDefined();
     const path = buildPath(all);
     expect(path.next).toBeNull();
     expect(states(all)).toEqual(["done", "done", "done"]);
     expect(path.units[1].nodes.map((n) => n.state)).toEqual(["done", "done"]);
+  });
+
+  it("the open units come in course order: falling, rising, lists, non-final", () => {
+    const open = UNITS.filter((u) => !u.locked).map((u) => u.id);
+    expect(open.slice(0, 4)).toEqual(["falling", "rising", "lists", "nonfinal"]);
+    const falling = { "falling-1": result(3), "falling-2": result(1), "falling-3": result(2) };
+    const rising = { ...falling, "rising-1": result(3), "rising-2": result(2) };
+    expect(buildPath(rising).next).toEqual({ unitId: "lists", lessonId: "lists-1" });
+    const lists = { ...rising, "lists-1": result(3), "lists-2": result(2) };
+    expect(buildPath(lists).next).toEqual({ unitId: "nonfinal", lessonId: "nonfinal-1" });
+    expect(buildPath({ ...lists, "nonfinal-1": result(1) }).next).toEqual({ unitId: "nonfinal", lessonId: "nonfinal-2" });
   });
 
   it("finishing the falling unit makes rising the next one to play", () => {
@@ -57,13 +74,14 @@ describe("buildPath", () => {
   });
 
   it("locked units get one placeholder node (unit title) and no totals", () => {
-    const lists = buildPath({}).units[2];
-    expect(lists.id).toBe("lists");
-    expect(lists.nodes).toHaveLength(1);
-    expect(lists.nodes[0].placeholder).toBe(true);
-    expect(lists.nodes[0].title).toEqual(lists.title);
-    expect(lists.total).toBe(0);
-    expect(lists.number).toBe(3);
+    const units = buildPath({}).units;
+    const locked = units.find((u) => u.locked)!;
+    expect(locked).toBeDefined();
+    expect(locked.nodes).toHaveLength(1);
+    expect(locked.nodes[0].placeholder).toBe(true);
+    expect(locked.nodes[0].title).toEqual(locked.title);
+    expect(locked.total).toBe(0);
+    expect(locked.number).toBe(units.indexOf(locked) + 1);
   });
 
   it("progress for lessons in a locked unit is ignored", () => {

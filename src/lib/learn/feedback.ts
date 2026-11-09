@@ -3,7 +3,8 @@
 import { nucleusLabel } from "../intonation/buildLesson.ts";
 import { pickTopTip } from "../intonation/tips.ts";
 import type { AnalysisResult, Bilingual, Sentence } from "../intonation/types.ts";
-import type { ClipVariant, Ending } from "./exercises.ts";
+import type { ClipVariant, Ending, HearAsk } from "./exercises.ts";
+import { groupHearDetail } from "./groupFeedback.ts";
 import { PASS_SCORE } from "./score.ts";
 
 export interface Feedback {
@@ -17,7 +18,7 @@ export interface Feedback {
 export const NICE: Bilingual = { en: "Nice!", th: "เยี่ยม!" };
 export const ALMOST: Bilingual = { en: "Almost", th: "เกือบแล้ว" };
 
-const HEAR_RIGHT: Record<Exclude<ClipVariant, "falling">, Bilingual> = {
+const HEAR_RIGHT: Record<"rising" | "flat" | "busy", Bilingual> = {
   rising: {
     en: "Right! A falling sentence ends LOW. The other clip went up at the end.",
     th: "ถูกต้อง! ประโยคเสียงตกจะจบด้วยเสียงต่ำ ส่วนอีกเสียงหนึ่งขึ้นสูงตอนท้าย",
@@ -32,7 +33,7 @@ const HEAR_RIGHT: Record<Exclude<ClipVariant, "falling">, Bilingual> = {
   },
 };
 
-const HEAR_WRONG: Record<Exclude<ClipVariant, "falling">, Bilingual> = {
+const HEAR_WRONG: Record<"rising" | "flat" | "busy", Bilingual> = {
   rising: {
     en: "Not quite. The other clip is the falling one: it ends LOW. This one went up at the end.",
     th: "ยังไม่ใช่ เสียงตกคืออีกเสียงหนึ่ง จะจบด้วยเสียงต่ำ ส่วนเสียงนี้ขึ้นสูงตอนท้าย",
@@ -94,10 +95,16 @@ const HEAR_MISTAKE_WRONG: Record<Ending, Bilingual> = {
 /**
  * Feedback for "Hear it". `right`: the learner picked the asked-for clip. `wrongClip`: what the OTHER clip did.
  * `ask`: the tune the learner was asked to find (default falling). `textbook`: how the sentence really ends (default
- * `ask`); they differ when a rising sentence is asked "which one falls?".
+ * `ask` when it is an ending); they differ when a rising sentence is asked "which one falls?". The asks "unfinished",
+ * "finished" and "lifting" belong to the non-final and list units (see groupFeedback.ts).
  */
-export function hearFeedback(right: boolean, wrongClip: ClipVariant, ask: Ending = "falling", textbook: Ending = ask): Feedback {
+export function hearFeedback(right: boolean, wrongClip: ClipVariant, ask: HearAsk = "falling", textbook?: Ending): Feedback {
   let detail: Bilingual;
+  if (ask === "unfinished" || ask === "finished" || ask === "lifting") {
+    detail = groupHearDetail(right, wrongClip, ask, textbook ?? "falling");
+    return { passed: right, title: right ? NICE : ALMOST, detail };
+  }
+  textbook ??= ask;
   if (ask !== textbook) {
     detail = (right ? HEAR_MISTAKE_RIGHT : HEAR_MISTAKE_WRONG)[ask];
   } else if (ask === "rising") {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
-import { endingOf, type Ending, type HearExercise } from "@/lib/learn/exercises";
+import { endingOf, type HearAsk, type HearExercise } from "@/lib/learn/exercises";
 import { hearFeedback } from "@/lib/learn/feedback";
 import { rightWrong } from "@/lib/learn/score";
 import { ListenButton, PlaceholderBadge } from "./ListenButton";
@@ -10,13 +10,48 @@ import type { ExerciseApi } from "./types";
 
 const NAMES = ["A", "B"] as const;
 
-const QUESTION: Record<Ending, { en: string; th: string }> = {
+const QUESTION: Record<HearAsk, { en: string; th: string }> = {
   falling: { en: "Which one is the falling tune?", th: "อันไหนคือเสียงตก?" },
   rising: { en: "Which one is the rising tune?", th: "อันไหนคือเสียงขึ้น?" },
+  unfinished: { en: "Which one sounds UNFINISHED?", th: "อันไหนฟังดูยังไม่จบ?" },
+  finished: { en: "Which one sounds FINISHED after the first part?", th: "อันไหนฟังเหมือนจบแล้วหลังส่วนแรก?" },
+  lifting: { en: "Which one goes UP on every item?", th: "อันไหนขึ้นเสียงทุกรายการ?" },
+};
+
+/** Words for the radio buttons' accessible names: "Pick the <pick> clip" / "Clip A is the <is> tune". */
+const NAME: Record<HearAsk, { pick: string; is: string }> = {
+  falling: { pick: "falling", is: "falling tune" },
+  rising: { pick: "rising", is: "rising tune" },
+  unfinished: { pick: "unfinished", is: "unfinished one" },
+  finished: { pick: "finished-sounding", is: "finished-sounding one" },
+  lifting: { pick: "rises-on-every-item", is: "one that rises on every item" },
 };
 
 /** The one-line reminder under the question: what the asked-for tune sounds like, for this kind of sentence. */
-function hint(ask: Ending, textbook: Ending, groups: number): { en: string; th: string } {
+function hint(ask: HearAsk, textbook: "falling" | "rising", groups: number): { en: string; th: string } {
+  if (ask === "unfinished") {
+    return {
+      en: "Before the last part, the voice rises to 3 and comes back to 2 (2-3-2), not all the way down to 1. Only the last part falls to low.",
+      th: "ก่อนส่วนสุดท้าย เสียงขึ้นไประดับ 3 แล้วกลับมาที่ระดับ 2 (2-3-2) ไม่ลงไปถึงระดับ 1 มีแค่ส่วนสุดท้ายที่ลงต่ำ",
+    };
+  }
+  if (ask === "finished") {
+    return {
+      en: "A part that is finished drops to LOW (level 1). Find the clip that drops after the first part, as if the sentence had ended.",
+      th: "ส่วนที่จบแล้วจะลงต่ำ (ระดับ 1) หาเสียงที่ลงต่ำหลังส่วนแรก เหมือนประโยคจบไปแล้ว",
+    };
+  }
+  if (ask === "lifting") {
+    return textbook === "falling"
+      ? {
+          en: "Each item rises (2-3), so we know more is coming. Only the last item of a statement comes down to low (2-3-1).",
+          th: "ทุกรายการขึ้นเสียง (2-3) เพื่อบอกว่ายังมีต่อ มีแค่รายการสุดท้ายของประโยคบอกเล่าที่ลงต่ำ (2-3-1)",
+        }
+      : {
+          en: "Each choice rises (2-3), the last one too, because the speaker is asking.",
+          th: "ทุกตัวเลือกขึ้นเสียง (2-3) รวมถึงตัวเลือกสุดท้ายด้วย เพราะผู้พูดกำลังถามอยู่",
+        };
+  }
   if (ask === "falling" && textbook === "falling") {
     return {
       en: "A falling sentence goes up to one peak, then ends low (2-3-1).",
@@ -68,7 +103,6 @@ export function HearIt({
   const { setCheck } = api;
   const ask = exercise.ask;
   const textbook = endingOf(sentence);
-  const tune = ask === "rising" ? "rising" : "falling";
 
   useEffect(() => {
     if (picked === null) return setCheck(null);
@@ -99,7 +133,7 @@ export function HearIt({
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={`Pick the ${tune} clip`}>
+      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={`Pick the ${NAME[ask].pick} clip`}>
         {([0, 1] as const).map((i) => {
           const isPicked = picked === i;
           const isRight = i === exercise.correct;
@@ -128,7 +162,7 @@ export function HearIt({
                 type="button"
                 role="radio"
                 aria-checked={isPicked}
-                aria-label={`Clip ${NAMES[i]} is the ${tune} tune`}
+                aria-label={`Clip ${NAMES[i]} is the ${NAME[ask].is}`}
                 disabled={locked}
                 onClick={() => setPicked(i)}
                 className={`btn w-full flex-col gap-0 leading-tight ${isPicked ? "btn-primary" : ""}`}
