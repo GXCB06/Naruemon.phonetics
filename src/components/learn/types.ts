@@ -8,6 +8,8 @@ export interface Checked {
   feedback: Feedback;
   /** The rule engine's result (draw it, shadow it only); the player saves it as an attempt. Numbers only, no audio. */
   analysis?: AnalysisResult;
+  /** Draw it only: Perfect (matches the book), Good (rules pass) or Miss. The player shows it and cheers louder for Perfect. */
+  grade?: "perfect" | "good" | "miss";
 }
 
 /** How an exercise tells the player whether CHECK can be pressed, and what it does. Stable identity. */

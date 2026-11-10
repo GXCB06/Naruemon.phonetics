@@ -131,6 +131,16 @@ export function loadLesson(unitId: string, lessonId: string): LessonContent | un
   return lesson.id === lessonId && lesson.unit === unitId ? lesson : undefined;
 }
 
+/** A course sentence by its id, searching every lesson (the server uses it so clients can't send their own sentences). */
+export function findSentence(sentenceId: string): LessonContent["sentences"][number] | undefined {
+  for (const key of Object.keys(REGISTRY)) {
+    const [unitId, lessonId] = key.split("/");
+    const found = loadLesson(unitId, lessonId)?.sentences.find((s) => s.id === sentenceId);
+    if (found) return found;
+  }
+  return undefined;
+}
+
 /** All registered `unit/lesson` keys (used by tests to check every course lesson has content). */
 export function contentKeys(): string[] {
   return Object.keys(REGISTRY);

@@ -11,9 +11,14 @@
     "samples": "node tools/make-samples.ts",
     "pitch:export": "node tools/pitch-compare/export-pitchy.ts",
     "build:ipa": "node tools/build-ipa.ts",
-    "build:lessons": "node tools/build-lessons.ts"
+    "build:lessons": "node tools/build-lessons.ts",
+    "build:ipa-practice": "node tools/build-ipa-practice.ts",
+    "compare:readers": "node tools/compare-readers.ts",
+    "build:ipa-sounds": "node tools/make-ipa-sounds.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
+    "@google/genai": "^3.0.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.53.0",

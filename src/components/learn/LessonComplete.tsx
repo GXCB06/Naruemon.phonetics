@@ -1,14 +1,18 @@
 import Link from "next/link";
+import { MynaBot } from "@/components/mascot/MynaBot";
 import type { LessonSummary } from "@/lib/learn/score";
 
-/** The last screen: score, stars, XP earned and where to go next. */
+/** The last screen: the bot's reaction, score, stars, XP earned and where to go next. */
 export function LessonComplete({
   summary,
   streak,
+  bestCombo = 0,
   nextHref,
 }: {
   summary: LessonSummary;
   streak: number;
+  /** Most correct answers in a row during the lesson. */
+  bestCombo?: number;
   /** Link to the next lesson of the unit, if there is one. */
   nextHref: string | null;
 }) {
@@ -20,6 +24,7 @@ export function LessonComplete({
         : { en: "Lesson finished", th: "จบบทเรียนแล้ว" };
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-4 py-10 text-center">
+      <MynaBot mood={summary.stars === 3 ? "perfect" : summary.stars >= 1 ? "happy" : "wink"} className="h-32 w-32" />
       <div className="flex gap-2 text-6xl" role="img" aria-label={`${summary.stars} of 3 stars`}>
         {[1, 2, 3].map((n) => (
           <span key={n} className={n <= summary.stars ? "text-primary" : "text-line"} aria-hidden>
@@ -56,8 +61,10 @@ export function LessonComplete({
         </div>
       </dl>
       <p className="text-sm text-muted">
-        {summary.passed} of {summary.total} exercises nailed.
-        <span className="thai block">ทำได้ดี {summary.passed} จาก {summary.total} ข้อ</span>
+        {summary.passed} of {summary.total} exercises nailed. Best combo: ×{bestCombo}.
+        <span className="thai block">
+          ทำได้ดี {summary.passed} จาก {summary.total} ข้อ · ต่อเนื่องสูงสุด {bestCombo} ข้อ
+        </span>
       </p>
 
       <div className="flex w-full flex-col gap-3">

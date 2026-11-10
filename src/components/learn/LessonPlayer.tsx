@@ -7,6 +7,8 @@ import type { LessonContent } from "@/lib/learn/content";
 import { buildExercises, listeningFallback, type Exercise } from "@/lib/learn/exercises";
 import { summarize, type ExerciseOutcome, type LessonSummary } from "@/lib/learn/score";
 import { completeLesson, loadProgress, saveProgress } from "@/lib/progress/store";
+import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
+import { playResult } from "./chime";
 import { DrawIt } from "./DrawIt";
 import { FindPeak } from "./FindPeak";
 import { HearIt } from "./HearIt";
@@ -16,6 +18,13 @@ import { ShadowIt } from "./ShadowIt";
 import type { Checked, ExerciseApi } from "./types";
 
 type Phase = "answering" | "feedback";
+
+/** The bot's face on the result sheet: star eyes for a Perfect drawing, a big jump at combo milestones, sad when wrong. */
+function sheetMood(checked: Checked, combo: number): BotMood {
+  if (!checked.feedback.passed) return "sad";
+  if (checked.grade === "perfect") return "perfect";
+  return combo === 3 || combo === 5 || (combo > 5 && combo % 5 === 0) ? "surprised" : "happy";
+}
 
 const NO_MIC_NOTICE = {
   en: "No microphone, no problem. Here's a listening exercise instead.",
@@ -45,7 +54,11 @@ export function LessonPlayer({
   const [outcomes, setOutcomes] = useState<ExerciseOutcome[]>([]);
   const [swapped, setSwapped] = useState<Set<string>>(new Set());
   const [leaving, setLeaving] = useState(false);
-  const [done, setDone] = useState<{ summary: LessonSummary; streak: number } | null>(null);
+  const [done, setDone] = useState<{ summary: LessonSummary; streak: number; bestCombo: number } | null>(null);
+  // correct answers in a row (a wrong answer resets it); `comboKey` restarts the pop animation
+  const [combo, setCombo] = useState(0);
+  const [bestCombo, setBestCombo] = useState(0);
+  const [lostCombo, setLostCombo] = useState(0);
 
   // A function in state has to be wrapped, or React would call it as an updater.
   const api = useMemo<ExerciseApi>(() => ({ setCheck: (fn) => setCheckFn(fn ? () => fn : null) }), []);
@@ -58,6 +71,12 @@ export function LessonPlayer({
     const result = check?.();
     if (!result) return;
     recordExerciseAttempt(sentence, exercise.type === "meaning" ? "hear" : exercise.type, { passed: result.outcome.passed, analysis: result.analysis }); // C5/D2: never throws
+    const ok = result.feedback.passed;
+    const nextCombo = ok ? combo + 1 : 0;
+    setLostCombo(ok ? 0 : combo);
+    setCombo(nextCombo);
+    setBestCombo((b) => Math.max(b, nextCombo));
+    playResult(ok, { combo: nextCombo, perfect: result.grade === "perfect" });
     setChecked(result);
     setPhase("feedback");
   };
@@ -77,7 +96,7 @@ export function LessonPlayer({
     const summary = summarize(all);
     const progress = completeLesson(loadProgress(), lesson.id, { score: summary.score, xp: summary.xp });
     saveProgress(progress);
-    setDone({ summary, streak: progress.streak });
+    setDone({ summary, streak: progress.streak, bestCombo });
   };
 
   const tryAgain = () => {
@@ -101,6 +120,7 @@ export function LessonPlayer({
       <LessonComplete
         summary={done.summary}
         streak={done.streak}
+        bestCombo={done.bestCombo}
         nextHref={nextLessonId ? `/learn/${unitId}/${nextLessonId}` : null}
       />
     );
@@ -131,7 +151,15 @@ export function LessonPlayer({
         >
           <div className="h-full rounded-full bg-accent transition-[width] duration-300 motion-reduce:transition-none" style={{ width: `${pct}%` }} />
         </div>
-        <span className="w-12 shrink-0 text-right text-sm font-extrabold tabular-nums text-muted">
+        <span
+          key={combo}
+          className={`combo-pop inline-flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-sm font-black tabular-nums ${combo >= 2 ? "bg-good text-white" : "bg-line text-muted"}`}
+          aria-label={`Combo ${combo}`}
+          title="Correct answers in a row"
+        >
+          <span aria-hidden>⚡</span>×{combo}
+        </span>
+        <span className="w-10 shrink-0 text-right text-sm font-extrabold tabular-nums text-muted max-sm:hidden">
           {index + 1}/{exercises.length}
         </span>
       </header>
@@ -180,14 +208,26 @@ export function LessonPlayer({
       >
         <div className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4">
           {phase === "feedback" && checked && (
-            <div role="status" aria-live="polite" className={checked.feedback.passed ? "text-good" : "text-warn"}>
-              <div className="flex items-center gap-2 text-2xl font-black">
-                <span aria-hidden>{checked.feedback.passed ? "✓" : "!"}</span>
-                {checked.feedback.title.en}
-                <span className="thai text-xl font-bold">{checked.feedback.title.th}</span>
+            <div role="status" aria-live="polite" className={`flex items-start gap-3 ${checked.feedback.passed ? "text-good" : "text-warn"}`}>
+              <MynaBot mood={sheetMood(checked, combo)} className="-mt-1 h-14 w-14 sm:h-16 sm:w-16" />
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-2 text-2xl font-black">
+                  {checked.feedback.title.en}
+                  <span className="thai text-xl font-bold">{checked.feedback.title.th}</span>
+                </div>
+                <p className="mt-1 font-semibold text-ink">{checked.feedback.detail.en}</p>
+                <p className="thai text-sm text-ink/80">{checked.feedback.detail.th}</p>
+                {checked.feedback.passed && combo >= 2 && (
+                  <p className="mt-1 text-sm font-black">
+                    Combo ×{combo} <span className="thai font-semibold text-muted">ถูกต่อเนื่อง {combo} ข้อ</span>
+                  </p>
+                )}
+                {!checked.feedback.passed && lostCombo >= 2 && (
+                  <p className="mt-1 text-sm font-black text-bad">
+                    Combo ×{lostCombo} lost <span className="thai font-semibold text-muted">เสียคอมโบ</span>
+                  </p>
+                )}
               </div>
-              <p className="mt-1 font-semibold text-ink">{checked.feedback.detail.en}</p>
-              <p className="thai text-sm text-ink/80">{checked.feedback.detail.th}</p>
             </div>
           )}
           {phase === "answering" ? (

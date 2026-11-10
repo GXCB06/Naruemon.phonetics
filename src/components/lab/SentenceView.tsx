@@ -1,10 +1,12 @@
 import { PATTERN_LABEL } from "@/lib/intonation/lessons";
 import type { Sentence, Word } from "@/lib/intonation/types";
+import { classIpa } from "@/lib/ipa/notation";
 
+/** A word's IPA in the class's notation (r, ər, ɜr), with the stress mark and syllable dots. */
 export function wordIpa(w: Word): string {
   return (
     "/" +
-    w.syllables.map((s) => (s.stressed && w.syllables.length > 1 ? "ˈ" : "") + s.ipa).join(".") +
+    w.syllables.map((s) => (s.stressed && w.syllables.length > 1 ? "ˈ" : "") + classIpa(s.ipa)).join(".") +
     "/"
   );
 }

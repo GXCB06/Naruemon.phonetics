@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { findFinalConsonantIssues, wordViews, type Band, type PhonemeView, type WordView } from "@/lib/azure/ipa";
 import type { AzureAssessment } from "@/lib/azure/parse";
+import { classIpa } from "@/lib/ipa/notation";
 
 // Per-phoneme accuracy under every word. A band is never shown by colour alone: each one has its own icon, its own
 // underline style (solid / dashed / wavy / dotted) and a text label for screen readers.
@@ -28,7 +29,7 @@ function Chip({ p }: { p: PhonemeView }) {
   const b = BANDS[p.band];
   return (
     <span className={`flex flex-col items-center px-0.5 ${b.tone}`}>
-      <span className={`font-ipa pb-1 text-lg leading-6 text-ink underline decoration-2 underline-offset-4 ${b.line}`}>{p.expected}</span>
+      <span className={`font-ipa pb-1 text-lg leading-6 text-ink underline decoration-2 underline-offset-4 ${b.line}`}>{classIpa(p.expected)}</span>
       <span aria-hidden className="text-xs font-black leading-3">
         {b.icon}
       </span>
@@ -99,11 +100,11 @@ function Detail({ w }: { w: WordView }) {
           <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
             <div className="rounded-xl bg-accent-soft p-2">
               <div className="text-xs font-extrabold uppercase tracking-wide text-muted">Expected / ควรเป็น</div>
-              <div className="font-ipa text-lg">/{w.expectedIpa}/</div>
+              <div className="font-ipa text-lg">/{classIpa(w.expectedIpa)}/</div>
             </div>
             <div className="rounded-xl bg-accent-soft p-2">
               <div className="text-xs font-extrabold uppercase tracking-wide text-muted">You said / ที่ได้ยิน</div>
-              <div className="font-ipa text-lg">/{w.spokenIpa}/</div>
+              <div className="font-ipa text-lg">/{classIpa(w.spokenIpa)}/</div>
             </div>
           </div>
           <ul className="mt-3 flex flex-col divide-y divide-line text-sm">
@@ -116,12 +117,12 @@ function Detail({ w }: { w: WordView }) {
                   </span>
                   <span>
                     <span className="sr-only">Expected </span>
-                    <span className="font-ipa text-base">/{p.expected}/</span>
+                    <span className="font-ipa text-base">/{classIpa(p.expected)}/</span>
                     {p.isFinal && p.isConsonant && <span className="ml-1 text-xs text-muted">final</span>}
                   </span>
                   <span className={p.matches ? "text-muted" : "font-bold"}>
                     <span className="sr-only">Heard </span>
-                    {p.spoken === null ? "?" : <span className="font-ipa text-base">/{p.spoken}/</span>}
+                    {p.spoken === null ? "?" : <span className="font-ipa text-base">/{classIpa(p.spoken)}/</span>}
                     {!p.matches && <span className="ml-1 text-xs">≠</span>}
                   </span>
                   <span className={`text-right font-bold tabular-nums ${pb.tone}`}>

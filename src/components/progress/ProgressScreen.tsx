@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Bi, LangToggle } from "@/components/home/lang";
-import { MynaMark } from "@/components/home/icons";
+import { MynaBot } from "@/components/mascot/MynaBot";
 import { COPY } from "./copy";
 import { HeatMap } from "./HeatMap";
 import { BackIcon } from "./icons";
@@ -24,7 +24,7 @@ function Skeleton() {
 function EmptyState() {
   return (
     <section aria-labelledby="empty-title" className="card flex flex-col items-center gap-4 px-5 py-10 text-center">
-      <MynaMark className="size-20" />
+      <MynaBot mood="wink" className="size-24" />
       <div className="flex flex-col gap-2">
         <h2 id="empty-title" className="text-2xl font-black">
           <Bi text={COPY.empty.title} className="items-center" />

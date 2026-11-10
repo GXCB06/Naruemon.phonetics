@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { MynaBot } from "@/components/mascot/MynaBot";
 import { buildPath } from "@/lib/course/path.ts";
 import type { PathNode } from "@/lib/course/path.ts";
 import { COPY } from "./copy";
@@ -37,11 +38,30 @@ export function HomePath() {
           </p>
         )}
 
+        <Link href="/ipa" className="card flex items-center gap-3 p-3 transition-transform hover:-translate-y-0.5 active:translate-y-0.5">
+          <MynaBot mood="wink" className="h-14 w-14" />
+          <span className="min-w-0 flex-1">
+            <span className="block font-black">
+              IPA practice <span className="thai font-bold text-muted">ฝึกถอดเสียง IPA</span>
+            </span>
+            <span className="block text-sm font-semibold text-muted">
+              Hear a word, build or write its IPA.
+              <span className="thai block">ฟังคำศัพท์ แล้วเรียงหรือเขียน IPA</span>
+            </span>
+          </span>
+          <span className="ipa shrink-0 text-xl font-bold text-accent" aria-hidden>
+            /θɪŋk/
+          </span>
+        </Link>
+
         {path.units.map((unit) => (
           <UnitSection key={unit.id} unit={unit} onOpen={openLesson} />
         ))}
 
         <nav aria-label="More · เพิ่มเติม" className="mt-2 flex flex-wrap items-center justify-center gap-3 border-t-2 border-line pt-6">
+          <Link href="/ipa" className="btn min-h-12 px-4 text-sm">
+            <Bi text={{ en: "IPA practice", th: "ฝึก IPA" }} className="items-center" />
+          </Link>
           <Link href="/lab" className="btn min-h-12 px-4 text-sm">
             <Bi text={COPY.lab} className="items-center" />
           </Link>

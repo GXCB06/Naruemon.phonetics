@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { ProgressIcon } from "@/components/progress/icons";
 import type { Progress } from "@/lib/progress/store.ts";
-import { BoltIcon, FlameIcon, MynaMark } from "./icons";
+import { MynaBot } from "@/components/mascot/MynaBot";
+import { BoltIcon, FlameIcon } from "./icons";
 import { LangToggle, useLang } from "./lang";
 
 export function TopBar({ progress, streak }: { progress: Progress; streak: number }) {
@@ -15,7 +16,7 @@ export function TopBar({ progress, streak }: { progress: Progress; streak: numbe
     <header className="sticky top-0 z-20 border-b-2 border-line bg-bg/95 backdrop-blur">
       <div className="mx-auto flex w-full max-w-md items-center gap-2 px-4 py-2">
         <div className="flex min-w-0 items-center gap-1.5">
-          <MynaMark className="size-8 shrink-0" />
+          <MynaBot className="size-9 shrink-0" />
           <span className="text-xl font-black tracking-tight">Myna</span>
         </div>
 
