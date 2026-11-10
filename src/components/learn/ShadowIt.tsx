@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ContourChart } from "@/components/lab/ContourChart";
+import { MicCheckButton } from "@/components/mic/MicCheckButton";
 import { Countdown } from "@/components/lab/Countdown";
 import { KaraokeSentence } from "@/components/lab/KaraokeSentence";
 import { analyzeVoice, type VoiceAnalysis } from "@/lib/audio/analyzeVoice";
@@ -220,14 +221,16 @@ export function ShadowIt({
           <span className="thai block text-sm font-normal">
             ใช้ไมค์ไม่ได้ตอนนี้ ไม่เป็นไร กด “Skip (no mic)” เพื่อทำแบบฝึกหัดฟังแทน
           </span>
+          <MicCheckButton className="mt-3" />
         </div>
       )}
 
       {phase === "done" && analysis && !analysis.result && (
-        <p className="rounded-xl bg-warn-soft p-3 font-semibold text-warn" role="alert">
+        <div className="rounded-xl bg-warn-soft p-3 font-semibold text-warn" role="alert">
           I couldn&apos;t find a clear voice in that take. Speak a little louder and closer to the mic, then record again.
           <span className="thai block text-sm font-normal">ฟังเสียงไม่ชัด ลองพูดให้ดังขึ้นและใกล้ไมค์ขึ้น แล้วอัดใหม่</span>
-        </p>
+          <MicCheckButton className="mt-3" />
+        </div>
       )}
 
       {phase === "done" && analysis?.result && (
@@ -255,6 +258,7 @@ export function ShadowIt({
               {q.en} <span className="thai block font-normal">{q.th}</span>
             </p>
           ))}
+          {analysis.quality.issues.some((q) => q.level === "fail") && <MicCheckButton className="self-start" />}
           <p className="text-sm text-muted">
             Tap CHECK to see how you did. <span className="thai">กด CHECK เพื่อดูผล</span>
           </p>

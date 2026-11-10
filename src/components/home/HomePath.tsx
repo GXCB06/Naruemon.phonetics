@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { MynaBot } from "@/components/mascot/MynaBot";
+import { Onboarding } from "@/components/onboarding/Onboarding";
+import { useOnboarded } from "@/components/onboarding/seen";
 import { buildPath } from "@/lib/course/path.ts";
 import type { PathNode } from "@/lib/course/path.ts";
 import { COPY } from "./copy";
@@ -17,6 +19,7 @@ export function HomePath() {
   const path = useMemo(() => buildPath(progress.lessons), [progress.lessons]);
   const [tapped, setTapped] = useState<PathNode | null>(null);
   const [open, setOpen] = useState(false);
+  const onboarded = useOnboarded();
   const openUnit = tapped ? (path.units.find((u) => u.id === tapped.unitId) ?? null) : null;
   // Re-read the node from the latest path so its state/stars stay current while the sheet is open.
   const openNode = tapped && openUnit ? (openUnit.nodes.find((n) => n.lessonId === tapped.lessonId) ?? null) : null;
@@ -25,6 +28,9 @@ export function HomePath() {
     setTapped(n);
     setOpen(true);
   }
+
+  // First open on this device: "How Myna works" instead of the path; finishing or skipping reveals the path.
+  if (!onboarded) return <Onboarding inline />;
 
   return (
     <>
@@ -67,6 +73,12 @@ export function HomePath() {
           </Link>
           <Link href="/login" className="btn min-h-12 px-4 text-sm">
             <Bi text={COPY.signIn} className="items-center" />
+          </Link>
+          <Link href="/welcome" className="btn min-h-12 px-4 text-sm">
+            <Bi text={{ en: "How Myna works", th: "Myna ใช้งานยังไง" }} className="items-center" />
+          </Link>
+          <Link href="/mic-check" className="btn min-h-12 px-4 text-sm">
+            <Bi text={{ en: "Mic check", th: "เช็กไมค์" }} className="items-center" />
           </Link>
         </nav>
       </main>
