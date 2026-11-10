@@ -2,11 +2,15 @@ import { describe, expect, it } from "vitest";
 import type { QueuedAttempt } from "../attempts/queue.ts";
 import type { UnitMeta } from "../course/units.ts";
 import { skillKey, type MasteryMap } from "../mastery/mastery.ts";
+import { gradeIpa, parseFocus, parseIpa, practiceWords } from "../ipa/practice.ts";
+import { emptyIpaStats, ipaStatsFromRows } from "../ipa/stats.ts";
 import {
   PATTERN_LABEL,
   SKILL_LABEL,
   bandFor,
+  buildDrawGradeRows,
   buildHeatMap,
+  buildIpaProgress,
   buildInsights,
   dailyTrend,
   firstVsLatest,
@@ -280,5 +284,64 @@ describe("attempt points", () => {
     expect(local).toEqual([{ id: "q1", at: queued.row.created_at, pattern: "2-3", modality: "draw", overall: 77 }]);
     const remote = [point("q1", queued.row.created_at, 77, "2-3", "draw"), point("r2", at(2026, 11, 13), 50)];
     expect(mergeAttemptPoints(local, remote).map((p) => p.id).sort()).toEqual(["q1", "r2"]);
+  });
+});
+
+describe("Draw it grades", () => {
+  it("one row per pattern drawn, in course order, with Perfect-or-Good rate", () => {
+    const rows = buildDrawGradeRows({
+      "3-1": { perfect: 0, good: 0, miss: 2 },
+      "2-3-1": { perfect: 3, good: 1, miss: 1 },
+      "x-y": { perfect: 1, good: 0, miss: 0 },
+      "2-3": { perfect: 0, good: 0, miss: 0 },
+    });
+    expect(rows.map((r) => r.pattern)).toEqual(["2-3-1", "3-1", "x-y"]);
+    expect(rows[0]).toMatchObject({ label: PATTERN_LABEL["2-3-1"], total: 5, rate: 80, counts: { perfect: 3, good: 1, miss: 1 } });
+    expect(rows[1].rate).toBe(0);
+    expect(rows[2].label.en).toContain("x-y");
+    expect(buildDrawGradeRows({})).toEqual([]);
+  });
+});
+
+describe("IPA sounds section", () => {
+  const byWord = Object.fromEntries(practiceWords().map((w) => [w.word, w]));
+  const row = (word: string, typed: string) => {
+    const answer = byWord[word].tokens;
+    const got = parseIpa(typed);
+    return { word, mode: "build" as const, grade: gradeIpa(answer, got).grade, answer, got, created_at: "2026-11-10T10:00:00.000Z" };
+  };
+
+  it("is null before the first checked word", () => {
+    expect(buildIpaProgress(emptyIpaStats())).toBeNull();
+  });
+
+  it("shows words practised, the Perfect-or-Good rate and the weakest sounds with a focus link", () => {
+    const stats = ipaStatsFromRows([
+      row("think", "tɪŋk"),
+      row("think", "tɪŋk"),
+      row("thank", "θæŋk"),
+      row("zoo", "su"),
+      row("rains", "reɪns"),
+      row("student", "studənt"),
+    ]);
+    const v = buildIpaProgress(stats)!;
+    expect(v.attempts).toBe(6);
+    expect(v.distinctWords).toBe(5);
+    expect(v.counts).toEqual({ perfect: 1, good: 1, miss: 4 });
+    expect(v.rate).toBe(33);
+    expect(v.weak.map((w) => w.symbol)).toEqual(["z", "θ"]);
+    expect(v.weak[0].sentence.en).toBe("You often write s for z");
+    expect(v.weak[1].sentence).toEqual({ en: "You often write t for θ", th: "คุณมักเขียน t แทน θ" });
+    expect(v.href.startsWith("/ipa?focus=")).toBe(true);
+    // the link round-trips into the focus IpaPractice reads
+    const focus = new URL(v.href, "https://myna.test").searchParams.get("focus");
+    expect(parseFocus(focus)).toEqual(["z", "θ"]);
+  });
+
+  it("links to plain /ipa when no sound is weak yet", () => {
+    const v = buildIpaProgress(ipaStatsFromRows([row("cat", "kæt")]))!;
+    expect(v.weak).toEqual([]);
+    expect(v.href).toBe("/ipa");
+    expect(v.rate).toBe(100);
   });
 });

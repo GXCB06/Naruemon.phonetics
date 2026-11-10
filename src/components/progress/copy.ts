@@ -62,6 +62,34 @@ export const COPY = {
     } satisfies Bilingual,
   },
 
+  grades: {
+    title: { en: "Draw it grades", th: "ผลการวาดทำนองเสียง" } satisfies Bilingual,
+    intro: {
+      en: "Perfect = the book's tune. Good = the rules are right. Miss = a rule is broken.",
+      th: "สมบูรณ์แบบ = ตรงกับในหนังสือ ดี = ถูกตามกฎ พลาด = ผิดกฎบางข้อ",
+    } satisfies Bilingual,
+    perfect: { en: "Perfect", th: "สมบูรณ์แบบ" } satisfies Bilingual,
+    good: { en: "Good", th: "ดี" } satisfies Bilingual,
+    miss: { en: "Miss", th: "พลาด" } satisfies Bilingual,
+    drawings: { en: "drawings", th: "ครั้ง" } satisfies Bilingual,
+    rate: { en: "Perfect or Good", th: "สมบูรณ์แบบหรือดี" } satisfies Bilingual,
+  },
+
+  ipa: {
+    title: { en: "IPA sounds", th: "เสียง IPA" } satisfies Bilingual,
+    words: { en: "words practised", th: "คำที่ฝึกแล้ว" } satisfies Bilingual,
+    different: { en: "different words", th: "คำไม่ซ้ำ" } satisfies Bilingual,
+    rate: { en: "Perfect or Good", th: "สมบูรณ์แบบหรือดี" } satisfies Bilingual,
+    weakTitle: { en: "Sounds to work on", th: "เสียงที่ควรฝึก" } satisfies Bilingual,
+    right: { en: "right", th: "ถูก" } satisfies Bilingual,
+    noWeak: {
+      en: "No sound stands out as hard yet. Keep practising!",
+      th: "ยังไม่มีเสียงไหนที่พลาดบ่อย ฝึกต่อไปนะ!",
+    } satisfies Bilingual,
+    practise: { en: "Practise these", th: "ฝึกเสียงเหล่านี้" } satisfies Bilingual,
+    practiseMore: { en: "Practise IPA", th: "ฝึก IPA" } satisfies Bilingual,
+  },
+
   trend: {
     title: { en: "Your trend", th: "แนวโน้มของคุณ" } satisfies Bilingual,
     last14: { en: "Average score per day, last 14 days", th: "คะแนนเฉลี่ยต่อวัน 14 วันล่าสุด" } satisfies Bilingual,

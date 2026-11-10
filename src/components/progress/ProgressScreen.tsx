@@ -4,10 +4,12 @@ import Link from "next/link";
 import { Bi, LangToggle } from "@/components/home/lang";
 import { MynaBot } from "@/components/mascot/MynaBot";
 import { COPY } from "./copy";
+import { DrawGrades } from "./DrawGrades";
 import { HeatMap } from "./HeatMap";
 import { BackIcon } from "./icons";
 import { Improvements } from "./Improvements";
 import { Insights } from "./Insights";
+import { IpaSounds } from "./IpaSounds";
 import { Trend } from "./Trend";
 import { useProgressData } from "./useProgressData";
 
@@ -76,7 +78,9 @@ export function ProgressScreen() {
             {data.heat.length > 0 && <HeatMap rows={data.heat} />}
             <Improvements items={data.improvements} hasEnoughSomewhere={data.hasEnoughSomewhere} />
             {data.insights.length > 0 && <Insights items={data.insights} />}
+            {data.drawGrades.length > 0 && <DrawGrades rows={data.drawGrades} />}
             <Trend days={data.trend} firstLatest={data.firstLatest} />
+            {data.ipa && <IpaSounds data={data.ipa} />}
           </>
         )}
       </main>

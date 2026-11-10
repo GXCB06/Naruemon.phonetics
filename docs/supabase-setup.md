@@ -104,3 +104,25 @@ How it behaves (`src/lib/attempts/`):
   the queue and are sent after the next sign-in. With no Supabase configured, nothing is sent and everything stays local.
 - To test: run the migration, sign in, finish a lesson, then check `attempts` and `skill_mastery` in Table Editor (you should see
   one row per exercise; `listening` rows for Hear it / Find the peak, `draw` and `speak` rows for Draw it / Shadow it).
+
+## 9. Draw it grades and IPA practice (D2, D4)
+
+Run **`supabase/migrations/0003_draw_grade_and_ipa_attempts.sql`** (SQL editor, after `0002`). It is safe to run twice. It adds:
+
+- `attempts.draw_grade` (`perfect` | `good` | `miss`): Draw it's verdict, set on `draw` rows only.
+- `ipa_attempts`: one row per checked word on `/ipa` (`word`, `mode` build/write, `grade`, `answer` and `got` as symbol arrays,
+  `client_id` for idempotent retries), with row-level security so each learner reads and writes only their own rows.
+
+How it behaves:
+
+- Draw it: the grade is saved with the draw attempt and added to a running tally on the device (`myna.drawGrades.v1`).
+  Before 0003 is run, draw attempts are still uploaded, just without the grade.
+- IPA practice: each CHECK adds the word to the device's IPA stats (`myna.ipaStats.v1`: per-sound accuracy and mix-ups such as
+  θ → t) and to its own upload queue (`myna.ipaAttempts.v1`, newest 300). The queue is flushed with the lesson attempts but
+  separately, so a project without `ipa_attempts` never holds up lesson attempts. Only symbols are stored: no audio, no
+  handwriting image.
+- My Progress shows Perfect/Good/Miss per pattern and an **IPA sounds** section (words practised, Perfect-or-Good rate, the
+  weakest sounds with their usual mix-up and a **Practise these** link to `/ipa?focus=θ,z`). Signed in, the server's rows are
+  merged in: for each total the side resting on more attempts wins, so nothing is counted twice.
+- To test: run the migration, sign in, draw a sentence and check a few IPA words, then look at `attempts.draw_grade` and
+  `ipa_attempts` in Table Editor.

@@ -7,16 +7,19 @@
 
 import type { AnalysisResult, Sentence } from "../intonation/types.ts";
 import { applyResults, type SkillResult } from "../mastery/mastery.ts";
-import { buildAttempt, buildListenAttempt, skillsFromRow, type AttemptRow } from "./build.ts";
+import { buildAttempt, buildListenAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
+import { recordDrawGrade } from "../progress/grades.ts";
+import { buildIpaAttempt, flushIpaQueue, storeIpaAttempt } from "./ipa.ts";
 import { flushQueue } from "./flush.ts";
 import { enqueue, loadMastery, loadQueue, newAttemptId, saveMastery, saveQueue } from "./queue.ts";
 import { isSupabaseConfigured } from "../supabase/env.ts";
 import { createClient } from "../supabase/client.ts";
 import { supabaseRemote } from "./supabase.ts";
 
-export { buildAttempt, buildAttemptRow, buildListenAttempt, skillsFromRow, type AttemptRow } from "./build.ts";
+export { buildAttempt, buildAttemptRow, buildListenAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
 export { flushQueue, type RemoteDb } from "./flush.ts";
 export { loadMastery, loadQueue, MASTERY_KEY, MAX_QUEUE, QUEUE_KEY } from "./queue.ts";
+export { IPA_QUEUE_KEY, IPA_STATS_KEY, loadIpaQueue, loadIpaStats } from "./ipa.ts";
 
 let flushing: Promise<void> | null = null;
 let flushAgain = false;
@@ -36,7 +39,9 @@ export function flushAttemptQueue(): Promise<void> {
       watchSignIn(client);
       do {
         flushAgain = false;
-        await flushQueue(supabaseRemote(client));
+        const remote = supabaseRemote(client);
+        await flushQueue(remote);
+        await flushIpaQueue(remote); // its own queue: a missing ipa_attempts table never holds up lesson attempts
       } while (flushAgain);
     } catch {
       // never surface storage/network problems to the lesson
@@ -64,6 +69,7 @@ function watchSignIn(client: NonNullable<ReturnType<typeof createClient>>) {
 export function saveAttempt(row: AttemptRow, skills: SkillResult[] = skillsFromRow(row)): void {
   try {
     saveMastery(applyResults(loadMastery(), skills, row.created_at));
+    if (row.draw_grade) recordDrawGrade(row.pattern, row.draw_grade);
     saveQueue(enqueue(loadQueue(), { id: newAttemptId(), row, skills }));
     void flushAttemptQueue();
   } catch {
@@ -78,17 +84,32 @@ export function saveAttempt(row: AttemptRow, skills: SkillResult[] = skillsFromR
 export function recordExerciseAttempt(
   sentence: Sentence,
   type: "hear" | "peak" | "draw" | "shadow",
-  result: { passed: boolean; analysis?: AnalysisResult },
+  result: { passed: boolean; analysis?: AnalysisResult; grade?: DrawGrade },
 ): void {
   try {
     const built =
       (type === "draw" || type === "shadow") && result.analysis
-        ? buildAttempt(sentence, result.analysis, type === "draw" ? "draw" : "speak")
+        ? type === "draw"
+          ? buildAttempt(sentence, result.analysis, "draw", new Date(), result.grade)
+          : buildAttempt(sentence, result.analysis, "speak")
         : type === "hear" || type === "peak"
           ? buildListenAttempt(sentence, result.passed)
           : null;
     if (built) saveAttempt(built.row, built.skills);
   } catch {
     // never break the lesson
+  }
+}
+
+/**
+ * IPA practice's one call after CHECK: the word, how it was answered (build/write), the grade, the answer and the
+ * learner's symbols. Updates this device's IPA stats (My Progress) and queues the row for Supabase. Never throws.
+ */
+export function recordIpaAttempt(input: Parameters<typeof buildIpaAttempt>[0]): void {
+  try {
+    storeIpaAttempt(buildIpaAttempt(input));
+    void flushAttemptQueue();
+  } catch {
+    // never break the practice
   }
 }

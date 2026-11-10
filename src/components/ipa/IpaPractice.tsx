@@ -7,15 +7,17 @@ import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
 import {
   CONSONANTS,
   gradeIpa,
+  parseFocus,
+  pickRoundWords,
   practiceWords,
   seededRandom,
-  shuffle,
   STRESS,
   tileBank,
   VOWELS,
   type IpaResult,
   type PracticeWord,
 } from "@/lib/ipa/practice";
+import { recordIpaAttempt } from "@/lib/attempts";
 import { AI_ERROR, aiErrorFor, useAiEnabled, type AiError } from "@/components/ai/useAiEnabled";
 import { parseIpa } from "@/lib/ipa/practice";
 import { keyWordParts } from "@/lib/ipa/sounds";
@@ -87,6 +89,13 @@ export function IpaPractice() {
     () => new URLSearchParams(window.location.search).get("samples") === "1",
     () => false,
   );
+  // /ipa?focus=θ,z (from My Progress, "Practise these"): rounds favour words with those sounds
+  const focusRaw = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).get("focus") ?? "",
+    () => "",
+  );
+  const focus = useMemo(() => parseFocus(focusRaw), [focusRaw]);
   const pad = useRef<WritePadHandle>(null);
   const [hasInk, setHasInk] = useState(false);
   const [reading, setReading] = useState<"idle" | "busy" | "done">("idle");
@@ -127,7 +136,7 @@ export function IpaPractice() {
 
   const start = useCallback(() => {
     const rand = seededRandom(Date.now() % 2147483647);
-    const words = shuffle(all, rand).slice(0, ROUND);
+    const words = pickRoundWords(all, ROUND, rand, focus);
     setRound({ words, banks: words.map((w) => tileBank(w, rand)) });
     setIndex(0);
     setPlaced([]);
@@ -141,7 +150,7 @@ export function IpaPractice() {
     setReadNote(null);
     setHasInk(false);
     setStage("round");
-  }, [all]);
+  }, [all, focus]);
 
   const flash = (m: BotMood, ms = 700) => {
     clearTimeout(coachTimer.current);
@@ -161,6 +170,12 @@ export function IpaPractice() {
           Hear a word, then write how it sounds in American English IPA. {ROUND} words per round.
           <span className="thai block">ฟังคำศัพท์ แล้วเขียนเสียงเป็น IPA แบบอเมริกัน รอบละ {ROUND} คำ</span>
         </p>
+        {focus.length > 0 && (
+          <p className="font-bold">
+            Focus: <span className="ipa text-lg">{focus.join(" ")}</span>
+            <span className="thai block font-semibold text-muted">ฝึกเสียงที่ยังพลาดบ่อย</span>
+          </p>
+        )}
         <div className="grid w-full gap-3 sm:grid-cols-2" role="radiogroup" aria-label="How to answer · วิธีตอบ">
           {(
             [
@@ -255,7 +270,9 @@ export function IpaPractice() {
 
   const check = () => {
     if (locked || !placed.length) return;
-    const r = gradeIpa(word.tokens, placed.map((p) => p.sym));
+    const got = placed.map((p) => p.sym);
+    const r = gradeIpa(word.tokens, got);
+    recordIpaAttempt({ word: word.word, mode, grade: r.grade, answer: word.tokens, got }); // My Progress + Supabase; never throws
     const ok = r.grade !== "miss";
     const nextCombo = ok ? combo + 1 : 0;
     setLostCombo(ok ? 0 : combo);

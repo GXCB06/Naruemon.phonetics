@@ -246,6 +246,9 @@ LINE Login.
 
 ## 7. Database schema (Supabase, Phase 1–2)
 
+The real migrations are in `supabase/migrations/` (0001 init, 0002 `attempts.client_id`, 0003 `attempts.draw_grade` +
+`ipa_attempts`); they use per-command policies. The sketch below is the shape of the data.
+
 ```sql
 create table profiles (
   id uuid primary key references auth.users on delete cascade,
@@ -271,6 +274,21 @@ create table attempts (
   azure_accuracy real,
   azure_prosody real,
   phoneme_errors jsonb,
+  client_id uuid,               -- 0002: device id, unique per user (idempotent upload)
+  draw_grade text,              -- 0003: Draw it only: perfect | good | miss
+  created_at timestamptz not null default now()
+);
+
+-- 0003: IPA practice (/ipa), one row per checked word. Symbols only: no audio, no handwriting image.
+create table ipa_attempts (
+  id bigint generated always as identity primary key,
+  user_id uuid not null references auth.users on delete cascade,
+  client_id uuid,               -- unique per user (idempotent upload)
+  word text not null,
+  mode text not null check (mode in ('build','write')),
+  grade text not null check (grade in ('perfect','good','miss')),
+  answer jsonb not null,        -- answer symbols, e.g. ["ˈ","s","t","u","d","ə","n","t"]
+  got jsonb not null,           -- the learner's symbols
   created_at timestamptz not null default now()
 );
 
@@ -319,12 +337,14 @@ alter table skill_mastery enable row level security;
 alter table lesson_progress enable row level security;
 alter table xp_events enable row level security;
 alter table weekly_summaries enable row level security;
+alter table ipa_attempts enable row level security;
 create policy "own profile" on profiles for all using (auth.uid() = id) with check (auth.uid() = id);
 create policy "own attempts" on attempts for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own mastery" on skill_mastery for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own progress" on lesson_progress for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own xp" on xp_events for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 create policy "own summaries" on weekly_summaries for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "own ipa attempts" on ipa_attempts for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 ```
 
 ---
