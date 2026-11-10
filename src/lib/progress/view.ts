@@ -5,6 +5,9 @@ import type { Bilingual } from "../intonation/types.ts";
 import type { QueuedAttempt } from "../attempts/queue.ts";
 import { UNITS, type UnitMeta } from "../course/units.ts";
 import { HIGH_SCORE, insightFor, type Insight } from "../mastery/insight.ts";
+import { focusQuery } from "../ipa/practice.ts";
+import { mixUpSentence, weakestSymbols, type IpaStats } from "../ipa/stats.ts";
+import { countsTotal, type GradeCounts, type GradeTally } from "./grades.ts";
 import {
   MIN_ATTEMPTS,
   SKILLS,
@@ -404,6 +407,75 @@ export function firstVsLatest(points: readonly AttemptPoint[]): FirstLatest[] {
     });
   }
   return rows;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Draw it grades
+
+export interface DrawGradeRow {
+  pattern: string;
+  label: Bilingual;
+  counts: GradeCounts;
+  total: number;
+  /** Perfect + Good, 0–100. */
+  rate: number;
+}
+
+const percent = (part: number, whole: number) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
+
+/** One row per pattern drawn at least once, in course order. */
+export function buildDrawGradeRows(tally: GradeTally): DrawGradeRow[] {
+  const keys = Object.keys(tally).filter((k) => countsTotal(tally[k]) > 0);
+  const order = [...PATTERN_ORDER.filter((p) => keys.includes(p)), ...keys.filter((k) => !(PATTERN_ORDER as readonly string[]).includes(k)).sort()];
+  return order.map((pattern) => {
+    const counts = tally[pattern];
+    const total = countsTotal(counts);
+    return {
+      pattern,
+      label: PATTERN_LABEL[pattern] ?? { en: `Pattern ${pattern}`, th: `รูปแบบ ${pattern}` },
+      counts: { ...counts },
+      total,
+      rate: percent(counts.perfect + counts.good, total),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// IPA sounds
+
+export interface IpaWeakItem {
+  symbol: string;
+  accuracy: number;
+  n: number;
+  sentence: Bilingual;
+}
+
+export interface IpaProgress {
+  /** Checked words (repeats count). */
+  attempts: number;
+  /** Different words practised. */
+  distinctWords: number;
+  counts: GradeCounts;
+  /** Perfect + Good, 0–100. */
+  rate: number;
+  weak: IpaWeakItem[];
+  /** "/ipa?focus=θ,z" for the weak sounds; plain "/ipa" when there are none. */
+  href: string;
+}
+
+/** The IPA sounds section, or null before the first checked word. */
+export function buildIpaProgress(stats: IpaStats, n = 5): IpaProgress | null {
+  if (stats.attempts <= 0) return null;
+  const weak = weakestSymbols(stats, n);
+  const q = focusQuery(weak.map((w) => w.symbol));
+  return {
+    attempts: stats.attempts,
+    distinctWords: Object.keys(stats.words).length,
+    counts: { ...stats.grades },
+    rate: percent(stats.grades.perfect + stats.grades.good, stats.attempts),
+    weak: weak.map((w) => ({ symbol: w.symbol, accuracy: w.accuracy, n: w.n, sentence: mixUpSentence(w) })),
+    href: q ? `/ipa?focus=${q.split(",").map(encodeURIComponent).join(",")}` : "/ipa",
+  };
 }
 
 export { MIN_ATTEMPTS };

@@ -91,6 +91,49 @@ export function shuffle<T>(items: readonly T[], rand: () => number): T[] {
   return a;
 }
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Focus rounds: My Progress links to /ipa?focus=θ,z so a round practises the learner's weakest sounds.
+// ---------------------------------------------------------------------------------------------------------------------
+
+/** The sounds in a `focus` query ("θ,z" or "θ, z"): known symbols only (no stress mark), each once, in order. */
+export function parseFocus(query: string | null | undefined): string[] {
+  if (!query) return [];
+  const out: string[] = [];
+  for (const part of query.split(",")) {
+    const sym = normalizeIpa(part.trim());
+    if (sym && sym !== STRESS && SYMBOLS.includes(sym) && !out.includes(sym)) out.push(sym);
+  }
+  return out;
+}
+
+/** The query string value for a focus list ("θ,z"). Callers URL-encode it. */
+export function focusQuery(symbols: readonly string[]): string {
+  return symbols.filter((s) => s !== STRESS && SYMBOLS.includes(s)).join(",");
+}
+
+/**
+ * A round of `size` words. With focus sounds: first one word for each focus sound (in turn, while words are left), then
+ * more words containing any focus sound, then the rest, so a round always has `size` words when the bank allows. The
+ * chosen words are shuffled.
+ * Without focus: a plain shuffle.
+ */
+export function pickRoundWords(all: readonly PracticeWord[], size: number, rand: () => number, focus: readonly string[] = []): PracticeWord[] {
+  const pool = shuffle(all, rand);
+  const wanted = focus.filter((s) => s !== STRESS);
+  if (wanted.length === 0) return pool.slice(0, size);
+  const picked: PracticeWord[] = [];
+  const take = (w: PracticeWord) => {
+    if (picked.length < size && !picked.includes(w)) picked.push(w);
+  };
+  for (const sym of wanted) {
+    const w = pool.find((x) => !picked.includes(x) && x.tokens.includes(sym));
+    if (w) take(w);
+  }
+  for (const w of pool) if (w.tokens.some((t) => wanted.includes(t))) take(w);
+  for (const w of pool) take(w);
+  return shuffle(picked, rand); // focus words spread through the round, not all at the start
+}
+
 /** 3 or 4 decoys that confuse with the word's own symbols (never one of them), never the glottal stop or the stress mark. */
 export function decoysFor(tokens: readonly string[], rand: () => number): string[] {
   const own = new Set(tokens);

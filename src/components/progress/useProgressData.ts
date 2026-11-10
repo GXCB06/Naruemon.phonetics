@@ -1,10 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { MASTERY_KEY, QUEUE_KEY, loadMastery, loadQueue } from "@/lib/attempts/index.ts";
+import { IPA_STATS_KEY, MASTERY_KEY, QUEUE_KEY, loadIpaStats, loadMastery, loadQueue } from "@/lib/attempts/index.ts";
+import { mergeIpaStats } from "@/lib/ipa/stats.ts";
+import { DRAW_GRADES_KEY, loadGradeTally, mergeGradeTallies } from "@/lib/progress/grades.ts";
 import { hasEnoughData, type MasteryMap } from "@/lib/mastery/mastery.ts";
 import {
+  buildDrawGradeRows,
   buildHeatMap,
+  buildIpaProgress,
   buildInsights,
   dailyTrend,
   firstVsLatest,
@@ -19,12 +23,13 @@ import { loadRemoteProgress, type RemoteProgress } from "./remote";
 // signed-in learner's server rows are merged in when they arrive. With no Supabase the remote step just resolves to null.
 
 const SEP = "\u0000";
+const KEYS = [MASTERY_KEY, QUEUE_KEY, DRAW_GRADES_KEY, IPA_STATS_KEY] as const;
 
 function getRaw(): string {
   try {
-    return `${localStorage.getItem(MASTERY_KEY) ?? ""}${SEP}${localStorage.getItem(QUEUE_KEY) ?? ""}`;
+    return KEYS.map((k) => localStorage.getItem(k) ?? "").join(SEP);
   } catch {
-    return SEP;
+    return SEP.repeat(KEYS.length - 1);
   }
 }
 
@@ -66,9 +71,9 @@ export function useProgressData() {
   }, []);
 
   const local = useMemo(() => {
-    const [m, q] = raw.split(SEP);
-    const store = { getItem: (k: string) => (k === MASTERY_KEY ? m || null : q || null), setItem: () => {} };
-    return { mastery: loadMastery(store), queue: loadQueue(store) };
+    const parts = raw.split(SEP);
+    const store = { getItem: (k: string) => parts[KEYS.indexOf(k as (typeof KEYS)[number])] || null, setItem: () => {} };
+    return { mastery: loadMastery(store), queue: loadQueue(store), grades: loadGradeTally(store), ipa: loadIpaStats(store) };
   }, [raw]);
 
   return useMemo(() => {
@@ -76,15 +81,19 @@ export function useProgressData() {
     const mastery: MasteryMap = remote ? mergeMastery(local.mastery, remote.mastery) : local.mastery;
     const points = mergeAttemptPoints(pointsFromQueue(local.queue), remote?.points ?? []);
     const heat = buildHeatMap(mastery);
+    const drawGrades = buildDrawGradeRows(remote?.drawGrades ? mergeGradeTallies(local.grades, remote.drawGrades) : local.grades);
+    const ipa = buildIpaProgress(mergeIpaStats(local.ipa, remote?.ipa));
     return {
       settled: remote !== undefined,
-      isEmpty: heat.length === 0 && points.length === 0,
+      isEmpty: heat.length === 0 && points.length === 0 && drawGrades.length === 0 && ipa === null,
       heat,
       hasEnoughSomewhere: Object.values(mastery).some((e) => hasEnoughData(e.attemptsN)),
       improvements: topImprovements(mastery, 3),
       insights: buildInsights(mastery),
       trend: dailyTrend(points, now, 14),
       firstLatest: firstVsLatest(points),
+      drawGrades,
+      ipa,
     };
   }, [now, local, remote]);
 }

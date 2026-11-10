@@ -4,6 +4,14 @@
 import type { AnalysisResult, PatternId, Sentence } from "../intonation/types.ts";
 import type { MasteryModality, SkillResult } from "../mastery/mastery.ts";
 
+/** Draw it's verdict (src/lib/learn/tuneDraw.ts): Perfect = the book's tune, Good = the rules pass, Miss = a rule fails. */
+export type DrawGrade = "perfect" | "good" | "miss";
+export const DRAW_GRADES: readonly DrawGrade[] = ["perfect", "good", "miss"];
+
+export function isDrawGrade(x: unknown): x is DrawGrade {
+  return x === "perfect" || x === "good" || x === "miss";
+}
+
 /** One row of the `attempts` table, minus `id` and `user_id` (the server sets those). */
 export interface AttemptRow {
   sentence_id: string;
@@ -18,6 +26,8 @@ export interface AttemptRow {
   shape_score: number | null;
   /** 0–100. */
   overall: number;
+  /** Draw it only (migration 0003): the drawing's Perfect/Good/Miss grade. Absent on every other row. */
+  draw_grade?: DrawGrade;
   /** ISO time the learner pressed CHECK (kept so an offline attempt flushed later keeps its real time). */
   created_at: string;
 }
@@ -34,12 +44,13 @@ function sentencePattern(sentence: Sentence): PatternId {
 
 const clamp100 = (n: number) => Math.max(0, Math.min(100, Math.round(Number.isFinite(n) ? n : 0)));
 
-/** A drawing or a recording, graded by the rule engine. */
+/** A drawing or a recording, graded by the rule engine. `grade` is Draw it's Perfect/Good/Miss (ignored for speak). */
 export function buildAttempt(
   sentence: Sentence,
   analysis: AnalysisResult,
   modality: "speak" | "draw",
   now: Date = new Date(),
+  grade?: DrawGrade,
 ): BuiltAttempt {
   const checks: AttemptRow["checks"] = [];
   const skills: SkillResult[] = [];
@@ -64,6 +75,7 @@ export function buildAttempt(
       checks,
       shape_score: shapes.length ? clamp100(shapes.reduce((a, b) => a + b, 0) / shapes.length) : null,
       overall: clamp100(analysis.overall),
+      ...(modality === "draw" && isDrawGrade(grade) ? { draw_grade: grade } : {}),
       created_at: now.toISOString(),
     },
     skills,

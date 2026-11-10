@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { classIpa } from "./notation.ts";
-import { decoysFor, gradeIpa, parseIpa, practiceWords, seededRandom, SYMBOLS, tileBank } from "./practice.ts";
+import { decoysFor, focusQuery, gradeIpa, parseFocus, parseIpa, pickRoundWords, practiceWords, seededRandom, SYMBOLS, tileBank } from "./practice.ts";
 
 const words = practiceWords();
 const byWord = Object.fromEntries(words.map((w) => [w.word, w]));
@@ -120,5 +120,42 @@ describe("tile sounds", () => {
     const ids = Object.values(IPA_SOUNDS).map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length); // one file per symbol
     expect(ids.every((id) => /^[a-z-]+$/.test(id))).toBe(true);
+  });
+});
+
+describe("focus rounds (/ipa?focus=θ,z)", () => {
+  const FOCUS = ["θ", "z", "ʒ"];
+  const hasFocus = (w: { tokens: string[] }) => w.tokens.some((t) => FOCUS.includes(t));
+
+  it("parses known sounds only, once each, in the class's notation", () => {
+    expect(parseFocus("θ,z")).toEqual(["θ", "z"]);
+    expect(parseFocus(" θ , z ,θ")).toEqual(["θ", "z"]);
+    expect(parseFocus("ɹ,g,ˈ,xyz,")).toEqual(["r", "ɡ"]);
+    expect(parseFocus("")).toEqual([]);
+    expect(parseFocus(null)).toEqual([]);
+    expect(focusQuery(["θ", "ˈ", "z", "??"])).toBe("θ,z");
+    expect(parseFocus(focusQuery(["θ", "z"]))).toEqual(["θ", "z"]);
+  });
+
+  it("without focus a round is just shuffled words, all different", () => {
+    const round = pickRoundWords(words, 8, seededRandom(5));
+    expect(round.length).toBe(8);
+    expect(new Set(round.map((w) => w.word)).size).toBe(8);
+  });
+
+  it("covers every focus sound, then fills with more focus words, then the rest", () => {
+    const withFocus = words.filter(hasFocus).length;
+    for (let seed = 1; seed <= 20; seed++) {
+      const round = pickRoundWords(words, 8, seededRandom(seed), FOCUS);
+      expect(round.length).toBe(8);
+      expect(new Set(round.map((w) => w.word)).size).toBe(8);
+      for (const sym of FOCUS) expect(round.some((w) => w.tokens.includes(sym))).toBe(true);
+      expect(round.filter(hasFocus).length).toBe(Math.min(8, withFocus));
+    }
+  });
+
+  it("a sound no word has is ignored; a round never asks for more words than exist", () => {
+    expect(pickRoundWords(words, 8, seededRandom(2), ["ɔɪ"]).length).toBe(8);
+    expect(pickRoundWords(words, 999, seededRandom(2), ["θ"]).length).toBe(words.length);
   });
 });
