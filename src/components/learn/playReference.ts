@@ -1,22 +1,39 @@
-// Browser side of reference audio: play `/audio/<sentenceId>--f.mp3` when it exists, otherwise the synthetic
-// placeholder voice (src/lib/learn/reference.ts), always through Web Audio at the device's native sample rate.
-// Call `playReference` straight from a tap handler: the AudioContext is created/resumed before the first `await` (iOS).
+// Browser side of reference audio: play the real clip `/audio/<sentenceId>--<f|m>.mp3` when manifest.json lists it,
+// otherwise the synthetic placeholder voice (src/lib/learn/reference.ts), always through Web Audio at the device's native
+// sample rate. Call `playReference` straight from a tap handler: the AudioContext is created/resumed before the first
+// `await` (iOS). The manifest is fetched once per page load.
 
 import { endingOf, type ClipVariant } from "@/lib/learn/exercises";
-import { placeholderClip, referenceUrl } from "@/lib/learn/reference";
+import {
+  EMPTY_MANIFEST,
+  MANIFEST_URL,
+  parseManifest,
+  pickReferenceVoice,
+  placeholderClip,
+  referenceUrl,
+  type ReferenceManifest,
+  type ReferenceVoice,
+} from "@/lib/learn/reference";
 import type { Sentence } from "@/lib/intonation/types";
 
 export type ReferenceSource = "file" | "placeholder";
 
 export interface Playing {
   source: ReferenceSource;
+  /** Which voice played, when it was a real clip. */
+  voice: ReferenceVoice | null;
+  /** The other voice, when it has a clip too (offer "hear the other voice"). */
+  alternative: ReferenceVoice | null;
   /** Resolves when the clip ends or is stopped. */
   ended: Promise<void>;
 }
 
 let ctx: AudioContext | null = null;
 let current: AudioBufferSourceNode | null = null;
-/** Decoded reference files by sentence id; null = no file exists (so we don't ask the server twice). */
+let manifest: Promise<ReferenceManifest> | null = null;
+/** Fetched mp3 bytes by url (may be prefetched before the tap); null = the file failed to load. */
+const bytes = new Map<string, Promise<ArrayBuffer | null>>();
+/** Decoded clips by url. */
 const files = new Map<string, AudioBuffer | null>();
 const synth = new Map<string, AudioBuffer>();
 /** Bumped on every play/stop so a clip that finished loading after a newer tap never starts. */
@@ -33,18 +50,62 @@ function audioContext(): AudioContext | null {
   return ctx;
 }
 
-async function loadFile(c: AudioContext, sentenceId: string): Promise<AudioBuffer | null> {
-  if (files.has(sentenceId)) return files.get(sentenceId) ?? null;
+/** manifest.json, fetched once. A missing or broken manifest means "no real clips". */
+export function loadManifest(): Promise<ReferenceManifest> {
+  manifest ??= fetch(MANIFEST_URL)
+    .then((res) => (res.ok ? res.json() : null))
+    .then(parseManifest)
+    .catch(() => EMPTY_MANIFEST);
+  return manifest;
+}
+
+const VOICE_KEY = "myna.referenceVoice";
+
+/** The voice the learner picked last ("f" by default). Per device, a convenience only. */
+export function preferredVoice(): ReferenceVoice {
+  try {
+    return window.localStorage.getItem(VOICE_KEY) === "m" ? "m" : "f";
+  } catch {
+    return "f";
+  }
+}
+
+export function setPreferredVoice(voice: ReferenceVoice): void {
+  try {
+    window.localStorage.setItem(VOICE_KEY, voice);
+  } catch {
+    // private mode: the choice just isn't remembered
+  }
+}
+
+function fetchBytes(url: string): Promise<ArrayBuffer | null> {
+  let p = bytes.get(url);
+  if (!p) {
+    p = fetch(url)
+      .then((res) => (res.ok && (res.headers.get("content-type") ?? "").startsWith("audio") ? res.arrayBuffer() : null))
+      .catch(() => null);
+    bytes.set(url, p);
+  }
+  return p;
+}
+
+/** Start downloading a sentence's clip before the learner taps, so playback starts at once. Starts no audio. */
+export async function prefetchReference(sentence: Sentence, fairWith: readonly string[] = []): Promise<void> {
+  const voice = pickReferenceVoice(await loadManifest(), sentence.id, preferredVoice(), fairWith);
+  if (voice) void fetchBytes(referenceUrl(sentence.id, voice));
+}
+
+async function loadFile(c: AudioContext, url: string): Promise<AudioBuffer | null> {
+  if (files.has(url)) return files.get(url) ?? null;
   let buf: AudioBuffer | null = null;
   try {
-    const res = await fetch(referenceUrl(sentenceId));
-    if (res.ok && (res.headers.get("content-type") ?? "").startsWith("audio")) {
-      buf = await c.decodeAudioData(await res.arrayBuffer());
-    }
+    const data = await fetchBytes(url);
+    // decodeAudioData detaches its input: decode a copy so the cached bytes stay usable
+    if (data) buf = await c.decodeAudioData(data.slice(0));
   } catch {
     buf = null;
   }
-  files.set(sentenceId, buf);
+  files.set(url, buf);
   return buf;
 }
 
@@ -72,13 +133,15 @@ export function stopReference(): void {
 }
 
 /**
- * Play a sentence. The textbook variant (the one that ends the way the sentence should: "falling", or "rising" for 2-3 sentences; the default) uses the reference mp3 when there is one; the mistake variants
- * (used by "Hear it") and sentences without an mp3 use the placeholder voice. `forceSynth` skips the mp3 so that both
- * clips of a "Hear it" pair have the same voice. Throws when the browser has no Web Audio.
+ * Play a sentence. The textbook variant (the one that ends the way the sentence should: "falling", or "rising" for 2-3
+ * sentences; the default) uses the real clip when the manifest lists one; the mistake variants (used by "Hear it") and
+ * sentences without a clip use the placeholder voice. `forceSynth` skips the clip so both clips of a "Hear it" pair have
+ * the same voice. `fairWith`: sentence ids that must have a clip in the same voice too, else the placeholder plays (see
+ * `pickReferenceVoice`). `voice` overrides the learner's preferred voice. Throws when the browser has no Web Audio.
  */
 export async function playReference(
   sentence: Sentence,
-  opts: { variant?: ClipVariant; forceSynth?: boolean } = {},
+  opts: { variant?: ClipVariant; forceSynth?: boolean; fairWith?: readonly string[]; voice?: ReferenceVoice } = {},
 ): Promise<Playing> {
   const textbook = endingOf(sentence);
   const variant = opts.variant ?? textbook;
@@ -88,12 +151,19 @@ export async function playReference(
   const mine = token;
 
   let source: ReferenceSource = "placeholder";
+  let voice: ReferenceVoice | null = null;
+  let alternative: ReferenceVoice | null = null;
   let buffer: AudioBuffer | null = null;
   if (variant === textbook && !opts.forceSynth) {
-    buffer = await loadFile(c, sentence.id);
+    const m = await loadManifest();
+    voice = pickReferenceVoice(m, sentence.id, opts.voice ?? preferredVoice(), opts.fairWith);
+    const other = voice === "f" ? "m" : "f";
+    alternative = voice && pickReferenceVoice(m, sentence.id, other, opts.fairWith) === other ? other : null;
+    if (voice) buffer = await loadFile(c, referenceUrl(sentence.id, voice));
     if (buffer) source = "file";
+    else voice = alternative = null;
   }
-  if (mine !== token) return { source, ended: Promise.resolve() }; // a newer tap took over while the file loaded
+  if (mine !== token) return { source, voice, alternative, ended: Promise.resolve() }; // a newer tap took over while the file loaded
   buffer ??= placeholderBuffer(c, sentence, variant);
 
   const node = c.createBufferSource();
@@ -107,5 +177,5 @@ export async function playReference(
   });
   current = node;
   node.start();
-  return { source, ended };
+  return { source, voice, alternative, ended };
 }

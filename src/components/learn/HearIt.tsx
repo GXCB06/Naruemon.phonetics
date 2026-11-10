@@ -180,7 +180,7 @@ export function HearIt({
           );
         })}
       </div>
-      <PlaceholderBadge />
+      <PlaceholderBadge kind="practice" />
     </div>
   );
 }
