@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
 import type { MeaningExercise } from "@/lib/learn/exercises";
 import {
@@ -12,6 +12,8 @@ import {
   tagReadingOf,
   type TagReading,
 } from "@/lib/learn/meaning";
+import { contentKeys, loadLesson } from "@/lib/learn/content";
+import { sameTextIds } from "@/lib/learn/reference";
 import { rightWrong } from "@/lib/learn/score";
 import { ListenButton } from "./ListenButton";
 import type { ExerciseApi } from "./types";
@@ -36,6 +38,15 @@ export function MeaningMatch({
   const [picked, setPicked] = useState<TagReading | null>(null);
   const { setCheck } = api;
   const scene = situationFor(sentence);
+  // The other reading of the same words (sure vs asking) must have a real clip in the same voice too; otherwise both play
+  // the placeholder, so "real voice vs robot voice" can never give the meaning away.
+  const twins = useMemo(() => {
+    const all = contentKeys().flatMap((k) => {
+      const [unit, lesson] = k.split("/");
+      return loadLesson(unit, lesson)?.sentences ?? [];
+    });
+    return sameTextIds(sentence, all);
+  }, [sentence]);
 
   useEffect(() => {
     if (picked === null || reading === null) return setCheck(null);
@@ -69,7 +80,7 @@ export function MeaningMatch({
           <span className="thai block text-sm text-ink/80">{scene.th}</span>
         </p>
         <p className="text-xl font-bold">“{sentence.text}”</p>
-        <ListenButton sentence={sentence} />
+        <ListenButton sentence={sentence} fairWith={twins} />
       </div>
 
       <div className="flex flex-col gap-3" role="radiogroup" aria-label="What does the speaker mean?">

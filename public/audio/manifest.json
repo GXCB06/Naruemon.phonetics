@@ -1,0 +1,143 @@
+{
+  "_comment": "Reference clips per sentence id (f = female, m = male) that passed their own pattern. Made by tools/make-tts.ts (npm run build:tts) or added by hand (then run npm run build:tts -- --manifest).",
+  "clips": {
+    "fall-pretty-woman": [
+      "f",
+      "m"
+    ],
+    "fall-what-name": [
+      "f",
+      "m"
+    ],
+    "falling-1-book-table": [
+      "f",
+      "m"
+    ],
+    "falling-1-buy-house": [
+      "m"
+    ],
+    "falling-1-drink-tea": [
+      "f",
+      "m"
+    ],
+    "falling-1-notebook": [
+      "f",
+      "m"
+    ],
+    "falling-1-situation": [
+      "m"
+    ],
+    "falling-2-how-are-you": [
+      "f",
+      "m"
+    ],
+    "falling-2-what-name": [
+      "f",
+      "m"
+    ],
+    "falling-2-when-arrive": [
+      "f",
+      "m"
+    ],
+    "falling-2-where-going": [
+      "f",
+      "m"
+    ],
+    "falling-3-beautiful-day": [
+      "f",
+      "m"
+    ],
+    "falling-3-come-see-me": [
+      "f",
+      "m"
+    ],
+    "falling-3-how-nice": [
+      "f"
+    ],
+    "falling-3-just-what-need": [
+      "f"
+    ],
+    "falling-3-let-her-go": [
+      "f",
+      "m"
+    ],
+    "falling-3-speak-loudly": [
+      "f",
+      "m"
+    ],
+    "lists-2-inout": [
+      "f",
+      "m"
+    ],
+    "lists-2-read": [
+      "f",
+      "m"
+    ],
+    "lists-2-red": [
+      "f",
+      "m"
+    ],
+    "nonfinal-1-fact": [
+      "f"
+    ],
+    "nonfinal-1-opinion": [
+      "f",
+      "m"
+    ],
+    "nonfinal-1-picnic": [
+      "f"
+    ],
+    "nonfinal-2-amad": [
+      "f"
+    ],
+    "nonfinal-2-movies": [
+      "f"
+    ],
+    "rise-student": [
+      "f",
+      "m"
+    ],
+    "rising-1-ask-question": [
+      "f",
+      "m"
+    ],
+    "rising-1-be-there": [
+      "f",
+      "m"
+    ],
+    "rising-1-come-with-me": [
+      "f",
+      "m"
+    ],
+    "rising-1-guitar": [
+      "f",
+      "m"
+    ],
+    "rising-1-student": [
+      "f",
+      "m"
+    ],
+    "rising-2-mrs-smith": [
+      "m"
+    ],
+    "tags-1-hungry": [
+      "f",
+      "m"
+    ],
+    "tags-2-hungry": [
+      "f",
+      "m"
+    ],
+    "tags-3-hungry": [
+      "f",
+      "m"
+    ],
+    "tags-3-nice-day": [
+      "f"
+    ],
+    "tags-3-swim": [
+      "f",
+      "m"
+    ]
+  }
+}

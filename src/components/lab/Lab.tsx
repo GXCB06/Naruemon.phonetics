@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { layoutSentence, targetContour } from "@/lib/intonation/contour";
 import { SENTENCES } from "@/lib/intonation/lessons";
+import { ListenButton } from "@/components/learn/ListenButton";
 import { DrawingPad } from "./DrawingPad";
 import { SentenceView } from "./SentenceView";
 import { VoicePanel, type SampleInfo } from "./VoicePanel";
@@ -55,6 +56,7 @@ export function Lab() {
           <div className="font-bold text-accent">{sentence.note.en}</div>
           <div className="thai text-accent">{sentence.note.th}</div>
         </div>
+        <ListenButton key={sentence.id} sentence={sentence} label={{ en: "Hear the model", th: "ฟังเสียงต้นแบบ" }} />
       </section>
 
       <div className="flex gap-2" role="tablist">

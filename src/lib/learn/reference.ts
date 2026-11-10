@@ -1,8 +1,9 @@
 // Reference audio for a sentence. Pure part: file naming and the placeholder "robot voice" samples.
 // The browser part (fetching the mp3 and playing through Web Audio) lives in src/components/learn/playReference.ts.
 //
-// Real reference clips (Azure TTS, task B6) will be saved as /audio/<sentenceId>--f.mp3 (female) and --m.mp3 (male).
-// Until they exist the app plays the synthetic voice and labels it as a placeholder.
+// Real reference clips (Azure TTS, task B6, made by tools/make-tts.ts) are /audio/<sentenceId>--f.mp3 (female) and
+// --m.mp3 (male). /audio/manifest.json lists which exist: only clips that passed their own pattern in our analysis are
+// there. A sentence without a clip plays the synthetic voice, labelled as a placeholder.
 
 import { levelsForGroup } from "../intonation/buildLesson.ts";
 import type { Sentence } from "../intonation/types.ts";
@@ -11,8 +12,59 @@ import { endingOf } from "./exercises.ts";
 import type { ClipVariant } from "./exercises.ts";
 import { isTagSentence, otherReading, tagReading, tagReadingOf } from "./meaning.ts";
 
-export function referenceUrl(sentenceId: string, voice: "f" | "m" = "f"): string {
+export type ReferenceVoice = "f" | "m";
+
+export function referenceUrl(sentenceId: string, voice: ReferenceVoice = "f"): string {
   return `/audio/${sentenceId}--${voice}.mp3`;
+}
+
+export const MANIFEST_URL = "/audio/manifest.json";
+
+/** Which reference clips exist, by sentence id. */
+export interface ReferenceManifest {
+  clips: Record<string, ReferenceVoice[]>;
+}
+
+export const EMPTY_MANIFEST: ReferenceManifest = { clips: {} };
+
+/** Read manifest.json leniently: anything malformed counts as "no clip" (the app then plays the placeholder voice). */
+export function parseManifest(data: unknown): ReferenceManifest {
+  const clips: Record<string, ReferenceVoice[]> = {};
+  const raw = data !== null && typeof data === "object" ? (data as { clips?: unknown }).clips : undefined;
+  if (raw === null || typeof raw !== "object" || Array.isArray(raw)) return { clips };
+  for (const [id, voices] of Object.entries(raw as Record<string, unknown>)) {
+    if (!Array.isArray(voices)) continue;
+    const ok = voices.filter((v): v is ReferenceVoice => v === "f" || v === "m");
+    if (ok.length) clips[id] = [...new Set(ok)];
+  }
+  return { clips };
+}
+
+/** The voices that have a clip for this sentence. */
+export function referenceVoices(manifest: ReferenceManifest, sentenceId: string): ReferenceVoice[] {
+  return Object.hasOwn(manifest.clips, sentenceId) ? manifest.clips[sentenceId] : [];
+}
+
+/**
+ * The voice to play for a sentence: `preferred` when it has a clip, otherwise the other voice, otherwise null (placeholder).
+ * `fairWith` lists sentences whose clip must exist in the SAME voice too (e.g. the other reading of a tag question), so a
+ * real voice never sits next to the robot voice in a way that gives the answer away.
+ */
+export function pickReferenceVoice(
+  manifest: ReferenceManifest,
+  sentenceId: string,
+  preferred: ReferenceVoice = "f",
+  fairWith: readonly string[] = [],
+): ReferenceVoice | null {
+  const order: ReferenceVoice[] = preferred === "f" ? ["f", "m"] : ["m", "f"];
+  return order.find((v) => [sentenceId, ...fairWith].every((id) => referenceVoices(manifest, id).includes(v))) ?? null;
+}
+
+/** Other sentences with the same words but a different tune (the two readings of a tag question). */
+export function sameTextIds(sentence: Sentence, all: readonly Sentence[]): string[] {
+  const tune = (s: Sentence) => s.groups.map((g) => g.pattern).join(" ");
+  const ids = all.filter((s) => s.id !== sentence.id && s.text === sentence.text && tune(s) !== tune(sentence)).map((s) => s.id);
+  return [...new Set(ids)];
 }
 
 /**
