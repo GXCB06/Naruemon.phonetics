@@ -32,6 +32,12 @@ export class MicRecorder {
   rawAudio = false;
   sampleRate = 48000;
 
+  /** The microphone in use while recording (label + what the track reports), for the mic check. */
+  get inputInfo(): { label: string; trackRate: number | null } {
+    const track = this.stream?.getAudioTracks()[0];
+    return { label: track?.label ?? "", trackRate: track?.getSettings().sampleRate ?? null };
+  }
+
   async start(cb: RecorderCallbacks = {}): Promise<void> {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       throw new MicError("unsupported", "This browser can't record audio (it needs HTTPS and a modern browser).");

@@ -312,3 +312,46 @@ body {
     opacity: 1;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------------------------
+   Onboarding: the pen line draws itself, rests, then draws again
+   --------------------------------------------------------------------------------------------------------------- */
+.onb-pen {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: onb-draw 3.2s ease-in-out 0.3s infinite;
+}
+@keyframes onb-draw {
+  0% { stroke-dashoffset: 1; }
+  55%, 90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .onb-pen { animation: none; stroke-dashoffset: 0; }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+   Installed app (home-screen / standalone): keep content out of the notch and home-indicator areas, and stop the
+   page itself from rubber-banding or selecting text on long-press like a web page would.
+   --------------------------------------------------------------------------------------------------------------- */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  -webkit-tap-highlight-color: transparent;
+}
+@media (display-mode: standalone) {
+  html,
+  body {
+    overscroll-behavior-y: none;
+  }
+  body {
+    padding-top: env(safe-area-inset-top);
+    -webkit-touch-callout: none;
+  }
+  button,
+  .btn,
+  a {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
