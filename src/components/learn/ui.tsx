@@ -6,6 +6,7 @@ import { Bi, useLang } from "@/components/home/lang";
 import type { Bilingual, Sentence } from "@/lib/intonation/types";
 import type { ClipVariant } from "@/lib/learn/exercises";
 import { playReference, stopReference, type ReferenceSource } from "./playReference";
+import { setMelody, useMelody } from "./clipSound";
 import { setSlow, useSlow } from "./slow";
 
 /** The one-line instruction at the top of every exercise: chosen language big, the other small underneath. */
@@ -55,6 +56,34 @@ export function SlowToggle({ compact = false }: { compact?: boolean }) {
       <span aria-hidden>🐢</span>
       {!compact && <span>{lang === "th" ? "ช้า" : "Slow"}</span>}
     </button>
+  );
+}
+
+/**
+ * Voice / Melody: what the practice clips sound like. "Voice" is a real spoken recording where there is one; "Melody" is the
+ * plain tune without words' sounds, which makes the rise and fall easier to pick out.
+ */
+export function ClipSoundToggle() {
+  const melody = useMelody();
+  const lang = useLang();
+  const label = lang === "th" ? "เสียงของคลิปฝึก" : "Sound of the practice clips";
+  const opt = (on: boolean, icon: string, en: string, th: string) => (
+    <button
+      type="button"
+      role="radio"
+      aria-checked={melody === on}
+      onClick={() => setMelody(on)}
+      className={`pick inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-sm font-extrabold ${melody === on ? "is-on" : ""}`}
+    >
+      <span aria-hidden>{icon}</span>
+      <span>{lang === "th" ? th : en}</span>
+    </button>
+  );
+  return (
+    <div role="radiogroup" aria-label={label} title={label} className="inline-flex items-center gap-1.5" data-sfx="none">
+      {opt(false, "🗣️", "Voice", "เสียงพูด")}
+      {opt(true, "🎵", "Melody", "ทำนอง")}
+    </div>
   );
 }
 

@@ -9,7 +9,7 @@ import { graded } from "@/lib/learn/score";
 import { playNoPair, playPair } from "./chime";
 import { PlaceholderBadge } from "./ListenButton";
 import { prefetchVariants } from "./playReference";
-import { Prompt, SlowToggle, SpeakerIcon, useClip } from "./ui";
+import { ClipSoundToggle, Prompt, SlowToggle, SpeakerIcon, useClip } from "./ui";
 import type { ExerciseApi } from "./types";
 
 type Side = { side: "clip" | "label"; index: number };
@@ -87,7 +87,8 @@ export function MatchPairs({
       />
       <p className="text-lg font-bold leading-snug text-muted">“{sentence.text}”</p>
 
-      <div className="-mb-2 flex justify-end">
+      <div className="-mb-2 flex flex-wrap items-center justify-between gap-2">
+        <ClipSoundToggle />
         <SlowToggle />
       </div>
       <div className="grid grid-cols-2 gap-3 sm:gap-4">

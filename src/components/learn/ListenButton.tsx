@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
 import type { ClipVariant } from "@/lib/learn/exercises";
 import type { ReferenceVoice } from "@/lib/learn/reference";
+import { useMelody } from "./clipSound";
 import { playReference, prefetchReference, setPreferredVoice, stopReference, type ReferenceSource } from "./playReference";
 
 /**
@@ -11,12 +12,18 @@ import { playReference, prefetchReference, setPreferredVoice, stopReference, typ
  * synthetic on purpose (a "Hear it" pair), so both sound the same and only the tune differs.
  */
 export function PlaceholderBadge({ kind = "placeholder" }: { kind?: "placeholder" | "practice" }) {
+  const melody = useMelody();
   return (
     <span className="inline-flex items-center rounded-full bg-warn-soft px-2 py-0.5 text-xs font-extrabold text-warn">
-      {kind === "practice" ? (
+      {kind === "practice" && melody ? (
         <>
-          Practice voice: only the tune changes
-          <span className="thai ml-1 font-semibold">เสียงฝึก: ต่างกันแค่ทำนอง</span>
+          Melody: only the tune
+          <span className="thai ml-1 font-semibold">ทำนองล้วน</span>
+        </>
+      ) : kind === "practice" ? (
+        <>
+          Melody (no recording of this tune yet)
+          <span className="thai ml-1 font-semibold">ทำนองล้วน (ยังไม่มีเสียงพูดของทำนองนี้)</span>
         </>
       ) : (
         <>

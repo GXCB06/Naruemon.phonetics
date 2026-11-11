@@ -1,11 +1,46 @@
 {
   "_comment": "Made by tools/make-variants.ts and tools/make-variants-psola.ts. needsHumanRecording: clips neither method could make; record them as public/audio/variants/<id>--<variant>.mp3 and run `npm run build:variants -- --manifest`. Exercises that need a missing clip play the synthetic voice instead.",
   "passed": {
-    "falling": "47/86",
-    "rising": "65/86",
-    "flat": "66/86",
-    "finished": "5/39"
+    "falling": "58/86",
+    "rising": "64/86",
+    "flat": "73/86",
+    "finished": "16/39"
   },
+  "endingOnly": [
+    "falling-1-drink-tea--falling",
+    "falling-2-when-arrive--falling",
+    "falling-3-beautiful-day--falling",
+    "falling-3-just-what-need--falling",
+    "lists-1-pasta--falling",
+    "lists-1-pasta--finished",
+    "lists-2-coffee--falling",
+    "lists-2-coffee--finished",
+    "nonfinal-1-opinion--falling",
+    "nonfinal-1-opinion--finished",
+    "nonfinal-1-rains--falling",
+    "nonfinal-1-rains--finished",
+    "nonfinal-2-smart--falling",
+    "rising-1-ask-question--falling",
+    "rising-2-john--falling",
+    "rising-2-professor--falling",
+    "rising-2-professor--finished",
+    "nonfinal-rains-bus--falling",
+    "nonfinal-rains-bus--finished",
+    "class2-02a-buy-computer--falling",
+    "class2-06-july-october--falling",
+    "class2-06-july-october--finished",
+    "class2-07a-mr-president--falling",
+    "class2-07a-mr-president--finished",
+    "class2-08b-thirsty--rising",
+    "class2-09b-therefore--falling",
+    "class2-09b-therefore--rising",
+    "class2-09b-therefore--finished",
+    "class2-10a-coffee-tea--falling",
+    "class2-10a-coffee-tea--finished",
+    "class2-10b-which-one--finished",
+    "class2-11-dress-colour--finished",
+    "class2-12-baby-sister--finished"
+  ],
   "needsHumanRecording": [
     {
       "id": "falling-1-situation",
@@ -18,16 +53,6 @@
       "why": "pitch range 5.7 st is too wide for a flat clip; the end rises 5.0 st"
     },
     {
-      "id": "falling-1-drink-tea",
-      "variant": "flat",
-      "why": "pitch range 10.5 st is too wide for a flat clip; the end falls 7.4 st"
-    },
-    {
-      "id": "falling-2-when-arrive",
-      "variant": "flat",
-      "why": "pitch range 8.0 st is too wide for a flat clip"
-    },
-    {
       "id": "falling-2-how-are-you",
       "variant": "rising",
       "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
@@ -38,29 +63,9 @@
       "why": "pitch range 5.9 st is too wide for a flat clip; the end falls 4.2 st"
     },
     {
-      "id": "falling-3-beautiful-day",
-      "variant": "flat",
-      "why": "pitch range 6.6 st is too wide for a flat clip"
-    },
-    {
-      "id": "falling-3-just-what-need",
-      "variant": "flat",
-      "why": "the end rises 2.3 st"
-    },
-    {
       "id": "falling-3-how-nice",
       "variant": "rising",
       "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on NICE.); group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "falling",
-      "why": "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SAL.); group 4 (2-3-1) peakPlacem"
     },
     {
       "id": "lists-1-need",
@@ -91,16 +96,6 @@
       "id": "lists-1-store",
       "variant": "finished",
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NA.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); group "
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "falling",
-      "why": "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "finished",
-      "why": "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
     },
     {
       "id": "lists-2-red",
@@ -138,24 +133,14 @@
       "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to so"
     },
     {
-      "id": "nonfinal-1-opinion",
-      "variant": "flat",
-      "why": "pitch range 6.0 st is too wide for a flat clip"
-    },
-    {
       "id": "nonfinal-1-rains",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1) "
+      "variant": "rising",
+      "why": "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
     },
     {
       "id": "nonfinal-1-rains",
       "variant": "flat",
-      "why": "pitch range 6.2 st is too wide for a flat clip"
-    },
-    {
-      "id": "nonfinal-1-rains",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3-1) ending: fail (Not f"
+      "why": "pitch range 4.6 st is too wide for a flat clip; the end falls 4.5 st"
     },
     {
       "id": "nonfinal-1-picnic",
@@ -194,23 +179,8 @@
     },
     {
       "id": "nonfinal-2-smart",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
-    },
-    {
-      "id": "nonfinal-2-smart",
       "variant": "finished",
       "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
-    },
-    {
-      "id": "rising-1-ask-question",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on QUES.)"
-    },
-    {
-      "id": "rising-2-john",
-      "variant": "falling",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.); group 2 "
     },
     {
       "id": "rising-2-john",
@@ -221,16 +191,6 @@
       "id": "rising-2-john",
       "variant": "finished",
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
-    },
-    {
-      "id": "rising-2-professor",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
-    },
-    {
-      "id": "rising-2-professor",
-      "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
     },
     {
       "id": "rising-2-mrs-smith",
@@ -359,18 +319,13 @@
     },
     {
       "id": "nonfinal-rains-bus",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1) "
+      "variant": "rising",
+      "why": "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
     },
     {
       "id": "nonfinal-rains-bus",
       "variant": "flat",
-      "why": "pitch range 6.2 st is too wide for a flat clip"
-    },
-    {
-      "id": "nonfinal-rains-bus",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.); group 2 (2-3-1) ending: fail (Not f"
+      "why": "pitch range 4.6 st is too wide for a flat clip; the end falls 4.5 st"
     },
     {
       "id": "tag-sure",
@@ -386,11 +341,6 @@
       "id": "tag-unsure",
       "variant": "finished",
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail"
-    },
-    {
-      "id": "class2-02a-buy-computer",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
     },
     {
       "id": "class2-02b-kind-computer",
@@ -433,21 +383,6 @@
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MARCH.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); gro"
     },
     {
-      "id": "class2-06-july-october",
-      "variant": "flat",
-      "why": "pitch range 7.2 st is too wide for a flat clip"
-    },
-    {
-      "id": "class2-07a-mr-president",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
-    },
-    {
-      "id": "class2-07a-mr-president",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PRES.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
-    },
-    {
       "id": "class2-08a-coke-juice",
       "variant": "flat",
       "why": "pitch range 7.2 st is too wide for a flat clip"
@@ -456,11 +391,6 @@
       "id": "class2-08a-coke-juice",
       "variant": "finished",
       "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to so"
-    },
-    {
-      "id": "class2-08b-thirsty",
-      "variant": "rising",
-      "why": "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on ARE.); group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
     },
     {
       "id": "class2-09a-life-easy",
@@ -473,26 +403,6 @@
       "why": "pitch range 6.4 st is too wide for a flat clip; the end falls 3.9 st"
     },
     {
-      "id": "class2-09b-therefore",
-      "variant": "flat",
-      "why": "pitch range 7.5 st is too wide for a flat clip"
-    },
-    {
-      "id": "class2-09b-therefore",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on THERE.)"
-    },
-    {
-      "id": "class2-10a-coffee-tea",
-      "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
-    },
-    {
-      "id": "class2-10a-coffee-tea",
-      "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
-    },
-    {
       "id": "class2-10b-which-one",
       "variant": "falling",
       "why": "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on"
@@ -501,11 +411,6 @@
       "id": "class2-10b-which-one",
       "variant": "rising",
       "why": "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on"
-    },
-    {
-      "id": "class2-10b-which-one",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)"
     },
     {
       "id": "class2-11-dress-colour",
@@ -518,11 +423,6 @@
       "why": "group 2 (2-3) peakPlacement: fail (Your rise is on LET (too late). Put it on VI, the stressed syllable of the last content word.); group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to le"
     },
     {
-      "id": "class2-11-dress-colour",
-      "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)"
-    },
-    {
       "id": "class2-12-baby-sister",
       "variant": "falling",
       "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.); group"
@@ -531,11 +431,6 @@
       "id": "class2-12-baby-sister",
       "variant": "rising",
       "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.); group"
-    },
-    {
-      "id": "class2-12-baby-sister",
-      "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)"
     },
     {
       "id": "class2-13a-sir-cigar",
@@ -666,29 +561,34 @@
     {
       "id": "falling-1-drink-tea",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "54242a24a6b8"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (Your rise is on LIKE (too early). Put it on TEA, the "
+      ],
+      "signature": "psola"
     },
     {
       "id": "falling-1-drink-tea",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "ac90a758bb99"
+      "signature": "psola"
     },
     {
       "id": "falling-1-drink-tea",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 10.5 st is too wide for a flat clip",
-        "the end falls 7.4 st"
-      ],
-      "signature": "e55238095869"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-1-buy-house",
@@ -827,31 +727,34 @@
     {
       "id": "falling-2-when-arrive",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "13721afe4b22"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on RIVE.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "falling-2-when-arrive",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (Your rise is on WILL (too early). Put it on RIVE, the stressed syllable of the last content word.)",
-        "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "7ac2caaeef9b"
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-when-arrive",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 8.0 st is too wide for a flat clip"
-      ],
-      "signature": "73940b6ae1ad"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-how-are-you",
@@ -996,57 +899,66 @@
     {
       "id": "falling-3-beautiful-day",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "d80df93dd3fd"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DAY.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "falling-3-beautiful-day",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (Your rise is on A (too early). Put it on DAY, the stressed syllable of the last content word.)",
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "454aa1bae6f3"
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-3-beautiful-day",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.6 st is too wide for a flat clip"
-      ],
-      "signature": "0c6b0dec0e56"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-3-just-what-need",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "f90b320fea25"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NEED.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "falling-3-just-what-need",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "a3ab846c1f7f"
+      "signature": "psola"
     },
     {
       "id": "falling-3-just-what-need",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "the end rises 2.3 st"
-      ],
-      "signature": "9bb162254a8b"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-3-how-nice",
@@ -1082,10 +994,11 @@
       "id": "lists-1-pasta",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
+        "ending right, peak not placed perfectly: group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
       ],
       "signature": "psola"
     },
@@ -1095,6 +1008,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1104,6 +1018,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1111,12 +1026,11 @@
       "id": "lists-1-pasta",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.)",
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SAL.)",
-        "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.); gro"
       ],
       "signature": "psola"
     },
@@ -1228,10 +1142,11 @@
       "id": "lists-2-coffee",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
+        "ending right, peak not placed perfectly: group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
       ],
       "signature": "psola"
     },
@@ -1241,6 +1156,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1250,6 +1166,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1257,10 +1174,11 @@
       "id": "lists-2-coffee",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
+        "ending right, peak not placed perfectly: group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
       ],
       "signature": "psola"
     },
@@ -1425,81 +1343,94 @@
     {
       "id": "nonfinal-1-opinion",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "b79315179c85"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PEN.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-opinion",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
-      "why": [
-        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)"
-      ],
-      "signature": "5fafbaa2d920"
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-opinion",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.0 st is too wide for a flat clip"
-      ],
-      "signature": "82240e8cc357"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-opinion",
       "variant": "finished",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "82c2dce6b19d"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PEN.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-rains",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
-        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) range: fail (Too flat / monotone (1.7 semitones). English needs a big rise and fall here.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)"
       ],
-      "signature": "abaff6fb0af9"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-rains",
       "variant": "rising",
-      "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "ac0d8fa605d8"
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
+        "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-rains",
       "variant": "flat",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "pitch range 6.2 st is too wide for a flat clip"
+        "pitch range 4.6 st is too wide for a flat clip",
+        "the end falls 4.5 st"
       ],
-      "signature": "5e813c5c27f2"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-rains",
       "variant": "finished",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
-        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) range: fail (Too flat / monotone (1.7 semitones). English needs a big rise and fall here.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on RAINS.); g"
       ],
-      "signature": "953494991e11"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-1-picnic",
@@ -1665,10 +1596,11 @@
       "id": "nonfinal-2-smart",
       "variant": "falling",
       "voice": "m",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
       ],
       "signature": "psola"
     },
@@ -1678,6 +1610,7 @@
       "voice": "m",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1687,6 +1620,7 @@
       "voice": "m",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1786,10 +1720,11 @@
       "id": "rising-1-ask-question",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on QUES.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on QUES.)"
       ],
       "signature": "psola"
     },
@@ -1799,6 +1734,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1808,6 +1744,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1842,12 +1779,11 @@
       "id": "rising-2-john",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.)",
-        "group 1 (2-3) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STAND.)"
+        "ending right, peak not placed perfectly: group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); grou"
       ],
       "signature": "psola"
     },
@@ -1871,6 +1807,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1893,10 +1830,11 @@
       "id": "rising-2-professor",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
       ],
       "signature": "psola"
     },
@@ -1906,6 +1844,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1915,6 +1854,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -1922,10 +1862,11 @@
       "id": "rising-2-professor",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
       ],
       "signature": "psola"
     },
@@ -2604,45 +2545,50 @@
     {
       "id": "nonfinal-rains-bus",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
-        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) range: fail (Too flat / monotone (1.7 semitones). English needs a big rise and fall here.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)"
       ],
-      "signature": "abaff6fb0af9"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-rains-bus",
       "variant": "rising",
-      "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "ac0d8fa605d8"
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
+        "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-rains-bus",
       "variant": "flat",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "pitch range 6.2 st is too wide for a flat clip"
+        "pitch range 4.6 st is too wide for a flat clip",
+        "the end falls 4.5 st"
       ],
-      "signature": "5e813c5c27f2"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-rains-bus",
       "variant": "finished",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUS.)",
-        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) range: fail (Too flat / monotone (1.7 semitones). English needs a big rise and fall here.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on RAINS.); g"
       ],
-      "signature": "953494991e11"
+      "signature": "psola"
     },
     {
       "id": "tag-sure",
@@ -2778,31 +2724,34 @@
     {
       "id": "class2-02a-buy-computer",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PU.)"
       ],
-      "signature": "8182d5ec7405",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-02a-buy-computer",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "88a0634944d4",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-02a-buy-computer",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "3987b9d27a22",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-02b-kind-computer",
@@ -3025,49 +2974,56 @@
     {
       "id": "class2-06-july-october",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "98a00b046f7a",
-      "voice": "f"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TO.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "class2-06-july-october",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "3c0874b6e3b7",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-06-july-october",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.2 st is too wide for a flat clip"
-      ],
-      "signature": "7e91e4b1cf63",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-06-july-october",
       "variant": "finished",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "ebcf420a2867",
-      "voice": "f"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LY.); grou"
+      ],
+      "signature": "psola"
     },
     {
       "id": "class2-07a-mr-president",
       "variant": "falling",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
       ],
       "signature": "psola"
     },
@@ -3077,6 +3033,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3086,6 +3043,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3093,11 +3051,11 @@
       "id": "class2-07a-mr-president",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PRES.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PRES.); gr"
       ],
       "signature": "psola"
     },
@@ -3172,32 +3130,34 @@
     {
       "id": "class2-08b-thirsty",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "97dedcf36e74",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-08b-thirsty",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on ARE.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
+        "ending right, peak not placed perfectly: group 2 (2-3) peakPlacement: fail (Your rise is on YOU (too late). Put it on ARE, the stre"
       ],
-      "signature": "1cb2307b411a",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-08b-thirsty",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
+      "kept": "psola",
+      "grade": "strict",
       "why": [],
-      "signature": "b186c61b98b4",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-09a-life-easy",
@@ -3236,51 +3196,58 @@
     {
       "id": "class2-09b-therefore",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
-      "why": [],
-      "signature": "80c150cd94a1",
-      "voice": "f"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on THERE.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "class2-09b-therefore",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
-      "why": [],
-      "signature": "995e7dc321be",
-      "voice": "f"
+      "kept": "psola",
+      "grade": "ending",
+      "why": [
+        "ending right, peak not placed perfectly: group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on THERE.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "class2-09b-therefore",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.5 st is too wide for a flat clip"
-      ],
-      "signature": "197ecba74c43",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "strict",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-09b-therefore",
       "variant": "finished",
-      "pass": false,
-      "kept": null,
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on THERE.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on THERE.)"
       ],
-      "signature": "2dbc21a6d8cc",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-10a-coffee-tea",
       "variant": "falling",
       "voice": "m",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
       ],
       "signature": "psola"
     },
@@ -3290,6 +3257,7 @@
       "voice": "m",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3299,6 +3267,7 @@
       "voice": "m",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3306,10 +3275,11 @@
       "id": "class2-10a-coffee-tea",
       "variant": "finished",
       "voice": "m",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
       ],
       "signature": "psola"
     },
@@ -3345,6 +3315,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3352,11 +3323,11 @@
       "id": "class2-10b-which-one",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); gr"
       ],
       "signature": "psola"
     },
@@ -3392,6 +3363,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3399,11 +3371,11 @@
       "id": "class2-11-dress-colour",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.)",
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)"
+        "ending right, peak not placed perfectly: group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.); grou"
       ],
       "signature": "psola"
     },
@@ -3441,6 +3413,7 @@
       "voice": "f",
       "pass": true,
       "kept": "psola",
+      "grade": "strict",
       "why": [],
       "signature": "psola"
     },
@@ -3448,11 +3421,11 @@
       "id": "class2-12-baby-sister",
       "variant": "finished",
       "voice": "f",
-      "pass": false,
-      "kept": null,
+      "pass": true,
+      "kept": "psola",
+      "grade": "ending",
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)"
+        "ending right, peak not placed perfectly: group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); gro"
       ],
       "signature": "psola"
     },

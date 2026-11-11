@@ -12,6 +12,7 @@
       "rising"
     ],
     "class2-02a-buy-computer": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -42,9 +43,12 @@
     "class2-06-july-october": [
       "falling",
       "finished",
+      "flat",
       "rising"
     ],
     "class2-07a-mr-president": [
+      "falling",
+      "finished",
       "flat",
       "rising"
     ],
@@ -59,26 +63,34 @@
     ],
     "class2-08b-thirsty": [
       "falling",
-      "flat"
+      "flat",
+      "rising"
     ],
     "class2-09a-life-easy": [
       "rising"
     ],
     "class2-09b-therefore": [
       "falling",
+      "finished",
+      "flat",
       "rising"
     ],
     "class2-10a-coffee-tea": [
+      "falling",
+      "finished",
       "flat",
       "rising"
     ],
     "class2-10b-which-one": [
+      "finished",
       "flat"
     ],
     "class2-11-dress-colour": [
+      "finished",
       "flat"
     ],
     "class2-12-baby-sister": [
+      "finished",
       "flat"
     ],
     "class2-13a-sir-cigar": [
@@ -121,6 +133,7 @@
     ],
     "falling-1-drink-tea": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-1-notebook": [
@@ -147,6 +160,7 @@
     ],
     "falling-2-when-arrive": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-2-where-going": [
@@ -161,6 +175,7 @@
     ],
     "falling-3-beautiful-day": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-3-come-see-me": [
@@ -173,6 +188,7 @@
     ],
     "falling-3-just-what-need": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-3-let-her-go": [
@@ -189,6 +205,8 @@
       "flat"
     ],
     "lists-1-pasta": [
+      "falling",
+      "finished",
       "flat",
       "rising"
     ],
@@ -196,6 +214,8 @@
       "flat"
     ],
     "lists-2-coffee": [
+      "falling",
+      "finished",
       "flat",
       "rising"
     ],
@@ -219,6 +239,7 @@
     "nonfinal-1-opinion": [
       "falling",
       "finished",
+      "flat",
       "rising"
     ],
     "nonfinal-1-picnic": [
@@ -226,7 +247,8 @@
       "finished"
     ],
     "nonfinal-1-rains": [
-      "rising"
+      "falling",
+      "finished"
     ],
     "nonfinal-2-amad": [
       "falling"
@@ -242,11 +264,13 @@
       "rising"
     ],
     "nonfinal-2-smart": [
+      "falling",
       "flat",
       "rising"
     ],
     "nonfinal-rains-bus": [
-      "rising"
+      "falling",
+      "finished"
     ],
     "rise-student": [
       "falling",
@@ -254,6 +278,7 @@
       "rising"
     ],
     "rising-1-ask-question": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -278,6 +303,7 @@
       "rising"
     ],
     "rising-2-john": [
+      "falling",
       "flat"
     ],
     "rising-2-mrs-smith": [
@@ -286,6 +312,8 @@
       "rising"
     ],
     "rising-2-professor": [
+      "falling",
+      "finished",
       "flat",
       "rising"
     ],

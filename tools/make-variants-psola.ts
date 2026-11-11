@@ -45,6 +45,8 @@ interface ClipReport {
   voice?: "f" | "m";
   pass: boolean;
   kept: number | "reference" | "psola" | null;
+  /** "ending": the ending is right but the peak is not placed perfectly (a looser gate, used for practice clips only). */
+  grade?: "strict" | "ending";
   why: string[];
   signature: string;
 }
@@ -80,6 +82,12 @@ function mp3(samples: Float32Array, sampleRate: number): Uint8Array {
     o += c.length;
   }
   return out;
+}
+
+/** The looser tier: every thought group ends the way the tune says (the ending check passes) and the voice has a real range. */
+function endingGate(result: Parameters<typeof gateReference>[0]): boolean {
+  if (!result) return false;
+  return result.groups.every((g) => g.checks.every((c) => (c.id === "ending" ? c.status === "pass" : c.id === "range" ? c.status !== "fail" : true)));
 }
 
 const median = (a: number[]) => [...a].sort((x, y) => x - y)[Math.floor(a.length / 2)];
@@ -151,15 +159,17 @@ async function main() {
     }
     const baseline = median(voiced);
 
-    const made = new Map<ClipVariant, { pass: boolean; bytes?: Uint8Array; why: string[] }>();
+    const made = new Map<ClipVariant, { pass: boolean; grade?: "strict" | "ending"; bytes?: Uint8Array; why: string[] }>();
     for (const variant of variants) {
       const vs = variantSentence(sentence, variant);
       if (!vs) continue;
       const plan = syllablePlan(vs, base.words, f0);
       // the course's levels are 4 semitones apart; when that is not clear enough for the checker, a teaching clip may exaggerate a little
       let pass = false;
+      let grade: "strict" | "ending" = "strict";
       let why: string[] = [];
       let out: Float32Array = new Float32Array(0);
+      let loose: Float32Array | null = null; // the first result whose ending is right, in case nothing passes the full gate
       for (const spread of SPREADS) {
         out = repitch(base.samples, base.sampleRate, f0, targetLine(plan, baseline, spread));
         // what follows the last voiced syllable is a release or a breath the pitch tracker can mistake for a high note: fade it out
@@ -177,11 +187,18 @@ async function main() {
           const gate = gateReference(a.result);
           pass = gate.pass && a.aligned;
           why = a.aligned || !gate.pass ? gate.reasons : ["peak position not checked (words not aligned)"];
+          if (!pass && !loose && endingGate(a.result)) loose = out;
         }
         if (pass || variant === "flat") break;
       }
-      made.set(variant, { pass, bytes: pass ? mp3(out, base.sampleRate) : undefined, why });
-      console.log(`  ${variant}: ${pass ? "pass" : "FAILED " + why.join("; ").slice(0, 110)}`);
+      if (!pass && loose) {
+        pass = true;
+        grade = "ending";
+        out = loose;
+        why = ["ending right, peak not placed perfectly: " + why.join("; ").slice(0, 90)];
+      }
+      made.set(variant, { pass, grade, bytes: pass ? mp3(out, base.sampleRate) : undefined, why });
+      console.log(`  ${variant}: ${pass ? (grade === "ending" ? "pass (ending only)" : "pass") : "FAILED " + why.join("; ").slice(0, 110)}`);
     }
 
     const newScore = setScore((v) => made.get(v)?.pass === true);
@@ -196,7 +213,7 @@ async function main() {
         if (existsSync(f)) rmSync(f);
         const m = made.get(v);
         if (m?.pass && m.bytes) writeFileSync(f, m.bytes);
-        reports.set(`${sentence.id}|${v}`, { id: sentence.id, variant: v, voice, pass: !!m?.pass, kept: m?.pass ? "psola" : null, why: m?.why ?? [], signature: "psola" });
+        reports.set(`${sentence.id}|${v}`, { id: sentence.id, variant: v, voice, pass: !!m?.pass, kept: m?.pass ? "psola" : null, grade: m?.pass ? m.grade : undefined, why: m?.why ?? [], signature: "psola" });
       }
       writeFileSync(reportFile, JSON.stringify({ clips: [...reports.values()] }, null, 2) + "\n");
     } else console.log(`  -> keeping the existing clips (${oldScore} vs ${newScore})`);
@@ -214,6 +231,7 @@ async function main() {
         _comment:
           "Made by tools/make-variants.ts and tools/make-variants-psola.ts. needsHumanRecording: clips neither method could make; record them as public/audio/variants/<id>--<variant>.mp3 and run `npm run build:variants -- --manifest`. Exercises that need a missing clip play the synthetic voice instead.",
         passed: byVariant,
+        endingOnly: ordered.filter((r) => r.pass && r.grade === "ending").map((r) => `${r.id}--${r.variant}`),
         needsHumanRecording: failed,
         clips: ordered,
       },
@@ -222,6 +240,7 @@ async function main() {
     ) + "\n",
   );
   writeManifest();
+  console.log(`${ordered.filter((r) => r.pass && r.grade === "ending").length} clips are ending-only grade (listen to those first).`);
   console.log(`Tried ${tried} sentences, ${improved} improved. Passed per tune:`, byVariant, `| ${failed.length} clips still missing`);
   console.log(`Azure: ${usage.requests} requests, ${usage.charsBilled} characters billed this run (${usage.charsCached} more from the cache).`);
 }

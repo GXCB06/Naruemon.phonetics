@@ -17,6 +17,7 @@ import {
 import type { Sentence } from "@/lib/intonation/types";
 import { prepareToPlay } from "@/components/audio/webAudio";
 import { clipRate } from "@/lib/learn/slow";
+import { getMelody } from "./clipSound";
 import { getSlow } from "./slow";
 import { EMPTY_VARIANTS, VARIANT_MANIFEST_URL, hasRealVariants, parseVariantManifest, variantUrl, type VariantManifest } from "@/lib/synth/variants";
 
@@ -177,7 +178,8 @@ export async function playReference(
   let buffer: AudioBuffer | null = null;
   if (opts.realVariants) {
     const vm = await loadVariantManifest();
-    if (hasRealVariants(vm, sentence.id, [...opts.realVariants, variant])) {
+    // melody mode: the learner chose the plain tune, so the real recordings are not used for practice clips
+    if (!getMelody() && hasRealVariants(vm, sentence.id, [...opts.realVariants, variant])) {
       buffer = await loadFile(c, variantUrl(sentence.id, variant));
       if (buffer) source = "file";
     }

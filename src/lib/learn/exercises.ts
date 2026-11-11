@@ -236,7 +236,10 @@ export function buildExercises(sentences: readonly Sentence[], lessonId: string)
     }
     if (type === "match") {
       // the sentence of this lesson whose three clips all exist as a real voice, when there is one
-      const real = sentences.filter((s) => hasRealVariants(REAL_CLIPS, s.id, MATCH_VARIANTS));
+      // (never the sentence of the exercise before or after, so no sentence comes twice in a row)
+      const before = i > 0 ? sentences[(cursor - 2 + sentences.length) % sentences.length] : null;
+      const after = sentences[cursor % sentences.length];
+      const real = sentences.filter((s) => hasRealVariants(REAL_CLIPS, s.id, MATCH_VARIANTS) && s !== before && s !== after);
       return makeMatch(real.length ? real[(i + lessonId.length) % real.length] : sentence, id);
     }
     if (type === "build") return makeBuild(sentence, id);

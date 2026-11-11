@@ -9,7 +9,7 @@ import { rightWrong } from "@/lib/learn/score";
 import { Bi } from "@/components/home/lang";
 import { PlaceholderBadge } from "./ListenButton";
 import { prefetchVariants } from "./playReference";
-import { MynaSays, Prompt, SlowToggle, SpeakerIcon, useClip, useNumberKeys } from "./ui";
+import { ClipSoundToggle, MynaSays, Prompt, SlowToggle, SpeakerIcon, useClip, useNumberKeys } from "./ui";
 import type { ExerciseApi } from "./types";
 
 const NAMES = ["A", "B"] as const;
@@ -145,7 +145,8 @@ export function HearIt({
         <p className="text-xl font-bold leading-snug sm:text-2xl">{sentence.text}</p>
       </MynaSays>
 
-      <div className="-mb-2 flex justify-end">
+      <div className="-mb-2 flex flex-wrap items-center justify-between gap-2">
+        <ClipSoundToggle />
         <SlowToggle />
       </div>
       <div
