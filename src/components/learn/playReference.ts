@@ -16,6 +16,8 @@ import {
 } from "@/lib/learn/reference";
 import type { Sentence } from "@/lib/intonation/types";
 import { prepareToPlay } from "@/components/audio/webAudio";
+import { clipRate } from "@/lib/learn/slow";
+import { getSlow } from "./slow";
 import { EMPTY_VARIANTS, VARIANT_MANIFEST_URL, hasRealVariants, parseVariantManifest, variantUrl, type VariantManifest } from "@/lib/synth/variants";
 
 export type ReferenceSource = "file" | "placeholder";
@@ -158,6 +160,8 @@ export async function playReference(
      * sits next to the synthetic one.
      */
     realVariants?: readonly ClipVariant[];
+    /** Playback speed (1 = normal). Default: the 🐢 Slow setting. */
+    rate?: number;
   } = {},
 ): Promise<Playing> {
   const textbook = endingOf(sentence);
@@ -191,6 +195,7 @@ export async function playReference(
 
   const node = c.createBufferSource();
   node.buffer = buffer;
+  node.playbackRate.value = opts.rate ?? clipRate(getSlow());
   node.connect(c.destination);
   const ended = new Promise<void>((resolve) => {
     node.onended = () => {

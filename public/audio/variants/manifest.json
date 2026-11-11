@@ -1,6 +1,85 @@
 {
   "_comment": "Real-voice practice clips per sentence id and tune (made by tools/make-variants.ts, or added by hand then run npm run build:variants -- --manifest). The app uses them only when every clip an exercise needs exists.",
   "clips": {
+    "class2-01a-know-woman": [
+      "flat",
+      "rising"
+    ],
+    "class2-01b-how-know-woman": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "class2-02a-buy-computer": [
+      "flat",
+      "rising"
+    ],
+    "class2-02b-kind-computer": [
+      "flat",
+      "rising"
+    ],
+    "class2-03a-do-you-work": [
+      "flat",
+      "rising"
+    ],
+    "class2-03b-where-work": [
+      "flat",
+      "rising"
+    ],
+    "class2-04-sports": [
+      "flat"
+    ],
+    "class2-05a-travel-march": [
+      "rising"
+    ],
+    "class2-05b-where-going": [
+      "falling"
+    ],
+    "class2-06-july-october": [
+      "falling",
+      "finished",
+      "rising"
+    ],
+    "class2-07b-emergency": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "class2-08a-coke-juice": [
+      "falling",
+      "rising"
+    ],
+    "class2-08b-thirsty": [
+      "falling",
+      "flat"
+    ],
+    "class2-09a-life-easy": [
+      "rising"
+    ],
+    "class2-09b-therefore": [
+      "falling",
+      "rising"
+    ],
+    "class2-10a-coffee-tea": [
+      "falling"
+    ],
+    "class2-13a-sir-cigar": [
+      "flat"
+    ],
+    "class2-13b-pick-up": [
+      "falling",
+      "rising"
+    ],
+    "class2-13c-now": [
+      "rising"
+    ],
+    "class2-14a-bravo": [
+      "flat"
+    ],
+    "class2-14b-opportunity": [
+      "falling",
+      "rising"
+    ],
     "fall-pretty-woman": [
       "falling",
       "rising"
@@ -13,6 +92,7 @@
       "rising"
     ],
     "falling-1-buy-house": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -33,7 +113,8 @@
       "rising"
     ],
     "falling-2-how-are-you": [
-      "falling"
+      "falling",
+      "flat"
     ],
     "falling-2-what-name": [
       "falling"
@@ -83,7 +164,7 @@
       "rising"
     ],
     "lists-2-red": [
-      "finished",
+      "falling",
       "rising"
     ],
     "nonfinal-1-fact": [
@@ -114,7 +195,7 @@
       "rising"
     ],
     "nonfinal-2-smart": [
-      "flat"
+      "rising"
     ],
     "nonfinal-rains-bus": [
       "rising"
@@ -147,8 +228,7 @@
       "rising"
     ],
     "rising-2-mrs-smith": [
-      "finished",
-      "flat"
+      "rising"
     ],
     "tag-sure": [
       "flat"
@@ -164,6 +244,9 @@
       "flat",
       "rising"
     ],
+    "tags-1-late": [
+      "flat"
+    ],
     "tags-2-harry": [
       "flat"
     ],
@@ -173,6 +256,9 @@
       "flat",
       "rising"
     ],
+    "tags-2-late": [
+      "flat"
+    ],
     "tags-3-harry": [
       "flat"
     ],
@@ -180,6 +266,9 @@
       "falling",
       "flat",
       "rising"
+    ],
+    "tags-3-late": [
+      "flat"
     ],
     "tags-3-nice-day": [
       "falling",

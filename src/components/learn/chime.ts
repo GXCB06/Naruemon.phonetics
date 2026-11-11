@@ -82,13 +82,19 @@ function play(build: (ctx: AudioContext, dest: AudioNode, t0: number) => void) {
     const ctx = prepareToPlay(); // shared context, playback session, resumed inside this tap (iPad)
     if (!ctx) return;
     build(ctx, out(ctx), ctx.currentTime + 0.02);
-  } catch {
-    // sound is optional
+  } catch (e) {
+    // sound is optional: never break a tap over it (but say why in the console, so a silent app can be diagnosed)
+    if (typeof console !== "undefined") console.warn("Myna sound effect failed:", e);
   }
 }
 
-/** A soft click when an answer card or tile is picked. */
+let lastTapAt = 0;
+
+/** A soft click when anything tappable is pressed (the app plays it for every button and link; see SfxClicks). */
 export function playTap() {
+  const now = typeof performance === "undefined" ? 0 : performance.now();
+  if (now - lastTapAt < 90) return; // one click per tap, however many places ask for it
+  lastTapAt = now;
   play((ctx, d, t) => note(ctx, d, { f: 740, to: 980, t, dur: 0.07, vol: 0.09, type: "triangle" }));
 }
 

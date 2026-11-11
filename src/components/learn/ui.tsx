@@ -6,6 +6,7 @@ import { Bi, useLang } from "@/components/home/lang";
 import type { Bilingual, Sentence } from "@/lib/intonation/types";
 import type { ClipVariant } from "@/lib/learn/exercises";
 import { playReference, stopReference, type ReferenceSource } from "./playReference";
+import { setSlow, useSlow } from "./slow";
 
 /** The one-line instruction at the top of every exercise: chosen language big, the other small underneath. */
 export function Prompt({ title, tip }: { title: Bilingual; tip?: Bilingual }) {
@@ -34,6 +35,26 @@ export function Prompt({ title, tip }: { title: Bilingual; tip?: Bilingual }) {
         </div>
       )}
     </div>
+  );
+}
+
+/** The 🐢 Slow switch: when it is on, every clip and every read-aloud is played slower. `compact` is just the turtle. */
+export function SlowToggle({ compact = false }: { compact?: boolean }) {
+  const slow = useSlow();
+  const lang = useLang();
+  const label = lang === "th" ? "เล่นช้า" : "Play slowly";
+  return (
+    <button
+      type="button"
+      aria-pressed={slow}
+      aria-label={label}
+      title={label}
+      onClick={() => setSlow(!slow)}
+      className={`pick inline-flex items-center justify-center gap-1.5 font-extrabold ${slow ? "is-on" : ""} ${compact ? "size-9 rounded-xl p-0 text-lg" : "px-3 py-1.5 text-sm"}`}
+    >
+      <span aria-hidden>🐢</span>
+      {!compact && <span>{lang === "th" ? "ช้า" : "Slow"}</span>}
+    </button>
   );
 }
 
@@ -105,17 +126,21 @@ export function SpeakerButton({
   const lang = useLang();
   const dim = size === "lg" ? "size-16 sm:size-20" : "size-12";
   return (
-    <button
-      type="button"
-      aria-label={lang === "th" ? `ฟัง: ${sentence.text}` : `Listen: ${sentence.text}`}
-      onClick={() => {
-        onPlay?.();
-        void play("main", sentence, { fairWith });
-      }}
-      className={`btn btn-accent shrink-0 rounded-2xl p-0! ${dim}`}
-    >
-      <SpeakerIcon className={size === "lg" ? "size-9 sm:size-11" : "size-7"} on={playing !== null} />
-    </button>
+    <div className="flex shrink-0 flex-col items-center gap-1.5">
+      <button
+        type="button"
+        data-sfx="none"
+        aria-label={lang === "th" ? `ฟัง: ${sentence.text}` : `Listen: ${sentence.text}`}
+        onClick={() => {
+          onPlay?.();
+          void play("main", sentence, { fairWith });
+        }}
+        className={`btn btn-accent shrink-0 rounded-2xl p-0! ${dim}`}
+      >
+        <SpeakerIcon className={size === "lg" ? "size-9 sm:size-11" : "size-7"} on={playing !== null} />
+      </button>
+      <SlowToggle compact />
+    </div>
   );
 }
 

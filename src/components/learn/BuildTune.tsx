@@ -6,7 +6,7 @@ import type { Sentence } from "@/lib/intonation/types";
 import { buildFeedback, sameTune, tuneTiles } from "@/lib/learn/build";
 import type { BuildExercise } from "@/lib/learn/exercises";
 import { rightWrong } from "@/lib/learn/score";
-import { playTap, playUntap } from "./chime";
+import { playUntap } from "./chime";
 import { MynaSays, Prompt, SpeakerButton } from "./ui";
 import type { ExerciseApi } from "./types";
 
@@ -44,7 +44,6 @@ export function BuildTune({
 
   const place = (i: number) => {
     if (locked || line.includes(i)) return;
-    playTap();
     setLine((l) => [...l, i]);
   };
   const unplace = (i: number) => {

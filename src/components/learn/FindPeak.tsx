@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import type { Sentence } from "@/lib/intonation/types";
 import { peakFeedback } from "@/lib/learn/feedback";
 import type { PeakExercise } from "@/lib/learn/exercises";
+import { classIpa } from "@/lib/ipa/notation";
 import { rightWrong } from "@/lib/learn/score";
 import { Bi } from "@/components/home/lang";
-import { playTap } from "./chime";
 import { MynaSays, Prompt, SpeakerButton } from "./ui";
 import type { ExerciseApi } from "./types";
 
@@ -99,7 +99,6 @@ export function FindPeak({
                         disabled={locked}
                         aria-pressed={isPicked}
                         onClick={() => {
-                          playTap();
                           setPicks((list) => list.map((p, i) => (i === gi ? { word: wi, syllable: si } : p)));
                         }}
                         className={`pick min-h-12 min-w-10 px-1.5 text-xl font-bold sm:text-2xl ${tone} ${
@@ -113,7 +112,7 @@ export function FindPeak({
                   })}
                 </div>
                 {/* no stress marks here: they would give the answer away */}
-                <span className="ipa text-sm text-muted">/{w.syllables.map((s) => s.ipa).join(".")}/</span>
+                <span className="ipa text-sm text-muted">/{classIpa(w.syllables.map((s) => s.ipa).join(""))}/</span>
               </div>
             ))}
           </div>

@@ -6,10 +6,10 @@ import type { Sentence } from "@/lib/intonation/types";
 import type { ClipVariant, MatchExercise } from "@/lib/learn/exercises";
 import { MATCH_LABEL, matchFeedback, matchScore } from "@/lib/learn/match";
 import { graded } from "@/lib/learn/score";
-import { playNoPair, playPair, playTap } from "./chime";
+import { playNoPair, playPair } from "./chime";
 import { PlaceholderBadge } from "./ListenButton";
 import { prefetchVariants } from "./playReference";
-import { Prompt, SpeakerIcon, useClip } from "./ui";
+import { Prompt, SlowToggle, SpeakerIcon, useClip } from "./ui";
 import type { ExerciseApi } from "./types";
 
 type Side = { side: "clip" | "label"; index: number };
@@ -55,7 +55,6 @@ export function MatchPairs({
     if (locked || found.includes(variantOf(s))) return;
     setWrong(null);
     if (!sel || sel.side === s.side) {
-      if (s.side === "label") playTap();
       setSel(sel && sel.side === s.side && sel.index === s.index ? null : s);
       return;
     }
@@ -88,8 +87,11 @@ export function MatchPairs({
       />
       <p className="text-lg font-bold leading-snug text-muted">“{sentence.text}”</p>
 
+      <div className="-mb-2 flex justify-end">
+        <SlowToggle />
+      </div>
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        <div className="flex flex-col gap-3" role="group" aria-label="Clips">
+        <div className="flex flex-col gap-3" role="group" aria-label="Clips" data-sfx="none">
           {exercise.clips.map((v, i) => {
             const s: Side = { side: "clip", index: i };
             const done = found.includes(v);

@@ -6,6 +6,8 @@ import { Bi, useLang } from "@/components/home/lang";
 import { TopBar } from "@/components/home/TopBar";
 import { useProgress } from "@/components/home/useProgress";
 import { speakWord } from "@/components/ipa/useIpaSound";
+import { playResult } from "@/components/learn/chime";
+import { setSlow, useSlow } from "@/components/learn/slow";
 import { SpeakerIcon } from "@/components/learn/ui";
 import { MynaBot } from "@/components/mascot/MynaBot";
 import { MicCheckButton } from "@/components/mic/MicCheckButton";
@@ -15,6 +17,7 @@ import { micGate, type GateReason } from "@/lib/audio/micProfile";
 import type { AzureAssessment } from "@/lib/azure/parse";
 import { overallWord, readReport, type ReadReport, type WordBand } from "@/lib/read/score";
 import { distinctKeys, readableSentences, tokenize, type SentenceSpan, type Token } from "@/lib/read/text";
+import { speechRate } from "@/lib/learn/slow";
 import { speakSentence } from "./tts";
 import { useReadScore } from "./useReadScore";
 
@@ -72,7 +75,7 @@ export function ReadAloud() {
   const [thai, setThai] = useState<string[] | null>(null);
   const [thaiLoad, setThaiLoad] = useState<Load>("idle");
   const [showThai, setShowThai] = useState(false);
-  const [slow, setSlow] = useState(false);
+  const slow = useSlow();
   const [playing, setPlaying] = useState<{ i: number; word: number } | null>(null);
   const [picked, setPicked] = useState<{ i: number; j: number } | null>(null);
   const [reports, setReports] = useState<Record<number, ReadReport>>({});
@@ -85,7 +88,9 @@ export function ReadAloud() {
     tokensRef.current = tokensBySentence;
   });
   const score = useReadScore((i, assessment: AzureAssessment) => {
-    setReports((r) => ({ ...r, [i]: readReport(tokensRef.current[i] ?? [], assessment) }));
+    const report = readReport(tokensRef.current[i] ?? [], assessment);
+    setReports((r) => ({ ...r, [i]: report }));
+    playResult((report.overall ?? 0) >= 70, { combo: 1, perfect: (report.overall ?? 0) >= 90 }); // best effort: the result arrives after the tap
   });
 
   useEffect(() => () => stopSpeech.current?.(), []);
@@ -140,7 +145,7 @@ export function ReadAloud() {
     const s = sentences![i];
     setPlaying({ i, word: -1 });
     stopSpeech.current = speakSentence(s.text, tokensBySentence[i], {
-      rate: slow ? 0.65 : 0.95,
+      rate: speechRate("sentence", slow),
       onWord: (word) => setPlaying({ i, word }),
       onEnd: () => setPlaying((p) => (p?.i === i ? null : p)),
     });
@@ -156,7 +161,7 @@ export function ReadAloud() {
 
   const tapWord = (i: number, j: number) => {
     setPicked({ i, j });
-    speakWord(tokensBySentence[i][j].text, slow ? 0.6 : 0.8);
+    speakWord(tokensBySentence[i][j].text, speechRate("word", slow));
   };
 
   // ---------------------------------------------------------------------------------------------------------
@@ -235,7 +240,7 @@ export function ReadAloud() {
         <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Options · ตัวเลือก">
           {toggle(showIpa, () => setShowIpa((v) => !v), { en: "IPA", th: "IPA" }, ipaLoad !== "ready")}
           {aiOn && toggle(showThai, toggleThai, { en: "ไทย", th: "แปลไทย" })}
-          {toggle(slow, () => setSlow((v) => !v), { en: "🐢 Slow", th: "🐢 ช้า" })}
+          {toggle(slow, () => setSlow(!slow), { en: "🐢 Slow", th: "🐢 ช้า" })}
           <button type="button" className="ml-auto rounded-xl px-3 py-2 text-sm font-extrabold uppercase tracking-wide text-muted hover:bg-line" onClick={() => setSentences(null)}>
             <Bi text={{ en: "New text", th: "ข้อความใหม่" }} className="items-center" />
           </button>
@@ -259,7 +264,7 @@ export function ReadAloud() {
           </p>
         )}
 
-        <ol className="flex flex-col gap-4">
+        <ol className="flex flex-col gap-4" data-sfx="none">
           {sentences.map((s, i) => {
             const tokens = tokensBySentence[i];
             const chips = pieces(s.text, tokens);
@@ -310,7 +315,7 @@ export function ReadAloud() {
                         {lang === "th" ? "คุณพูดเป็น" : "You said"} /{report.words[picked.j].spokenIpa}/
                       </span>
                     ) : null}
-                    <button type="button" className="ml-auto rounded-lg px-2 py-1 text-sm font-extrabold text-accent hover:bg-line/60" onClick={() => speakWord(tokens[picked.j].text, slow ? 0.6 : 0.8)}>
+                    <button type="button" className="ml-auto rounded-lg px-2 py-1 text-sm font-extrabold text-accent hover:bg-line/60" onClick={() => speakWord(tokens[picked.j].text, speechRate("word", slow))}>
                       <SpeakerIcon className="mr-1 inline size-5" /> <Bi text={{ en: "Again", th: "อีกครั้ง" }} inline className="flex-row! gap-1" />
                     </button>
                   </div>
@@ -375,7 +380,7 @@ export function ReadAloud() {
                   </div>
                 )}
 
-                {report && <ScoreCard report={report} onHear={(word) => speakWord(word, slow ? 0.6 : 0.8)} />}
+                {report && <ScoreCard report={report} onHear={(word) => speakWord(word, speechRate("word", slow))} />}
               </li>
             );
           })}

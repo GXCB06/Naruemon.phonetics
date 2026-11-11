@@ -16,6 +16,7 @@ import {
 import { MicError, MicRecorder, type MicErrorKind } from "@/lib/audio/recorder";
 import { encodeWav } from "@/lib/audio/wav";
 import type { MicProfile } from "@/lib/audio/micProfile";
+import { playResult } from "@/components/learn/chime";
 import { saveMicProfile } from "./micProfile";
 import type { Bilingual } from "@/lib/course/units";
 
@@ -153,6 +154,7 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
       verdict: summary.level === "fail" ? "fail" : summary.level === "warn" || noisyRoom ? "warn" : "good",
     };
     saveMicProfile(profile);
+    playResult(profile.verdict !== "fail", { combo: 1 }); // best effort: the verdict arrives after the tap
     onDoneRef.current?.(profile);
     setTake(encodeWav(clip, sr));
     setMeterDb(-120);
@@ -291,7 +293,7 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
       </div>
 
       {(phase === "idle" || phase === "error" || phase === "starting") && (
-        <button type="button" className="btn btn-accent min-h-14 text-lg" onClick={() => void start()} disabled={phase === "starting"}>
+        <button type="button" data-sfx="none" className="btn btn-accent min-h-14 text-lg" onClick={() => void start()} disabled={phase === "starting"}>
           <span aria-hidden>🎙️</span>
           <Bi
             text={phase === "starting" ? T.starting : phase === "error" ? T.tryAgain : T.start}
@@ -350,7 +352,7 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
           <p className="font-bold">
             <Bi text={T.recordHint} />
           </p>
-          <button type="button" className="btn btn-primary min-h-14 text-lg" onClick={startTest}>
+          <button type="button" data-sfx="none" className="btn btn-primary min-h-14 text-lg" onClick={startTest}>
             <span aria-hidden>⏺</span>
             <Bi text={T.record} className="items-start text-left" subClassName="!text-current opacity-80" />
           </button>
@@ -374,7 +376,7 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
           {verdict && <Message message={verdict} big />}
           {takeUrl && (
             <div className="card flex flex-col gap-3 p-4">
-              <button type="button" className="btn btn-accent min-h-14 text-lg" onClick={playBack}>
+              <button type="button" data-sfx="none" className="btn btn-accent min-h-14 text-lg" onClick={playBack}>
                 <span aria-hidden>▶</span>
                 <Bi text={T.play} className="items-start text-left" subClassName="!text-current opacity-80" />
               </button>

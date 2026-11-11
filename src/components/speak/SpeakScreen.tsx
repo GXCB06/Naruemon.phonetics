@@ -7,6 +7,7 @@ import { ContourChart } from "@/components/lab/ContourChart";
 import { KaraokeSentence } from "@/components/lab/KaraokeSentence";
 import { ResultPanel } from "@/components/lab/ResultPanel";
 import { PlaceholderBadge } from "@/components/learn/ListenButton";
+import { playResult } from "@/components/learn/chime";
 import { MynaSays, SpeakerButton, SpeakerIcon, useClip } from "@/components/learn/ui";
 import { MicCheckButton } from "@/components/mic/MicCheckButton";
 import { MicGateDialog } from "@/components/mic/MicGateDialog";
@@ -63,6 +64,7 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
   useEffect(() => {
     if (!analysis || !result || blocked || savedFor.current === analysis) return;
     savedFor.current = analysis;
+    playResult(result.overall >= 70, { combo: 1, perfect: result.overall >= 90 }); // best effort: the result arrives after the tap
     recordExerciseAttempt(sentence, "shadow", { passed: result.overall >= 70, analysis: result }); // never throws
     saveProgress(completeLesson(loadProgress(), speakKey(sentence.id), { score: result.overall, xp: Math.max(1, Math.round(result.overall / 10)) }));
     setSaved(result.overall);
@@ -138,7 +140,7 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
         </div>
 
         {phase === "recording" ? (
-          <button type="button" className="btn btn-bad w-full flex-col gap-1 py-5 text-lg" onClick={() => void take.stop()} aria-label={`Stop recording (${take.elapsed.toFixed(1)} seconds)`}>
+          <button type="button" data-sfx="none" className="btn btn-bad w-full flex-col gap-1 py-5 text-lg" onClick={() => void take.stop()} aria-label={`Stop recording (${take.elapsed.toFixed(1)} seconds)`}>
             <span className="flex h-8 items-end gap-1" aria-hidden>
               {[0, 1, 2, 3, 4, 5, 6].map((k) => (
                 <span key={k} className="w-1.5 rounded-full bg-white transition-[height] duration-100" style={{ height: `${18 + 82 * take.level * (0.55 + 0.45 * Math.abs(Math.sin(take.elapsed * 7 + k * 0.9)))}%` }} />
@@ -147,7 +149,7 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
             <Bi text={{ en: `Tap to stop · ${take.elapsed.toFixed(1)}s`, th: "แตะเพื่อหยุด" }} className="items-center leading-tight" subClassName="text-white/80" />
           </button>
         ) : phase === "done" || phase === "analyzing" ? null : (
-          <button type="button" className="btn btn-accent w-full gap-3 py-5 text-lg" onClick={speak} disabled={phase === "starting"}>
+          <button type="button" data-sfx="none" className="btn btn-accent w-full gap-3 py-5 text-lg" onClick={speak} disabled={phase === "starting"}>
             <svg viewBox="0 0 24 24" className="size-8" aria-hidden fill="currentColor">
               <rect x="9" y="3" width="6" height="11" rx="3" />
               <path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -254,7 +256,7 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
             )}
 
             {/* you next to the model */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3" data-sfx="none">
               <button type="button" className="pick flex min-h-16 items-center justify-center gap-3 px-3" onClick={playYou}>
                 <SpeakerIcon className="size-7" on={playingYou} />
                 <Bi text={{ en: "You", th: "คุณ" }} className="font-extrabold" />

@@ -301,7 +301,7 @@ export function LessonPlayer({
             </div>
           )}
           {phase === "answering" ? (
-            <button type="button" className="btn btn-primary btn-check w-full py-4 text-lg tracking-wide" onClick={onCheck} disabled={!check}>
+            <button type="button" data-sfx="none" className="btn btn-primary btn-check w-full py-4 text-lg tracking-wide" onClick={onCheck} disabled={!check}>
               <Bi text={{ en: "CHECK", th: "ตรวจคำตอบ" }} className="items-center leading-tight" subClassName="text-current" />
             </button>
           ) : (
@@ -311,7 +311,7 @@ export function LessonPlayer({
                   <Bi text={{ en: "TRY AGAIN", th: "ลองใหม่" }} className="items-center leading-tight" />
                 </button>
               )}
-              <button type="button" className={`btn flex-1 py-4 text-lg tracking-wide ${ok ? "btn-good" : "btn-bad"}`} onClick={next} autoFocus>
+              <button type="button" data-sfx="none" className={`btn flex-1 py-4 text-lg tracking-wide ${ok ? "btn-good" : "btn-bad"}`} onClick={next} autoFocus>
                 <Bi
                   text={index + 1 === exercises.length ? { en: "FINISH", th: "เสร็จสิ้น" } : ok ? { en: "CONTINUE", th: "ต่อไป" } : { en: "GOT IT", th: "เข้าใจแล้ว" }}
                   className="items-center leading-tight"

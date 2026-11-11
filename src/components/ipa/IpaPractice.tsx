@@ -311,7 +311,7 @@ export function IpaPractice() {
   const pct = Math.round(((index + (locked ? 1 : 0)) / ROUND) * 100);
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
+    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col" data-sfx="none">
       <Immersive />
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-bg px-4 py-3">
         <Link href="/" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl font-black text-muted hover:bg-line" aria-label="Leave practice">

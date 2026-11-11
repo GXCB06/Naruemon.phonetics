@@ -16,7 +16,6 @@ import { contentKeys, loadLesson } from "@/lib/learn/content";
 import { sameTextIds } from "@/lib/learn/reference";
 import { rightWrong } from "@/lib/learn/score";
 import { Bi } from "@/components/home/lang";
-import { playTap } from "./chime";
 import { MynaSays, Prompt, SpeakerButton, useNumberKeys } from "./ui";
 import type { ExerciseApi } from "./types";
 
@@ -60,7 +59,6 @@ export function MeaningMatch({
 
   const pick = (r: TagReading) => {
     if (locked) return;
-    playTap();
     setPicked(r);
   };
   useNumberKeys(MEANING_CHOICES.length, (i) => pick(MEANING_CHOICES[i].reading), !locked);

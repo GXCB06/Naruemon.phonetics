@@ -97,7 +97,7 @@ export function ListenButton({
 
   return (
     <div className="flex flex-col items-start gap-1">
-      <button type="button" className={className} onClick={() => void play()} aria-label={ariaLabel ?? `Listen: ${sentence.text}`}>
+      <button type="button" data-sfx="none" className={className} onClick={() => void play()} aria-label={ariaLabel ?? `Listen: ${sentence.text}`}>
         <span aria-hidden>{playing ? "🔊" : "▶"}</span>
         {label ? (
           <span>

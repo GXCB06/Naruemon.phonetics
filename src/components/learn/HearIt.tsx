@@ -9,7 +9,7 @@ import { rightWrong } from "@/lib/learn/score";
 import { Bi } from "@/components/home/lang";
 import { PlaceholderBadge } from "./ListenButton";
 import { prefetchVariants } from "./playReference";
-import { MynaSays, Prompt, SpeakerIcon, useClip, useNumberKeys } from "./ui";
+import { MynaSays, Prompt, SlowToggle, SpeakerIcon, useClip, useNumberKeys } from "./ui";
 import type { ExerciseApi } from "./types";
 
 const NAMES = ["A", "B"] as const;
@@ -145,8 +145,12 @@ export function HearIt({
         <p className="text-xl font-bold leading-snug sm:text-2xl">{sentence.text}</p>
       </MynaSays>
 
+      <div className="-mb-2 flex justify-end">
+        <SlowToggle />
+      </div>
       <div
         className="grid grid-cols-2 gap-3 sm:gap-4"
+        data-sfx="none" // the cards play the clip themselves
         role="radiogroup"
         aria-label={tag ? (tagAsk === "falling" ? "Pick the clip that sounds sure" : "Pick the clip that sounds like a real question") : `Pick the ${NAME[ask].pick} clip`}
       >

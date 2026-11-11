@@ -181,6 +181,7 @@ export function ShadowIt({
         <button
           type="button"
           className="btn btn-bad w-full flex-col gap-1 py-5 text-lg"
+          data-sfx="none"
           onClick={() => void stop()}
           aria-label={`Stop recording (${elapsed.toFixed(1)} seconds)`}
         >
@@ -199,6 +200,7 @@ export function ShadowIt({
         <button
           type="button"
           className="btn btn-accent w-full gap-3 py-5 text-lg"
+          data-sfx="none"
           onClick={speak}
           disabled={busy || locked}
         >

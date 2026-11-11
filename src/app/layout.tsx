@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_Thai, Nunito } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import { AudioUnlock } from "@/components/audio/AudioUnlock";
+import { SfxClicks } from "@/components/audio/SfxClicks";
 import { ThemeSync } from "@/components/theme/ThemeSync";
 import { TabBar } from "@/components/nav/TabBar";
 import { THEME_SCRIPT } from "@/lib/ui/theme";
@@ -44,9 +46,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <AudioUnlock />
+        <SfxClicks />
         <ThemeSync />
         {children}
         <TabBar />
+        {/* Vercel Web Analytics: page views only, no cookies, no learner content (switch it on in the Vercel project: Analytics tab) */}
+        <Analytics />
       </body>
     </html>
   );
