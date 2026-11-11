@@ -69,8 +69,18 @@ export function MatchPairs({
     setSel(null);
   };
 
+  /** The pair number (1, 2, 3 in the order they were matched) shown on both halves of a matched pair. */
+  const pairBadge = (s: Side) => {
+    const n = found.indexOf(variantOf(s));
+    return n < 0 ? null : (
+      <span className="absolute right-1.5 top-1 flex size-5 items-center justify-center rounded-full bg-good text-xs font-black text-white" aria-hidden>
+        {n + 1}
+      </span>
+    );
+  };
+
   const stateOf = (s: Side) => {
-    if (found.includes(variantOf(s))) return "is-done";
+    if (found.includes(variantOf(s))) return "is-right"; // green, with the pair number: which clip goes with which label stays readable
     if (wrong?.some((w) => w.side === s.side && w.index === s.index)) return "is-wrong shake";
     if (sel && sel.side === s.side && sel.index === s.index) return "is-on";
     return "";
@@ -101,7 +111,7 @@ export function MatchPairs({
                 key={`c${i}`}
                 type="button"
                 aria-pressed={sel?.side === "clip" && sel.index === i}
-                aria-label={`Clip ${i + 1}${done ? " (matched)" : ""}`}
+                aria-label={`Clip ${i + 1}${done ? ` (matched, pair ${found.indexOf(v) + 1})` : ""}`}
                 onClick={() => tap(s)}
                 className={`pick flex min-h-16 items-center justify-center gap-2 px-3 py-3 ${stateOf(s)}`}
               >
@@ -109,6 +119,7 @@ export function MatchPairs({
                   {i + 1}
                 </span>
                 <SpeakerIcon className="size-8" on={playing === `m${i}`} />
+                {pairBadge(s)}
               </button>
             );
           })}
@@ -130,6 +141,7 @@ export function MatchPairs({
                   {info?.arrow}
                 </span>
                 {info && <Bi text={info.label} className="min-w-0 font-extrabold leading-tight" />}
+                {pairBadge(s)}
               </button>
             );
           })}

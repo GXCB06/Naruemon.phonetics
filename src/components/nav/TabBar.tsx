@@ -205,6 +205,7 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <button
               type="button"
               role="switch"
+              aria-label="Sound effects"
               aria-checked={sound}
               onClick={() => setSfxEnabled(!sound)}
               className={`relative h-8 w-14 shrink-0 rounded-full transition-colors ${sound ? "bg-accent" : "bg-line"}`}
