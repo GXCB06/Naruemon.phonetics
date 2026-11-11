@@ -36,8 +36,8 @@ export const THRESHOLDS = {
   rangePass: 0.8,
   rangeWarn: 0.45,
   /** How far a falling pattern must drop from its peak by the end. */
-  fallPass: 1.0,
-  fallWarn: 0.6,
+  fallPass: 0.9,
+  fallWarn: 0.5,
   /** Shortest pause (seconds) that counts as a thought-group break in speech. */
   minBreakSec: 0.12,
 };
@@ -175,6 +175,10 @@ export function groupFeatures(pts: { t: number; v: number }[]): GroupFeatures {
   // Start/end use the unsmoothed values: smoothing near the edges blurs a final fall.
   const startLevel = mean(raw.slice(0, head));
   const endLevel = mean(raw.slice(n - tail));
+  // How low the voice got at the close: a learner who drops to low and then trails off (creaky or very quiet last frames, a
+  // final breath of pitch that lifts a little) has still fallen, so the falling check looks at the low part of the closing stretch.
+  const closing = raw.slice(n - Math.max(4, Math.round(n * 0.12))).sort((a, b) => a - b);
+  const endLow = Math.min(endLevel, mean(closing.slice(0, Math.max(2, Math.ceil(closing.length / 2)))));
   const before = mean(v.slice(Math.floor(n * 0.7), Math.max(Math.floor(n * 0.7) + 1, Math.floor(n * 0.85))));
   let maxI = 0;
   let minI = 0;
@@ -185,6 +189,7 @@ export function groupFeatures(pts: { t: number; v: number }[]): GroupFeatures {
   return {
     startLevel,
     endLevel,
+    endLow,
     maxLevel: v[maxI],
     minLevel: v[minI],
     range: percentile(v, 0.95) - percentile(v, 0.05),
@@ -234,6 +239,7 @@ function emptyFeatures(): GroupFeatures {
   return {
     startLevel: NaN,
     endLevel: NaN,
+    endLow: NaN,
     maxLevel: NaN,
     minLevel: NaN,
     range: 0,
@@ -326,7 +332,8 @@ function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
   switch (pattern) {
     case "2-3-1":
     case "3-1": {
-      const fall = f.maxLevel - f.endLevel;
+      const low = f.endLow;
+      const fall = f.maxLevel - low;
       if (up)
         return check(
           "ending",
@@ -334,9 +341,9 @@ function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
           "Your voice went UP at the end. This pattern must go DOWN to sound finished.",
           "เสียงของคุณขึ้นตอนท้าย รูปแบบนี้ต้องลงเสียงต่ำเพื่อให้ฟังดูจบประโยค",
         );
-      if (f.endLevel <= 1.5 && fall >= THRESHOLDS.fallPass)
+      if (low <= 1.6 && fall >= THRESHOLDS.fallPass)
         return check("ending", "pass", "Nice fall to low (level 1) at the end.", "เสียงตกลงต่ำ (ระดับ 1) ตอนจบได้ดี");
-      if (f.endLevel <= 2 && fall >= THRESHOLDS.fallWarn)
+      if (low <= 2.1 && fall >= THRESHOLDS.fallWarn)
         return check("ending", "warn", "Good direction — fall a bit lower at the end.", "ทิศทางถูกแล้ว ลงเสียงให้ต่ำกว่านี้อีกนิดตอนท้าย");
       return check(
         "ending",

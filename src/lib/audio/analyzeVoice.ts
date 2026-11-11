@@ -1,6 +1,6 @@
 import { analyze } from "../intonation/engine.ts";
 import type { AnalysisResult, Sentence } from "../intonation/types.ts";
-import { toLevelContour, trackPitch, type LevelContour } from "./pitch.ts";
+import { toLevelContour, trackSpeech, type LevelContour } from "./pitch.ts";
 import { assessQuality, trimSilence, type QualityReport } from "./quality.ts";
 import { resampleAudio } from "./resample.ts";
 import { encodeWav } from "./wav.ts";
@@ -21,7 +21,7 @@ export interface VoiceAnalysis {
 export function analyzeVoice(raw: Float32Array, sampleRate: number, sentence: Sentence): VoiceAnalysis {
   const samples = trimSilence(raw, sampleRate);
   const quality = assessQuality(samples, sampleRate);
-  const level = toLevelContour(trackPitch(samples, sampleRate));
+  const level = toLevelContour(trackSpeech(samples, sampleRate));
   const result = level
     ? analyze(sentence, level.contour, { modality: "speak", timingKnown: false, durationSec: level.durationSec })
     : null;

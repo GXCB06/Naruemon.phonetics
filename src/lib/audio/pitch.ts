@@ -53,6 +53,43 @@ export function trackPitch(samples: Float32Array, sampleRate: number, options: P
   return cleanPitch(gated, Math.max(1, Math.round(o.minRunSec / o.hopSec)));
 }
 
+/**
+ * Pitch of a learner's recording: the normal track, plus the trail-off. The end of a sentence is often quiet and creaky, which
+ * the normal clarity and loudness gates drop, so a voice that really went low looks as if it stopped high. A second, more
+ * permissive pass may only ADD frames just after the last normal one, and only as low as or lower than it (never a new rise).
+ */
+export function trackSpeech(samples: Float32Array, sampleRate: number, options: PitchOptions = {}): PitchFrame[] {
+  const strict = trackPitch(samples, sampleRate, options);
+  const relaxed = trackPitch(samples, sampleRate, { ...options, minClarity: 0.7, gateDb: -40 });
+  return extendTail(strict, relaxed);
+}
+
+/** Adds the voiced frames of `relaxed` that follow the last voiced frame of `strict` (see `trackSpeech`). Pure. */
+export function extendTail(strict: PitchFrame[], relaxed: PitchFrame[], maxExtraSec = 0.3): PitchFrame[] {
+  let last = -1;
+  for (let i = strict.length - 1; i >= 0; i--) {
+    if (strict[i].hz !== null) {
+      last = i;
+      break;
+    }
+  }
+  if (last < 0) return strict;
+  const tEnd = strict[last].time;
+  const ceiling = (strict[last].hz as number) * 1.12;
+  const take = new Map<number, number>(); // frame time (ms) -> hz
+  let prev = tEnd;
+  for (const f of relaxed) {
+    if (f.time <= tEnd + 1e-9) continue;
+    if (f.time > tEnd + maxExtraSec) break;
+    if (f.hz === null || f.hz > ceiling) continue;
+    if (f.time - prev > 0.04) break; // the trail has ended: do not bridge a gap
+    take.set(Math.round(f.time * 1000), f.hz);
+    prev = f.time;
+  }
+  if (take.size === 0) return strict;
+  return strict.map((f) => (f.hz === null && take.has(Math.round(f.time * 1000)) ? { ...f, hz: take.get(Math.round(f.time * 1000)) as number } : f));
+}
+
 /** Octave repair → median filter → drop voiced runs shorter than `minRun` frames. */
 export function cleanPitch(frames: PitchFrame[], minRun = 4): PitchFrame[] {
   const voiced = frames.filter((f) => f.hz !== null).map((f) => f.hz as number);

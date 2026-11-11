@@ -83,6 +83,8 @@ export interface Check {
 export interface GroupFeatures {
   startLevel: number;
   endLevel: number;
+  /** How low the voice got in the closing stretch (the lowest half of the last 12%): a trailing-off tail does not hide it. */
+  endLow: number;
   maxLevel: number;
   minLevel: number;
   /** p90 - p10 of the levels; 1 level = 4 semitones. */

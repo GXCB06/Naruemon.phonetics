@@ -168,3 +168,31 @@ describe("helpers", () => {
     expect(keys.at(-1)!.v).toBe(1);
   });
 });
+
+describe("a falling ending is judged by how low the voice got, not by its last breath", () => {
+  const s = getSentence("fall-pretty-woman")!;
+  /** 100 frames: rises 2 → 3 by 0.55, falls to `low` by 0.88, then the last 5% are `tail`. */
+  const contour = (low: number, tail: number): Contour =>
+    Array.from({ length: 100 }, (_, i) => {
+      const t = i / 99;
+      const v = t < 0.2 ? 2 : t < 0.55 ? 2 + (t - 0.2) / 0.35 : t < 0.88 ? 3 - ((t - 0.55) / 0.33) * (3 - low) : t < 0.95 ? low : tail;
+      return { t, v };
+    });
+  const run = (c: Contour) => analyze(s, c, { modality: "speak", timingKnown: false, durationSec: 2 });
+
+  it("drops to low and trails off a little higher: still a pass", () => {
+    expect(statusOf(run(contour(1.1, 1.75)), 0, "ending")).toBe("pass");
+  });
+
+  it("a fall to just a bit below normal is no longer a fail", () => {
+    expect(["pass", "warn"]).toContain(statusOf(run(contour(1.7, 1.7)), 0, "ending"));
+  });
+
+  it("a voice that never leaves its normal pitch still fails", () => {
+    expect(statusOf(run(contour(2.2, 2.2)), 0, "ending")).toBe("fail");
+  });
+
+  it("a voice that ends HIGH still fails", () => {
+    expect(statusOf(run(contour(1.2, 2.8)), 0, "ending")).toBe("fail");
+  });
+});

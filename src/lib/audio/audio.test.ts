@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { analyze } from "../intonation/engine.ts";
 import { getSentence } from "../intonation/lessons.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
-import { median, toLevelContour, trackPitch } from "./pitch.ts";
+import { extendTail, median, toLevelContour, trackPitch } from "./pitch.ts";
 import { assessQuality, trimSilence } from "./quality.ts";
 import { resampleAudio } from "./resample.ts";
 import { decodeWav, encodeWav } from "./wav.ts";
@@ -135,5 +135,28 @@ describe("recording quality", () => {
     const t = trimSilence(x, sr, 0.2);
     expect(t.length).toBeGreaterThan(sr * 1.3);
     expect(t.length).toBeLessThan(sr * 1.5);
+  });
+});
+
+describe("trail-off of a learner's voice", () => {
+  const frame = (time: number, hz: number | null) => ({ time, hz, clarity: 0.9, rms: 0.1 });
+  const strict = [...Array.from({ length: 10 }, (_, i) => frame(i * 0.01, 150)), ...Array.from({ length: 10 }, (_, i) => frame(0.1 + i * 0.01, null))];
+
+  it("adds the low frames right after the last voiced frame", () => {
+    const relaxed = strict.map((f, i) => (i >= 10 && i < 16 ? { ...f, hz: 120 } : f));
+    const out = extendTail(strict, relaxed);
+    expect(out.slice(10, 16).every((f) => f.hz === 120)).toBe(true);
+    expect(out.slice(16).every((f) => f.hz === null)).toBe(true);
+  });
+
+  it("never adds a rise, and does not bridge a gap", () => {
+    expect(extendTail(strict, strict.map((f, i) => (i >= 10 && i < 16 ? { ...f, hz: 220 } : f)))).toEqual(strict);
+    const gap = strict.map((f, i) => (i >= 15 && i < 18 ? { ...f, hz: 120 } : f));
+    expect(extendTail(strict, gap)).toEqual(strict);
+  });
+
+  it("leaves a recording without voice alone", () => {
+    const none = strict.map((f) => ({ ...f, hz: null }));
+    expect(extendTail(none, none)).toBe(none);
   });
 });
