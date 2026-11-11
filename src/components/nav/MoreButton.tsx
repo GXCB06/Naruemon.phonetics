@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLang } from "@/components/home/lang";
 import { MoreSheet } from "./TabBar";
 
-/** The menu button in the top bar: profile and sign-in, how Myna works, mic check, language, sound and theme. */
+/** The menu button in the top bar: profile and sign-in, how Melobi works, mic check, language, sound and theme. */
 export function MoreButton() {
   const [open, setOpen] = useState(false);
   const lang = useLang();

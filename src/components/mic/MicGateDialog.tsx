@@ -8,12 +8,12 @@ import { MicCheck } from "./MicCheck";
 
 const WHY: Record<GateReason, { en: string; th: string }> = {
   never: {
-    en: "First time speaking on this device? A 10-second check makes sure Myna can hear you well, so your score is fair.",
-    th: "ครั้งแรกที่พูดบนเครื่องนี้? เช็กไมค์ 10 วินาทีเพื่อให้ Myna ได้ยินชัด และคะแนนของคุณยุติธรรม",
+    en: "First time speaking on this device? A 10-second check makes sure Melobi can hear you well, so your score is fair.",
+    th: "ครั้งแรกที่พูดบนเครื่องนี้? เช็กไมค์ 10 วินาทีเพื่อให้ Melobi ได้ยินชัด และคะแนนของคุณยุติธรรม",
   },
   failed: {
-    en: "Last time Myna could barely hear you. Let's check the microphone again.",
-    th: "ครั้งก่อน Myna แทบไม่ได้ยินเสียงคุณ มาเช็กไมค์อีกครั้งกัน",
+    en: "Last time Melobi could barely hear you. Let's check the microphone again.",
+    th: "ครั้งก่อน Melobi แทบไม่ได้ยินเสียงคุณ มาเช็กไมค์อีกครั้งกัน",
   },
   changed: {
     en: "This looks like a different microphone. A quick check keeps your scores fair.",

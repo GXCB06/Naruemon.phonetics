@@ -1,4 +1,4 @@
-// Myna's own sound effects, made on the fly with Web Audio (no audio files, nothing borrowed from other apps).
+// Melobi's own sound effects, made on the fly with Web Audio (no audio files, nothing borrowed from other apps).
 // Every sound must start inside the learner's tap (iPad): call these from click handlers, never after an await.
 
 import { prepareToPlay } from "@/components/audio/webAudio";
@@ -84,7 +84,7 @@ function play(build: (ctx: AudioContext, dest: AudioNode, t0: number) => void) {
     build(ctx, out(ctx), ctx.currentTime + 0.02);
   } catch (e) {
     // sound is optional: never break a tap over it (but say why in the console, so a silent app can be diagnosed)
-    if (typeof console !== "undefined") console.warn("Myna sound effect failed:", e);
+    if (typeof console !== "undefined") console.warn("Melobi sound effect failed:", e);
   }
 }
 

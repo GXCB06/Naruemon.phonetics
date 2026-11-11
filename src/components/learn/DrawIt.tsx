@@ -157,7 +157,7 @@ export function DrawIt({
           </button>
           {askOn && (
             <button type="button" className="btn border-accent px-4 py-2 text-accent" onClick={() => setDetails("ask")}>
-              💬 Ask Myna <span className="thai text-sm font-semibold">ถาม Myna</span>
+              💬 Ask Melobi <span className="thai text-sm font-semibold">ถาม Melobi</span>
             </button>
           )}
         </div>

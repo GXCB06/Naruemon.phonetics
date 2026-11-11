@@ -6,7 +6,7 @@ import { parseReading, parseReadRequest } from "./readIpa.ts";
 
 const SENTENCE_ID = "falling-1-book-table";
 
-describe("Ask Myna requests", () => {
+describe("Ask Melobi requests", () => {
   const good = { sentenceId: SENTENCE_ID, assigned: [[2], [2], [2], [2], [2], [3], [1]], turns: [{ role: "user", content: "Why does it fall?" }] };
 
   it("accepts a real request", () => {
@@ -25,7 +25,7 @@ describe("Ask Myna requests", () => {
   });
 });
 
-describe("Ask Myna about other exercises (Why?)", () => {
+describe("Ask Melobi about other exercises (Why?)", () => {
   const why = { sentenceId: SENTENCE_ID, assigned: [], about: "peak", turns: [{ role: "user", content: "Why is the correct answer right?" }] };
 
   it("accepts every exercise type, with no answer data", () => {
@@ -53,7 +53,7 @@ describe("Ask Myna about other exercises (Why?)", () => {
   });
 });
 
-describe("Ask Myna prompt", () => {
+describe("Ask Melobi prompt", () => {
   const sentence = findSentence(SENTENCE_ID)!;
   const target = targetLevels(drawGroupsOf(sentence));
 
@@ -75,13 +75,13 @@ describe("Ask Myna prompt", () => {
 
   it("refuses a drawing that doesn't fit the sentence", () => {
     expect(askSystemPrompt(sentence, [[2]])).toBeNull();
-    expect(askSystemPrompt(sentence, target)).toContain("You are Myna");
+    expect(askSystemPrompt(sentence, target)).toContain("You are Melobi");
   });
 
   it("reads the structured answer", () => {
     expect(parseAnswer('{"en":"Because it is finished.","th":"เพราะพูดจบแล้ว"}')).toEqual({ en: "Because it is finished.", th: "เพราะพูดจบแล้ว" });
     expect(parseAnswer("not json")).toBeNull();
-    // Myna has no gender: polite particles are dropped, words that contain คะ are not touched
+    // Melobi has no gender: polite particles are dropped, words that contain คะ are not touched
     expect(parseAnswer('{"en":"x","th":"ไม่ใช่คำสุดท้ายค่ะ เราจะขึ้นเสียงที่ TA นะครับ ได้คะแนนดี"}')?.th).toBe("ไม่ใช่คำสุดท้าย เราจะขึ้นเสียงที่ TA นะ ได้คะแนนดี");
     expect(parseAnswer('{"en":"","th":"x"}')).toBeNull();
   });

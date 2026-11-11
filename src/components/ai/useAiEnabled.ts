@@ -29,9 +29,9 @@ export type AiError = "rate_limited" | "refused" | "offline" | "other";
 
 /** Bilingual line for a failed AI request. */
 export const AI_ERROR: Record<AiError, { en: string; th: string }> = {
-  rate_limited: { en: "Myna needs a short break. Try again in a minute.", th: "Myna ขอพักสักครู่ ลองใหม่อีกหนึ่งนาที" },
-  refused: { en: "Myna can't answer that one. Try asking about the intonation.", th: "Myna ตอบคำถามนี้ไม่ได้ ลองถามเรื่องทำนองเสียงดูนะ" },
-  offline: { en: "Can't reach Myna. Check your internet and try again.", th: "ติดต่อ Myna ไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่" },
+  rate_limited: { en: "Melobi needs a short break. Try again in a minute.", th: "Melobi ขอพักสักครู่ ลองใหม่อีกหนึ่งนาที" },
+  refused: { en: "Melobi can't answer that one. Try asking about the intonation.", th: "Melobi ตอบคำถามนี้ไม่ได้ ลองถามเรื่องทำนองเสียงดูนะ" },
+  offline: { en: "Can't reach Melobi. Check your internet and try again.", th: "ติดต่อ Melobi ไม่ได้ ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่" },
   other: { en: "Something went wrong. Try again.", th: "เกิดข้อผิดพลาด ลองใหม่อีกครั้ง" },
 };
 

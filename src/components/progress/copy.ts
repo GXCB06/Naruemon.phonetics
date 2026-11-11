@@ -10,8 +10,8 @@ export const COPY = {
   empty: {
     title: { en: "Nothing here yet", th: "ยังไม่มีข้อมูล" } satisfies Bilingual,
     body: {
-      en: "Do your first lesson and Myna will show where you are strong and what to practise next.",
-      th: "ลองเรียนบทแรก แล้ว Myna จะบอกว่าคุณเก่งเรื่องไหนและควรฝึกอะไรต่อ",
+      en: "Do your first lesson and Melobi will show where you are strong and what to practise next.",
+      th: "ลองเรียนบทแรก แล้ว Melobi จะบอกว่าคุณเก่งเรื่องไหนและควรฝึกอะไรต่อ",
     } satisfies Bilingual,
     start: { en: "Start a lesson", th: "เริ่มเรียน" } satisfies Bilingual,
   },

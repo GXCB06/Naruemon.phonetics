@@ -43,7 +43,7 @@ export function ShadowIt({
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
-  /** Set while the mic check dialog is open before speaking; the reason says why Myna is asking. */
+  /** Set while the mic check dialog is open before speaking; the reason says why Melobi is asking. */
   const [gate, setGate] = useState<GateReason | null>(null);
   /** The microphone in use is not the one that was checked (known once the mic is open). */
   const [micChanged, setMicChanged] = useState(false);

@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 
-// "Has this learner seen the How-Myna-works intro?" Remembered in localStorage (per device), like the UI language.
+// "Has this learner seen the How-Melobi-works intro?" Remembered in localStorage (per device), like the UI language.
 // The server snapshot says "seen", so returning learners never get a flash of the intro; a fresh visitor sees the
 // home path for one frame after hydration, then the intro.
 

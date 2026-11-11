@@ -29,7 +29,7 @@ export function Lab() {
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-6 sm:py-10">
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <div className="text-sm font-extrabold uppercase tracking-widest text-accent">Myna · Phase 0a lab</div>
+          <div className="text-sm font-extrabold uppercase tracking-widest text-accent">Melobi · Phase 0a lab</div>
           <h1 className="text-3xl font-black tracking-tight">Say it or draw it</h1>
         </div>
         <p className="max-w-sm text-sm text-muted">

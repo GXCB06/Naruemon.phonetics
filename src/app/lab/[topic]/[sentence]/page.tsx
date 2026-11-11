@@ -5,7 +5,7 @@ import { SpeakScreen } from "@/components/speak/SpeakScreen";
 import { allSentences } from "@/lib/learn/content";
 import { SPEAK_TOPICS, topicById, topicSentences } from "@/lib/speak/topics";
 
-export const metadata: Metadata = { title: "Speak — Myna", robots: { index: false } };
+export const metadata: Metadata = { title: "Speak — Melobi", robots: { index: false } };
 
 export function generateStaticParams() {
   const all = allSentences();

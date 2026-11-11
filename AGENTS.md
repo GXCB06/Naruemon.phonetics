@@ -8,7 +8,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Myna — project instructions
+# Melobi — project instructions
 
 **Read `SPEC.md` first.** It is the build spec and handoff: product, the intonation rules from the course, the current code,
 the roadmap with acceptance criteria, env vars and the database schema. Background: `docs/PLAN.md`, `docs/research-open-source-and-apis.md`.
@@ -21,6 +21,6 @@ Must-follow rules (details in SPEC.md §4):
 - Before finishing a task: `npm test && npm run lint && npx tsc --noEmit && npm run build`. Add tests for engine/audio changes
   (use `synthesizeSentence` + `ERROR_STYLES`).
 - No GPL/AGPL/unlicensed/non-commercial code or models in the app; GPL tools only in local/build scripts.
-- No Duolingo name, owl, colours, fonts, sounds or art. Use the Myna tokens in `src/app/globals.css`.
+- No Duolingo name, owl, colours, fonts, sounds or art. Use the Melobi tokens in `src/app/globals.css`.
 - Audio: native-rate AudioContext (never request 16 kHz), AEC/NS/AGC off, start audio inside the user's tap.
 - Secrets stay server-side; don't commit `.env*`; don't store learner audio without opt-in.

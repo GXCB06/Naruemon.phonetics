@@ -8,7 +8,7 @@ import type { Sentence } from "@/lib/intonation/types";
 import { AskMyna } from "./AskMyna";
 
 /**
- * "Why?" on the result sheet after a wrong answer: opens Ask Myna, which explains straight away why the course answer is
+ * "Why?" on the result sheet after a wrong answer: opens Ask Melobi, which explains straight away why the course answer is
  * right. Hidden when the server has no AI key.
  */
 export function WhyButton({ sentence, exercise }: { sentence: Sentence; exercise: Exclude<AskAbout, "draw"> }) {
@@ -32,10 +32,10 @@ export function WhyButton({ sentence, exercise }: { sentence: Sentence; exercise
         className="mt-2 inline-flex items-center gap-1.5 rounded-xl border-2 border-current/30 px-3 py-1.5 text-sm font-extrabold hover:bg-current/10"
       >
         <span aria-hidden>💬</span>
-        <Bi text={{ en: "Why? Ask Myna", th: "ทำไม? ถาม Myna" }} inline className="flex-row! items-baseline gap-1.5" />
+        <Bi text={{ en: "Why? Ask Melobi", th: "ทำไม? ถาม Melobi" }} inline className="flex-row! items-baseline gap-1.5" />
       </button>
       {open && (
-        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:items-center sm:justify-center" role="dialog" aria-label="Ask Myna" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-40 flex items-end bg-black/40 sm:items-center sm:justify-center" role="dialog" aria-label="Ask Melobi" onClick={() => setOpen(false)}>
           <div
             className="sheet-up max-h-[85dvh] w-full overflow-y-auto rounded-t-3xl bg-card p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-ink sm:max-w-lg sm:rounded-3xl"
             onClick={(e) => e.stopPropagation()}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SpeakHub } from "@/components/speak/SpeakHub";
 
 export const metadata: Metadata = {
-  title: "Speak — Myna",
+  title: "Speak — Melobi",
   description: "Pick a kind of sentence, say it aloud, and see your tune next to the target.",
 };
 

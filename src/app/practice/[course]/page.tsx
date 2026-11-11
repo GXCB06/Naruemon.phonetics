@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { DrillPlayer } from "@/components/practice/DrillPlayer";
 import { COURSES, courseById } from "@/lib/practice/courses";
 
-export const metadata: Metadata = { title: "Practice — Myna", robots: { index: false } };
+export const metadata: Metadata = { title: "Practice — Melobi", robots: { index: false } };
 
 export function generateStaticParams() {
   return COURSES.map((c) => ({ course: c.id }));

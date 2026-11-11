@@ -3,7 +3,7 @@ import { aiConfigured, aiJson, sameOrigin } from "../../../lib/ai/aiServer.ts";
 import { clientIp, createRateLimiter } from "../../../lib/azure/token.ts";
 import { findSentence } from "../../../lib/learn/content.ts";
 
-// Ask Myna: a student's "why?" about one course sentence and their own drawing. Answers { en, th }.
+// Ask Melobi: a student's "why?" about one course sentence and their own drawing. Answers { en, th }.
 // GET tells the page whether the feature is on (it is off without ANTHROPIC_API_KEY or GEMINI_API_KEY).
 
 const NO_STORE = { "Cache-Control": "no-store" };

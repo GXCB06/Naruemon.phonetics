@@ -79,7 +79,7 @@ export function IpaPractice() {
   const [look, setLook] = useState<{ x: number; y: number } | null>(null);
   const coachTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(coachTimer.current), []);
-  // Write mode: Myna (Claude, on the server) can read the handwriting; the student confirms or fixes it, the app grades it
+  // Write mode: Melobi (Claude, on the server) can read the handwriting; the student confirms or fixes it, the app grades it
   const readOn = useAiEnabled("/api/read-ipa");
   // tapping a tile says its sound (the recording if there is one, otherwise the key word: "think" for θ)
   const [tileSounds, setTileSounds] = useState(true);
@@ -106,7 +106,7 @@ export function IpaPractice() {
     const png = pad.current?.toPng();
     if (!png || reading === "busy") return;
     setReading("busy");
-    setReadNote({ en: "Myna is reading your writing…", th: "Myna กำลังอ่านลายมือของคุณ…" });
+    setReadNote({ en: "Melobi is reading your writing…", th: "Melobi กำลังอ่านลายมือของคุณ…" });
     clearTimeout(coachTimer.current);
     setCoach("thinking");
     try {
@@ -124,7 +124,7 @@ export function IpaPractice() {
       setReadNote(
         syms.length
           ? { en: `Is this what you wrote?${unsure} Fix any symbol below, then press CHECK.`, th: "ใช่สิ่งที่คุณเขียนไหม? แก้สัญลักษณ์ได้ด้านล่าง แล้วกด CHECK" }
-          : { en: "Myna couldn't read it. Write bigger, or tap the symbols below.", th: "Myna อ่านไม่ออก ลองเขียนให้ใหญ่ขึ้น หรือแตะสัญลักษณ์ด้านล่าง", error: true },
+          : { en: "Melobi couldn't read it. Write bigger, or tap the symbols below.", th: "Melobi อ่านไม่ออก ลองเขียนให้ใหญ่ขึ้น หรือแตะสัญลักษณ์ด้านล่าง", error: true },
       );
       flash(syms.length ? "wink" : "sad", 1200);
     } catch {
@@ -187,7 +187,7 @@ export function IpaPractice() {
                 en: "Write it",
                 th: "เขียนด้วยมือ",
                 sub: readOn
-                  ? { en: "Write with your Pencil; Myna reads it, you check it. iPad recommended.", th: "เขียนด้วยปากกา Myna อ่านให้ แล้วคุณตรวจอีกครั้ง แนะนำ iPad" }
+                  ? { en: "Write with your Pencil; Melobi reads it, you check it. iPad recommended.", th: "เขียนด้วยปากกา Melobi อ่านให้ แล้วคุณตรวจอีกครั้ง แนะนำ iPad" }
                   : { en: "Write with your Pencil, then tap what you wrote. iPad recommended.", th: "เขียนด้วยปากกา แล้วแตะสัญลักษณ์ที่เขียน แนะนำ iPad" },
               },
             ] as const

@@ -1,4 +1,4 @@
-// Generate Myna's app icons from the orb art (same shapes and colours as src/components/mascot/MynaBot.tsx).
+// Generate Melobi's app icons from the orb art (same shapes and colours as src/components/mascot/MynaBot.tsx).
 //
 //   node tools/make-icons.ts
 //

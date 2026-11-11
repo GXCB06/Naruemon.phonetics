@@ -1,4 +1,4 @@
-// Small inline SVG icons for the My Progress screen, drawn for Myna. They carry meaning next to colour:
+// Small inline SVG icons for the My Progress screen, drawn for Melobi. They carry meaning next to colour:
 // a heat-map cell is never "just green", it also has a symbol and a number.
 
 import type { Band } from "@/lib/progress/view.ts";

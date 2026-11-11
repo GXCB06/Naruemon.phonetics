@@ -59,7 +59,7 @@ export function ProgressScreen() {
             aria-label={`${COPY.back.en} · ${COPY.back.th}`}
           >
             <BackIcon />
-            <span className="hidden sm:inline">Myna</span>
+            <span className="hidden sm:inline">Melobi</span>
           </Link>
           <h1 className="min-w-0 truncate text-lg font-black leading-tight">
             <Bi text={COPY.title} />

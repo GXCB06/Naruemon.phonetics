@@ -1,6 +1,6 @@
 # Intonation Coach for Thai learners of English: build plan
 
-Working name: **"Myna"** (นกขุนทอง, the hill myna: a bird famous for copying human speech, and a natural mascot).
+Working name: **"Melobi"** (นกขุนทอง, the hill myna: a bird famous for copying human speech, and a natural mascot).
 Target: a web app on Vercel that records a learner saying a sentence, analyses its intonation against
 the patterns taught in class, and shows IPA under every word. Gamified UX in the style of Duolingo, with original art and branding.
 
@@ -67,7 +67,7 @@ The example sentences in both documents become the first lesson content: about 8
 |---|---|---|
 | Framework | **Next.js (App Router) + TypeScript** | Vercel's native framework; route handlers act as the API |
 | Styling/UI | **Tailwind CSS** + own components, **Motion** (Framer Motion) for bouncy transitions | Lets us build a rounded, chunky, game-like look |
-| Mascot animation | **Rive** (or Lottie) | Myna reacts: happy, thinking, "try again" |
+| Mascot animation | **Rive** (or Lottie) | Melobi reacts: happy, thinking, "try again" |
 | Sound effects | `use-sound` / Howler | Correct/incorrect chimes and lesson-complete fanfare |
 | Fonts | **Nunito** (UI), **IBM Plex Sans Thai** or **Noto Sans Thai** (Thai), **Doulos SIL** or **Noto Sans** (IPA) | IPA glyphs (ʊ ə ˈ ˌ ɹ) need a font that actually has them |
 | Recording | **Web Audio API + AudioWorklet** at the device's native rate → own 48→16 kHz downsampler + WAV encoder | Not MediaRecorder (see section 4). Ready-made option: `recorder-audio-worklet` (MIT, 2 KB, active). Avoid RecordRTC, Recorderjs and audio-recorder-polyfill (stale, unlicensed or archived) |
@@ -358,7 +358,7 @@ Borrow the **patterns** that make Duolingo work. Do **not** copy its name, owl, 
 - Non-commercial model weights: the MMS forced aligner, ZIPA "-ns" models, F5-TTS, XTTS-v2.
 - Repos with **no license**, which means no permission to copy: the original "Lingo" Duolingo-clone tutorial, kylebgorman/syllabify, Recorderjs, IntonationCoach.
   Learn from them; write our own code.
-- **Duolingo-style assets:** the mascot and sounds inside the MIT "Lingo" re-upload (sanidhyy/duolingo-clone). Use only our own Myna art and sounds.
+- **Duolingo-style assets:** the mascot and sounds inside the MIT "Lingo" re-upload (sanidhyy/duolingo-clone). Use only our own Melobi art and sounds.
 - Stale or archived dependencies: RecordRTC, aubiojs, Gruut, OpenPhonemizer, Charsiu, AuToBI.
 
 ---

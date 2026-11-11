@@ -1,4 +1,4 @@
-// Server-only: one JSON-answer call for the app's AI features (Ask Myna, reading handwritten IPA), through Claude or Gemini.
+// Server-only: one JSON-answer call for the app's AI features (Ask Melobi, reading handwritten IPA), through Claude or Gemini.
 // Which provider: AI_PROVIDER ("claude" | "gemini") if set, otherwise whichever key exists (Claude first). Keys stay on the
 // server; without any key every AI route answers 501 and the app hides the features. Not pure (network): never import
 // this from client components.
@@ -10,7 +10,7 @@ export const CLAUDE_MODEL = "claude-opus-5-5";
 /**
  * Gemini models to try, in order: when one is busy (503), out of quota (429) or too slow, the next one answers.
  * Free-tier Flash models are often overloaded at peak times. In tests (2026-11) Flash-Lite read handwriting correctly
- * and fastest, so reading ("fast") starts there; Ask Myna ("quality") starts with Flash, whose explanations were better.
+ * and fastest, so reading ("fast") starts there; Ask Melobi ("quality") starts with Flash, whose explanations were better.
  * GEMINI_MODEL (comma-separated) replaces both lists.
  */
 export const GEMINI_MODELS = {

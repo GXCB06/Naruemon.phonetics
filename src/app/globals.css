@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Myna palette: warm paper, ink, myna-beak yellow, deep teal. */
+/* Melobi palette: warm paper, ink, myna-beak yellow, deep teal. */
 :root {
   --bg: #fffbf2;
   --card: #ffffff;
@@ -261,7 +261,7 @@ body {
   font-weight: 800;
   opacity: 0.55;
 }
-/* Myna's speech bubble */
+/* Melobi's speech bubble */
 .bubble {
   position: relative;
   border: 2px solid var(--line);
@@ -424,7 +424,7 @@ body {
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
-   Myna the bot (MynaBot): data-mood picks the face, the body animation sells the feeling
+   Melobi the bot (MynaBot): data-mood picks the face, the body animation sells the feeling
    --------------------------------------------------------------------------------------------------------------- */
 .bot { display: block; overflow: visible; flex: none; }
 .bot .b-body, .bot .eye, .bot .b-face, .bot .fx > * { transform-box: fill-box; transform-origin: center; }

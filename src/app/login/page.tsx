@@ -7,8 +7,8 @@ import { safeNextPath } from "@/lib/supabase/redirect";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
-  title: "Sign in — Myna",
-  description: "Sign in to Myna to save your intonation practice.",
+  title: "Sign in — Melobi",
+  description: "Sign in to Melobi to save your intonation practice.",
 };
 
 // Bilingual messages for ?error=<code> (set by /auth/callback).
@@ -33,7 +33,7 @@ export default function LoginPage({ searchParams }: { searchParams: SearchParams
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-4 py-10">
       <Link href="/" className="inline-flex w-fit items-center gap-1 text-sm font-semibold text-muted hover:text-ink">
-        <span aria-hidden>←</span> Myna
+        <span aria-hidden>←</span> Melobi
       </Link>
 
       <header className="flex flex-col gap-1">
@@ -71,11 +71,11 @@ async function LoginBody({ searchParams }: { searchParams: SearchParams }) {
         <p className="mt-3 text-sm">
           Add <code className="rounded bg-card px-1">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
           <code className="rounded bg-card px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> to <code>.env.local</code>, then restart the
-          dev server. See <code>docs/supabase-setup.md</code>. Everything else in Myna still works without signing in.
+          dev server. See <code>docs/supabase-setup.md</code>. Everything else in Melobi still works without signing in.
         </p>
         <p className="thai mt-2 text-sm">
           เพิ่มค่า NEXT_PUBLIC_SUPABASE_URL และ NEXT_PUBLIC_SUPABASE_ANON_KEY ในไฟล์ .env.local แล้วรีสตาร์ทเซิร์ฟเวอร์
-          ส่วนอื่นของ Myna ยังใช้งานได้โดยไม่ต้องเข้าสู่ระบบ
+          ส่วนอื่นของ Melobi ยังใช้งานได้โดยไม่ต้องเข้าสู่ระบบ
         </p>
         <Link href="/lab" className="btn btn-primary mt-4">
           Open the lab · <span className="thai">เปิดห้องทดลอง</span>
@@ -95,9 +95,9 @@ async function LoginBody({ searchParams }: { searchParams: SearchParams }) {
         <div className="card flex items-start gap-3 p-4">
           <MynaBot mood="wink" className="size-14 shrink-0" />
           <p className="font-bold">
-            Sign in to save your progress and use Myna on every device. You can also do it later.
+            Sign in to save your progress and use Melobi on every device. You can also do it later.
             <span className="thai mt-1 block text-sm font-semibold text-muted">
-              เข้าสู่ระบบเพื่อบันทึกความก้าวหน้าและใช้ Myna ได้ทุกเครื่อง จะทำทีหลังก็ได้
+              เข้าสู่ระบบเพื่อบันทึกความก้าวหน้าและใช้ Melobi ได้ทุกเครื่อง จะทำทีหลังก็ได้
             </span>
           </p>
         </div>

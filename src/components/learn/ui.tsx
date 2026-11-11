@@ -58,7 +58,7 @@ export function SlowToggle({ compact = false }: { compact?: boolean }) {
   );
 }
 
-/** Myna with a speech bubble: the sentence (or a short scene) the exercise is about. */
+/** Melobi with a speech bubble: the sentence (or a short scene) the exercise is about. */
 export function MynaSays({ children, mood = "idle" }: { children: ReactNode; mood?: BotMood }) {
   return (
     <div className="flex items-start gap-4">

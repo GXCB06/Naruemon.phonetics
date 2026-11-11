@@ -16,7 +16,7 @@ export function TopBar({ progress, streak }: { progress: Progress; streak: numbe
       <div className="mx-auto flex w-full max-w-md items-center gap-2 px-4 py-2">
         <div className="flex min-w-0 items-center gap-1.5">
           <MynaBot className="size-9 shrink-0" />
-          <span className="text-xl font-black tracking-tight max-[430px]:sr-only">Myna</span>
+          <span className="text-xl font-black tracking-tight max-[430px]:sr-only">Melobi</span>
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">

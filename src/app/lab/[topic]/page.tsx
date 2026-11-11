@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { TopicList } from "@/components/speak/TopicList";
 import { SPEAK_TOPICS, topicById } from "@/lib/speak/topics";
 
-export const metadata: Metadata = { title: "Speak — Myna", robots: { index: false } };
+export const metadata: Metadata = { title: "Speak — Melobi", robots: { index: false } };
 
 export function generateStaticParams() {
   return SPEAK_TOPICS.map((t) => ({ topic: t.id }));

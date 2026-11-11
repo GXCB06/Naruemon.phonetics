@@ -3,7 +3,7 @@
 import { useId } from "react";
 
 /**
- * Myna the bot: an original glossy violet orb with pill eyes. The mood picks the face (CSS in globals.css) and restarts
+ * Melobi the bot: an original glossy violet orb with pill eyes. The mood picks the face (CSS in globals.css) and restarts
  * the body animation. Decorative: always aria-hidden; say the result in text next to it.
  */
 export type BotMood = "idle" | "watch" | "wink" | "happy" | "perfect" | "surprised" | "sad" | "thinking" | "listening" | "sleepy";

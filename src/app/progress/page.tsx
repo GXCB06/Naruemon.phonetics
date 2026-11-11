@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ProgressScreen } from "@/components/progress/ProgressScreen";
 
 export const metadata: Metadata = {
-  title: "My Progress — Myna",
+  title: "My Progress — Melobi",
   description: "See which intonation skills are strong and which to practise next.",
   robots: { index: false },
 };

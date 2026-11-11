@@ -159,7 +159,7 @@ export function MoreSheet({ open, onClose }: { open: boolean; onClose: () => voi
   const links: { href: string; label: { en: string; th: string }; emoji: string }[] = [
     { href: "/me", label: { en: "Profile & sign in", th: "โปรไฟล์และเข้าสู่ระบบ" }, emoji: "👤" },
     { href: "/ipa", label: { en: "IPA practice", th: "ฝึกถอดเสียง IPA" }, emoji: "ə" },
-    { href: "/welcome", label: { en: "How Myna works", th: "Myna ใช้งานยังไง" }, emoji: "📖" },
+    { href: "/welcome", label: { en: "How Melobi works", th: "Melobi ใช้งานยังไง" }, emoji: "📖" },
     { href: "/mic-check", label: { en: "Mic check", th: "เช็กไมค์" }, emoji: "🎙️" },
   ];
 

@@ -33,8 +33,8 @@ type Phase = "idle" | "starting" | "noise" | "ready" | "testing" | "done" | "err
 const T = {
   title: { en: "Mic check", th: "เช็กไมค์" },
   intro: {
-    en: "Let's make sure Myna can hear you well. It takes about 10 seconds. Nothing is saved.",
-    th: "มาเช็กกันว่า Myna ได้ยินเสียงคุณชัดไหม ใช้เวลาประมาณ 10 วินาที และไม่มีการบันทึกเก็บไว้",
+    en: "Let's make sure Melobi can hear you well. It takes about 10 seconds. Nothing is saved.",
+    th: "มาเช็กกันว่า Melobi ได้ยินเสียงคุณชัดไหม ใช้เวลาประมาณ 10 วินาที และไม่มีการบันทึกเก็บไว้",
   },
   start: { en: "Start mic check", th: "เริ่มเช็กไมค์" },
   starting: { en: "Asking for the microphone…", th: "กำลังขอใช้ไมค์…" },
@@ -77,8 +77,8 @@ const MIC_ERRORS: Record<MicErrorKind, Bilingual> = {
     th: "ไมค์ถูกใช้อยู่หรือค้าง ปิดแอปอื่นที่ใช้ไมค์ (โทร วิดีโอคอล) แล้วโหลดหน้าใหม่",
   },
   unsupported: {
-    en: "This browser can't record audio. Open Myna in Safari or Chrome (it needs HTTPS).",
-    th: "เบราว์เซอร์นี้อัดเสียงไม่ได้ ลองเปิด Myna ใน Safari หรือ Chrome (ต้องเป็น HTTPS)",
+    en: "This browser can't record audio. Open Melobi in Safari or Chrome (it needs HTTPS).",
+    th: "เบราว์เซอร์นี้อัดเสียงไม่ได้ ลองเปิด Melobi ใน Safari หรือ Chrome (ต้องเป็น HTTPS)",
   },
   unknown: {
     en: "Couldn't start the microphone. Try reloading the page.",
@@ -145,7 +145,7 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
     const clip = raw.subarray(testStartRef.current, testStartRef.current + Math.round(TEST_SEC * sr));
     const { summary } = testTakeVerdict(clip, sr, roomRef.current?.noiseDb);
     setVerdict(summary);
-    // remember how this microphone did, so Myna only asks again for a different one (or after a bad check)
+    // remember how this microphone did, so Melobi only asks again for a different one (or after a bad check)
     const noisyRoom = roomRef.current?.verdict === "noisy";
     const profile: MicProfile = {
       label,

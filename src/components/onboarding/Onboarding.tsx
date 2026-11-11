@@ -29,7 +29,7 @@ interface Step {
   art?: "levels" | "draw" | "features";
 }
 
-/** The places in the app, for the last tour screen ("what you can do in Myna"). */
+/** The places in the app, for the last tour screen ("what you can do in Melobi"). */
 const FEATURES: { emoji: string; name: Bilingual; text: Bilingual }[] = [
   { emoji: "🏠", name: { en: "Learn", th: "เรียน" }, text: { en: "Lessons on the map, one tune at a time", th: "บทเรียนบนแผนที่ ทีละทำนอง" } },
   { emoji: "🎯", name: { en: "Practice", th: "ฝึกฝน" }, text: { en: "Pick a pattern to draw: 2-3-1, 2-3, 2-3-2, lists, tags, or a quick quiz", th: "เลือกรูปแบบมาวาด: 2-3-1, 2-3, 2-3-2, รายการ, tag หรือควิซเร็ว" } },
@@ -41,7 +41,7 @@ const FEATURES: { emoji: string; name: Bilingual; text: Bilingual }[] = [
 const STEPS: Step[] = [
   {
     mood: "wink",
-    title: { en: "Hi, I'm Myna!", th: "สวัสดี ฉันชื่อ Myna!" },
+    title: { en: "Hi, I'm Melobi!", th: "สวัสดี ฉันชื่อ Melobi!" },
     body: {
       en: "I help you practise English intonation: the tune your voice makes when you say a sentence.",
       th: "ฉันจะช่วยคุณฝึกทำนองเสียงภาษาอังกฤษ คือการขึ้นลงของเสียงเวลาพูดประโยค",
@@ -60,8 +60,8 @@ const STEPS: Step[] = [
     mood: "watch",
     title: { en: "Draw the tune", th: "วาดทำนองเสียง" },
     body: {
-      en: "Draw the tune right on the sentence with your Apple Pencil or your finger. Myna checks it against the rules from class.",
-      th: "วาดทำนองเสียงลงบนประโยคได้เลย ด้วย Apple Pencil หรือนิ้วของคุณ แล้ว Myna จะตรวจตามกฎที่เรียนในห้อง",
+      en: "Draw the tune right on the sentence with your Apple Pencil or your finger. Melobi checks it against the rules from class.",
+      th: "วาดทำนองเสียงลงบนประโยคได้เลย ด้วย Apple Pencil หรือนิ้วของคุณ แล้ว Melobi จะตรวจตามกฎที่เรียนในห้อง",
     },
     art: "draw",
   },
@@ -69,13 +69,13 @@ const STEPS: Step[] = [
     mood: "listening",
     title: { en: "Listen, then say it", th: "ฟัง แล้วพูดตาม" },
     body: {
-      en: "Tap 🔊 to hear the sentence, then tap 🎙️ and say it. You'll see your tune next to the target. Myna checks your microphone first, and your voice is never saved.",
-      th: "แตะ 🔊 เพื่อฟังประโยค แล้วแตะ 🎙️ และพูดตาม คุณจะเห็นทำนองเสียงของคุณเทียบกับแบบ Myna จะเช็กไมค์ให้ก่อน และเสียงของคุณจะไม่ถูกเก็บไว้",
+      en: "Tap 🔊 to hear the sentence, then tap 🎙️ and say it. You'll see your tune next to the target. Melobi checks your microphone first, and your voice is never saved.",
+      th: "แตะ 🔊 เพื่อฟังประโยค แล้วแตะ 🎙️ และพูดตาม คุณจะเห็นทำนองเสียงของคุณเทียบกับแบบ Melobi จะเช็กไมค์ให้ก่อน และเสียงของคุณจะไม่ถูกเก็บไว้",
     },
   },
   {
     mood: "happy",
-    title: { en: "Everything in Myna", th: "ทุกอย่างใน Myna" },
+    title: { en: "Everything in Melobi", th: "ทุกอย่างใน Melobi" },
     body: {
       en: "Find all of it in the bar at the bottom of the screen. IPA lives in Practice.",
       th: "หาได้จากแถบด้านล่างของจอ ส่วน IPA อยู่ในหน้าฝึกฝน",
@@ -93,8 +93,8 @@ const T = {
 } satisfies Record<string, Bilingual>;
 
 /**
- * "How Myna works": 4 short bilingual screens with the bot. Shown once on the first open (from the home page) and again
- * from "How Myna works" (/welcome). Skippable; finishing or skipping is remembered in localStorage.
+ * "How Melobi works": 4 short bilingual screens with the bot. Shown once on the first open (from the home page) and again
+ * from "How Melobi works" (/welcome). Skippable; finishing or skipping is remembered in localStorage.
  *
  * `inline`: rendered by the home page in place of the path, so finishing simply reveals the path (no navigation).
  */
@@ -145,7 +145,7 @@ export function Onboarding({ inline = false }: { inline?: boolean }) {
       <header className="flex items-center gap-2 py-3">
         <div className="flex min-w-0 items-center gap-1.5">
           <MynaBot className="size-9 shrink-0" />
-          <span className="text-xl font-black tracking-tight">Myna</span>
+          <span className="text-xl font-black tracking-tight">Melobi</span>
         </div>
         <div className="ml-auto flex items-center gap-2">
           <LangToggle />

@@ -43,7 +43,7 @@ export interface GateDecision {
 }
 
 /**
- * Should Myna ask for a mic check before this recording?
+ * Should Melobi ask for a mic check before this recording?
  *  - never checked on this device, or the last check failed (too quiet, no sound)
  *  - the microphone in use now is a different one from the one checked (`currentLabel`, known once the mic is open)
  *  - the check is old

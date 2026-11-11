@@ -85,7 +85,7 @@ export function HomePath() {
     }
   }
 
-  // First open on this device: "How Myna works" instead of the path; finishing or skipping reveals the path.
+  // First open on this device: "How Melobi works" instead of the path; finishing or skipping reveals the path.
   if (!onboarded) return <Onboarding inline />;
 
   return (

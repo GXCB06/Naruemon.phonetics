@@ -121,7 +121,7 @@ function Stop({
   );
 }
 
-/** One unit: the sticky coloured banner, then its stops on a gentle zig-zag with Myna sitting in the curve. */
+/** One unit: the sticky coloured banner, then its stops on a gentle zig-zag with Melobi sitting in the curve. */
 export function UnitSection({
   unit,
   stops,
@@ -142,7 +142,7 @@ export function UnitSection({
   const lang = useLang();
   const headingId = `unit-${unit.id}`;
   const h = columnHeight(stops.length);
-  // Myna sits beside the 2nd-3rd stops, on the side the path bends away from
+  // Melobi sits beside the 2nd-3rd stops, on the side the path bends away from
   const anchor = Math.min(2, stops.length - 1);
   const side = nodeOffset(anchor) >= 0 ? "left" : "right";
 

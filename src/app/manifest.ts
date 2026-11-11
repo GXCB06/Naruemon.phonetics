@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 
-// Web app manifest: lets learners add Myna to the iPad/phone home screen and open it full screen like an app.
-// Colours are the Myna tokens from globals.css (--bg paper, light theme). Icons: `node tools/make-icons.ts`.
+// Web app manifest: lets learners add Melobi to the iPad/phone home screen and open it full screen like an app.
+// Colours are the Melobi tokens from globals.css (--bg paper, light theme). Icons: `node tools/make-icons.ts`.
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "Myna — intonation coach",
-    short_name: "Myna",
+    name: "Melobi — intonation coach",
+    short_name: "Melobi",
     description: "Practise English intonation: listen, draw the tune on the sentence, then say it. ฝึกทำนองเสียงภาษาอังกฤษ",
     lang: "th",
     dir: "ltr",

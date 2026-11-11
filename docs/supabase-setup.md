@@ -1,6 +1,6 @@
 # Supabase setup (task C1)
 
-Myna works without Supabase: `/` and `/lab` never need a login. Supabase adds sign-in (Google + email magic link) and,
+Melobi works without Supabase: `/` and `/lab` never need a login. Supabase adds sign-in (Google + email magic link) and,
 later, saved attempts and progress. Without the two env vars, `/login` shows "Supabase isn't configured yet".
 
 ## 1. Create the project

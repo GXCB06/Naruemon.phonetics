@@ -1,4 +1,4 @@
-// Small inline SVG icons, drawn for Myna (no icon library, nothing borrowed).
+// Small inline SVG icons, drawn for Melobi (no icon library, nothing borrowed).
 
 type P = { className?: string };
 const base = { viewBox: "0 0 24 24", "aria-hidden": true, focusable: false } as const;

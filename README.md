@@ -1,4 +1,4 @@
-# Myna — intonation coach (Phase 0a)
+# Melobi — intonation coach (Phase 0a)
 
 > Continuing the build in another coding agent? Start with **[SPEC.md](SPEC.md)** (handoff, roadmap, acceptance criteria).
 

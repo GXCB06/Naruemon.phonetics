@@ -15,6 +15,6 @@ export function saveMicProfile(profile: MicProfile): void {
   try {
     window.localStorage.setItem(MIC_PROFILE_KEY, JSON.stringify(profile));
   } catch {
-    // private mode: the check just is not remembered, and Myna asks again next time
+    // private mode: the check just is not remembered, and Melobi asks again next time
   }
 }

@@ -1,4 +1,4 @@
-// Ask Myna: the AI tutor in Answer details. Pure part: request validation and the prompt. The route
+// Ask Melobi: the AI tutor in Answer details. Pure part: request validation and the prompt. The route
 // (src/app/api/ask-myna/route.ts) looks the sentence up itself and recomputes the grade, so a client can only ask about
 // a real course sentence and its own drawing, never send its own instructions or sentence.
 
@@ -25,7 +25,7 @@ export interface AskRequest {
 const isLevels = (x: unknown): x is Levels =>
   Array.isArray(x) && (x.length === 1 || x.length === 2) && x.every((v) => Number.isInteger(v) && v >= 1 && v <= 4);
 
-/** Check the shape of an Ask Myna request body. Returns the request or a short reason it was rejected. */
+/** Check the shape of an Ask Melobi request body. Returns the request or a short reason it was rejected. */
 export function parseAskRequest(body: unknown): { ok: true; value: AskRequest } | { ok: false; error: string } {
   if (!body || typeof body !== "object") return { ok: false, error: "body must be an object" };
   const b = body as Record<string, unknown>;
@@ -48,7 +48,7 @@ export function parseAskRequest(body: unknown): { ok: true; value: AskRequest } 
   return { ok: true, value: { sentenceId: b.sentenceId, assigned: b.assigned as (Levels | null)[], turns, about: about as AskAbout } };
 }
 
-const MYNA_RULES = `You are Myna, a warm, encouraging English intonation tutor for Thai learners (secondary school and university). Teach ONLY this course's system:
+const MYNA_RULES = `You are Melobi, a warm, encouraging English intonation tutor for Thai learners (secondary school and university). Teach ONLY this course's system:
 - Pitch levels: 1 low, 2 mid (normal speaking voice), 3 high, 4 extra high (strong feeling; not used in these lessons).
 - A sentence is split into thought groups (marked |). Each group has ONE peak, the nucleus: the stressed syllable of the LAST content word (noun, main verb, adjective, adverb, wh-word, negative). Other words, especially function words (the, a, is, my, will, it), stay at 2.
 - Patterns: 2-3-1 falling = finished (statements, commands, wh-questions). 2-3-2 non-final = more is coming (first part of a longer sentence, e.g. an if-clause). 2-3 rising = yes/no question, stays up at the end. Tag questions: sure = the tag falls 3-1; not sure = the tag rises 2-3.
@@ -57,7 +57,7 @@ The student drew a line over the sentence; the app turned it into a level for ea
 How to answer:
 - Answer the student's question about THIS sentence and THEIR line. Be concrete: name syllables in CAPITALS and levels by number.
 - "en": at most 3 short sentences, under 70 words, simple words (CEFR A2-B1). Encourage, never scold. Plain text, no markdown or emoji.
-- "th": the same answer in natural, friendly Thai. Myna has no gender: don't end sentences with ครับ or ค่ะ/คะ (a friendly นะ is fine).
+- "th": the same answer in natural, friendly Thai. Melobi has no gender: don't end sentences with ครับ or ค่ะ/คะ (a friendly นะ is fine).
 - The student may write in Thai or English; always fill both fields.
 - If the question is not about this sentence's pronunciation or intonation, say kindly (in both fields) that you can only help with that.`;
 
@@ -125,7 +125,7 @@ Correct tune: ${groups.map((g) => g.pattern).join(" | ")}
 ${parts}`;
 }
 
-/** The system prompt for one Ask Myna request. Null when the drawing doesn't fit the sentence. */
+/** The system prompt for one Ask Melobi request. Null when the drawing doesn't fit the sentence. */
 export function askSystemPrompt(sentence: Sentence, assigned: readonly (Levels | null)[], about: AskAbout = "draw"): string | null {
   if (about !== "draw") {
     const rules = MYNA_RULES.replace(DRAW_LINE, EXERCISE_LINE).replace("about THIS sentence and THEIR line", "about THIS sentence and why the correct answer is right");
@@ -143,7 +143,7 @@ export const ANSWER_SCHEMA = {
   additionalProperties: false,
 } as const;
 
-/** Myna has no gender: drop polite particles a model may add anyway (ครับ, ค่ะ). คะ is left alone (it is part of คะแนน). */
+/** Melobi has no gender: drop polite particles a model may add anyway (ครับ, ค่ะ). คะ is left alone (it is part of คะแนน). */
 export function neutralThai(th: string): string {
   return th
     .replace(/\s*(ครับ|ค่ะ)(?=[\s.!?,]|$)/g, "")

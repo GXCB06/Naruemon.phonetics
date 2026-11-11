@@ -6,7 +6,7 @@ import { LessonUnavailable } from "@/components/learn/LessonUnavailable";
 import { getLessonMeta, getUnit, nextLessonId, UNITS } from "@/lib/course/units";
 import { loadLesson } from "@/lib/learn/content";
 
-export const metadata: Metadata = { title: "Lesson — Myna" };
+export const metadata: Metadata = { title: "Lesson — Melobi" };
 
 // Every lesson of an open unit is prerendered; other ids are checked when they are requested.
 export function generateStaticParams() {

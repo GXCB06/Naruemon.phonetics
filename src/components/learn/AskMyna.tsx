@@ -16,7 +16,7 @@ interface Turn {
 }
 
 /**
- * Ask Myna: the student asks "why?" about this sentence and their own line, in English or Thai, and gets a short
+ * Ask Melobi: the student asks "why?" about this sentence and their own line, in English or Thai, and gets a short
  * answer in both. The server builds the prompt from the course sentence and the drawing (src/app/api/ask-myna).
  */
 export function AskMyna({
@@ -113,7 +113,7 @@ export function AskMyna({
       <div className="flex items-center gap-3">
         <MynaBot mood={mood} className="h-12 w-12" />
         <h3 id="ask-title" className="text-lg font-black">
-          Ask Myna<span className="thai block text-sm font-semibold text-muted">ถาม Myna ครูผู้ช่วย AI</span>
+          Ask Melobi<span className="thai block text-sm font-semibold text-muted">ถาม Melobi ครูผู้ช่วย AI</span>
         </h3>
       </div>
       {about === "draw" ? (
@@ -144,7 +144,7 @@ export function AskMyna({
           )}
           {pending && (
             <p className="self-start rounded-2xl rounded-bl-md bg-bg px-3.5 py-2.5 text-sm font-extrabold text-muted">
-              Myna is thinking… <span className="thai font-medium">กำลังคิด…</span>
+              Melobi is thinking… <span className="thai font-medium">กำลังคิด…</span>
             </p>
           )}
         </div>
@@ -174,7 +174,7 @@ export function AskMyna({
           maxLength={300}
           enterKeyHint="send"
           placeholder="Type a question… · พิมพ์คำถาม…"
-          aria-label="Your question for Myna"
+          aria-label="Your question for Melobi"
           className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-line bg-card px-3 font-bold text-ink outline-none focus:border-accent"
         />
         {pending ? (
@@ -195,9 +195,9 @@ export function AskMyna({
         </p>
       )}
       <p className="mt-2 text-xs font-bold text-muted">
-        {about === "draw" ? "Myna is AI and can make mistakes. The green line is the course answer." : "Myna is AI and can make mistakes. The answer in green is the course answer."}
+        {about === "draw" ? "Melobi is AI and can make mistakes. The green line is the course answer." : "Melobi is AI and can make mistakes. The answer in green is the course answer."}
         <span className="thai block font-medium">
-          {about === "draw" ? "Myna เป็น AI อาจตอบผิดได้ เส้นสีเขียวคือคำตอบตามบทเรียน" : "Myna เป็น AI อาจตอบผิดได้ คำตอบสีเขียวคือคำตอบตามบทเรียน"}
+          {about === "draw" ? "Melobi เป็น AI อาจตอบผิดได้ เส้นสีเขียวคือคำตอบตามบทเรียน" : "Melobi เป็น AI อาจตอบผิดได้ คำตอบสีเขียวคือคำตอบตามบทเรียน"}
         </span>
       </p>
     </section>

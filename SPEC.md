@@ -1,4 +1,4 @@
-# Myna — build spec and handoff
+# Melobi — build spec and handoff
 
 This is the single source of truth for continuing the project in any coding agent (OpenCode, Claude Code, Cursor…).
 Read this file first, then `AGENTS.md` (rules), then the code. Background reading: `docs/PLAN.md` (product plan) and
@@ -11,7 +11,7 @@ The next work is **finishing Phase 0a with real recordings**, then **Phase 0b (A
 
 ## 1. Product in one paragraph
 
-Myna is a web app that helps **Thai learners of English** practise **sentence intonation**. A learner reads a sentence aloud or
+Melobi is a web app that helps **Thai learners of English** practise **sentence intonation**. A learner reads a sentence aloud or
 **draws** its tune over four pitch-level lines. The app checks the tune against the patterns taught in the learner's phonetics
 course (levels 1–4; falling 2-3-1, non-final 2-3-2, rising 2-3, tag questions), shows **IPA under every word**, explains mistakes
 in **English and Thai**, and tracks **personal progress per skill** across speaking, drawing and listening. The UX follows
@@ -220,7 +220,7 @@ Free tier F0: 5 audio hours/month STT + 0.5M chars/month TTS. The author still n
 - **E1. Claude tips** `src/app/api/feedback/route.ts`: input = findings JSON (numbers only, **never audio**); output = 1–2 sentence
   tip in English + Thai. Model `claude-opus-5-5`, low effort, `@anthropic-ai/sdk`. Cache by findings signature. Weekly summary
   (cached per user per week in `weekly_summaries`). Env: `ANTHROPIC_API_KEY`.
-- **E2.** Myna mascot (Rive or Lottie; original art), sounds (`use-sound`), confetti, before/after recordings (opt-in storage in
+- **E2.** Melobi mascot (Rive or Lottie; original art), sounds (`use-sound`), confetti, before/after recordings (opt-in storage in
   Supabase Storage with RLS), mic-check screen (noise floor, level meter, Bluetooth warning), onboarding, PWA manifest.
 - **E3.** Usability test with 5–10 classmates; fix the top issues.
 
