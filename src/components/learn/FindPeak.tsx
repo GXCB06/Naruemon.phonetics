@@ -5,7 +5,9 @@ import type { Sentence } from "@/lib/intonation/types";
 import { peakFeedback } from "@/lib/learn/feedback";
 import type { PeakExercise } from "@/lib/learn/exercises";
 import { rightWrong } from "@/lib/learn/score";
-import { ListenButton } from "./ListenButton";
+import { Bi } from "@/components/home/lang";
+import { playTap } from "./chime";
+import { MynaSays, Prompt, SpeakerButton } from "./ui";
 import type { ExerciseApi } from "./types";
 
 interface Pick {
@@ -45,53 +47,36 @@ export function FindPeak({
   const remaining = picks.filter((p) => p === null).length;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-2xl font-black leading-snug">
-          {many ? (
-            <>
-              Tap each peak
-              <span className="thai block text-lg font-bold text-muted">แตะจุดสูงสุดของแต่ละกลุ่มคำ</span>
-            </>
-          ) : rising ? (
-            <>
-              Tap where the rise starts
-              <span className="thai block text-lg font-bold text-muted">แตะพยางค์ที่เสียงเริ่มขึ้นสูง</span>
-            </>
-          ) : (
-            <>
-              Tap the peak
-              <span className="thai block text-lg font-bold text-muted">แตะพยางค์ที่เสียงสูงที่สุด</span>
-            </>
-          )}
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          {many ? (
-            <>
-              There are {groups.length} thought groups, split by |. Listen, then tap one syllable in each: where the voice
-              {rising ? " jumps up and stays up." : " goes highest."}
-              <span className="thai block">
-                มี {groups.length} กลุ่มคำ คั่นด้วย | ฟังแล้วแตะพยางค์ละ 1 จุดในแต่ละกลุ่ม ตรงที่เสียง
-                {rising ? "ขึ้นสูงแล้วค้างไว้" : "สูงที่สุด"}
-              </span>
-            </>
-          ) : rising ? (
-            <>
-              Listen, then tap the stressed syllable where the voice jumps up to level 3 and stays up.
-              <span className="thai block">ฟังแล้วแตะพยางค์เน้นที่เสียงขึ้นไประดับ 3 แล้วค้างไว้</span>
-            </>
-          ) : (
-            <>
-              Listen, then tap the syllable where the voice goes highest.
-              <span className="thai block">ฟังแล้วแตะพยางค์ที่เสียงขึ้นสูงสุด</span>
-            </>
-          )}
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <Prompt
+        title={
+          many
+            ? { en: "Tap the peak in each group", th: "แตะจุดสูงสุดของแต่ละกลุ่มคำ" }
+            : rising
+              ? { en: "Tap where the rise starts", th: "แตะพยางค์ที่เสียงเริ่มขึ้นสูง" }
+              : { en: "Tap the peak", th: "แตะพยางค์ที่เสียงสูงที่สุด" }
+        }
+        tip={
+          many
+            ? {
+                en: `${groups.length} thought groups, split by |. Tap one syllable in each, where the voice ${rising ? "jumps up and stays up" : "goes highest"}. Hint: the last important word.`,
+                th: `มี ${groups.length} กลุ่มคำ คั่นด้วย | แตะพยางค์ละ 1 จุดในแต่ละกลุ่ม ตรงที่เสียง${rising ? "ขึ้นสูงแล้วค้างไว้" : "สูงที่สุด"} ใบ้: คำสำคัญคำสุดท้าย`,
+              }
+            : rising
+              ? { en: "The voice jumps up to level 3 on a stressed syllable and stays up. Hint: the last important word.", th: "เสียงขึ้นไประดับ 3 ที่พยางค์เน้นแล้วค้างไว้ ใบ้: คำสำคัญคำสุดท้าย" }
+              : { en: "The voice goes up to level 3 once, then falls. Hint: the stressed syllable of the last important word.", th: "เสียงขึ้นไประดับ 3 ครั้งเดียวแล้วตก ใบ้: พยางค์เน้นของคำสำคัญคำสุดท้าย" }
+        }
+      />
+      <MynaSays>
+        <div className="flex items-center gap-3">
+          <SpeakerButton sentence={sentence} size="md" />
+          <span className="text-sm font-bold text-muted">
+            <Bi text={{ en: "Listen, then tap a syllable below.", th: "ฟังแล้วแตะพยางค์ด้านล่าง" }} />
+          </span>
+        </div>
+      </MynaSays>
 
-      <ListenButton sentence={sentence} />
-
-      <div className="card flex flex-wrap items-end gap-x-3 gap-y-5 p-4" role="group" aria-label="Syllables">
+      <div className="flex flex-wrap items-end gap-x-3 gap-y-5 py-2" role="group" aria-label="Syllables">
         {groups.map((group, gi) => (
           <div key={gi} className="contents" role="group" aria-label={many ? `Thought group ${gi + 1}` : undefined}>
             {gi > 0 && (
@@ -106,23 +91,19 @@ export function FindPeak({
                     const pick = picks[gi];
                     const isPicked = pick?.word === wi && pick.syllable === si;
                     const isRight = group.nucleus.word === wi && group.nucleus.syllable === si;
-                    const tone =
-                      locked && isRight
-                        ? "bg-good text-white"
-                        : locked && isPicked
-                          ? "bg-bad text-white"
-                          : isPicked
-                            ? "bg-primary text-primary-ink"
-                            : "bg-bg text-ink hover:bg-accent-soft";
+                    const tone = locked && isRight ? "is-right" : locked && isPicked ? "is-wrong shake" : isPicked ? "is-on" : "";
                     return (
                       <button
                         key={si}
                         type="button"
                         disabled={locked}
                         aria-pressed={isPicked}
-                        onClick={() => setPicks((list) => list.map((p, i) => (i === gi ? { word: wi, syllable: si } : p)))}
-                        className={`min-h-11 min-w-9 rounded-lg border-2 border-line px-1.5 text-xl font-bold sm:text-2xl ${tone} ${
-                          w.syllables.length > 1 && si > 0 ? "-ml-0.5" : ""
+                        onClick={() => {
+                          playTap();
+                          setPicks((list) => list.map((p, i) => (i === gi ? { word: wi, syllable: si } : p)));
+                        }}
+                        className={`pick min-h-12 min-w-10 px-1.5 text-xl font-bold sm:text-2xl ${tone} ${
+                          w.syllables.length > 1 && si > 0 ? "ml-1" : ""
                         }`}
                       >
                         {s.text}
@@ -140,12 +121,13 @@ export function FindPeak({
       </div>
       {many && !locked && remaining > 0 && (
         <p className="text-sm font-semibold text-muted" role="status">
-          {remaining === groups.length
-            ? `Tap one syllable in each of the ${groups.length} groups.`
-            : `${remaining} more to go: tap a syllable in the other group.`}
-          <span className="thai block font-normal">
-            {remaining === groups.length ? `แตะพยางค์ละ 1 จุดในทั้ง ${groups.length} กลุ่ม` : `เหลืออีก ${remaining} กลุ่ม แตะพยางค์ในกลุ่มที่เหลือ`}
-          </span>
+          <Bi
+            text={
+              remaining === groups.length
+                ? { en: `Tap one syllable in each of the ${groups.length} groups.`, th: `แตะพยางค์ละ 1 จุดในทั้ง ${groups.length} กลุ่ม` }
+                : { en: `${remaining} more to go: tap a syllable in the other group.`, th: `เหลืออีก ${remaining} กลุ่ม แตะพยางค์ในกลุ่มที่เหลือ` }
+            }
+          />
         </p>
       )}
     </div>

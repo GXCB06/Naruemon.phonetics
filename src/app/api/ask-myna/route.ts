@@ -31,10 +31,10 @@ export async function POST(request: Request) {
   }
   const parsed = parseAskRequest(body);
   if (!parsed.ok) return json({ error: parsed.error }, 400);
-  const { sentenceId, assigned, turns } = parsed.value;
+  const { sentenceId, assigned, turns, about } = parsed.value;
   const sentence = findSentence(sentenceId);
   if (!sentence) return json({ error: "unknown sentence" }, 400);
-  const system = askSystemPrompt(sentence, assigned);
+  const system = askSystemPrompt(sentence, assigned, about);
   if (!system) return json({ error: "drawing does not fit the sentence" }, 400);
 
   const r = await aiJson({ system, turns, schema: ANSWER_SCHEMA, effort: "low", maxTokens: 4000, tier: "quality" });

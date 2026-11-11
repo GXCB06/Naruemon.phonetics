@@ -2,15 +2,23 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { soundOf, type IpaSound } from "@/lib/ipa/sounds";
+import { prepareToPlay } from "@/components/audio/webAudio";
+
+/** The best US English voice this device has (a natural one when there is one), or undefined. */
+export function pickUsVoice(): SpeechSynthesisVoice | undefined {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return undefined;
+  const voices = window.speechSynthesis.getVoices().filter((v) => /^en[-_]US/i.test(v.lang));
+  return [/Samantha/i, /Ava/i, /Allison/i, /Google US English/i, /Jenny/i, /Aria/i].map((p) => voices.find((v) => p.test(v.name))).find(Boolean) ?? voices[0];
+}
 
 /** Say a word with the device's US English voice (call inside the learner's tap). */
 export function speakWord(word: string, rate: number, onState?: (speaking: boolean) => void) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  prepareToPlay(); // playback session: speech is muted by the silent switch otherwise (iPad)
   const synth = window.speechSynthesis;
   synth.cancel();
   const u = new SpeechSynthesisUtterance(word);
-  const voices = synth.getVoices().filter((v) => /^en[-_]US/i.test(v.lang));
-  const pick = [/Samantha/i, /Ava/i, /Allison/i, /Google US English/i, /Jenny/i, /Aria/i].map((p) => voices.find((v) => p.test(v.name))).find(Boolean) ?? voices[0];
+  const pick = pickUsVoice();
   if (pick) u.voice = pick;
   u.lang = "en-US";
   u.rate = rate;
@@ -63,6 +71,7 @@ export function useIpaSound(onSpeaking?: (speaking: boolean) => void) {
   const play = useCallback((symbol: string) => {
     const sound = soundOf(symbol);
     if (!sound || sound.kind === "mark") return;
+    prepareToPlay();
     const viaWord = () => {
       setLast({ symbol, sound, source: "word" });
       speakWord(sound.word, 0.8, (on) => onSpeakingRef.current?.(on));

@@ -15,7 +15,8 @@
     "build:ipa-practice": "node tools/build-ipa-practice.ts",
     "compare:readers": "node tools/compare-readers.ts",
     "build:ipa-sounds": "node tools/make-ipa-sounds.ts",
-    "build:tts": "node tools/make-tts.ts"
+    "build:tts": "node tools/make-tts.ts",
+    "build:variants": "node tools/make-variants.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.6.0",

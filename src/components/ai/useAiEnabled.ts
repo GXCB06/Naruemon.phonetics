@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const cache = new Map<string, Promise<boolean>>();
 
 /** Whether an AI route is switched on (the server has ANTHROPIC_API_KEY). Asked once per page load; false until known. */
-export function useAiEnabled(path: "/api/ask-myna" | "/api/read-ipa"): boolean {
+export function useAiEnabled(path: "/api/ask-myna" | "/api/read-ipa" | "/api/translate"): boolean {
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
     let alive = true;

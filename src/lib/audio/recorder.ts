@@ -42,6 +42,13 @@ export class MicRecorder {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
       throw new MicError("unsupported", "This browser can't record audio (it needs HTTPS and a modern browser).");
     }
+    // iOS: a recording audio session (output stays audible; the next sound switches back to playback).
+    try {
+      const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+      if (session) session.type = "play-and-record";
+    } catch {
+      // not supported
+    }
     // Create/resume the context inside the user's tap (required on iOS).
     this.ctx = new AudioContext();
     if (this.ctx.state === "suspended") await this.ctx.resume();

@@ -1,0 +1,192 @@
+{
+  "_comment": "Real-voice practice clips per sentence id and tune (made by tools/make-variants.ts, or added by hand then run npm run build:variants -- --manifest). The app uses them only when every clip an exercise needs exists.",
+  "clips": {
+    "fall-pretty-woman": [
+      "falling",
+      "rising"
+    ],
+    "fall-what-name": [
+      "falling"
+    ],
+    "falling-1-book-table": [
+      "falling",
+      "rising"
+    ],
+    "falling-1-buy-house": [
+      "flat",
+      "rising"
+    ],
+    "falling-1-drink-tea": [
+      "falling",
+      "rising"
+    ],
+    "falling-1-notebook": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "falling-1-situation": [
+      "rising"
+    ],
+    "falling-1-work-tomorrow": [
+      "flat",
+      "rising"
+    ],
+    "falling-2-how-are-you": [
+      "falling"
+    ],
+    "falling-2-what-name": [
+      "falling"
+    ],
+    "falling-2-when-arrive": [
+      "falling",
+      "rising"
+    ],
+    "falling-2-where-going": [
+      "falling"
+    ],
+    "falling-2-why-late": [
+      "flat",
+      "rising"
+    ],
+    "falling-3-beautiful-day": [
+      "falling",
+      "rising"
+    ],
+    "falling-3-come-see-me": [
+      "falling",
+      "rising"
+    ],
+    "falling-3-how-nice": [
+      "falling",
+      "flat"
+    ],
+    "falling-3-just-what-need": [
+      "falling",
+      "rising"
+    ],
+    "falling-3-let-her-go": [
+      "falling",
+      "rising"
+    ],
+    "falling-3-speak-loudly": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "lists-2-inout": [
+      "flat",
+      "rising"
+    ],
+    "lists-2-read": [
+      "falling",
+      "rising"
+    ],
+    "lists-2-red": [
+      "finished",
+      "rising"
+    ],
+    "nonfinal-1-fact": [
+      "falling"
+    ],
+    "nonfinal-1-opinion": [
+      "falling",
+      "finished",
+      "rising"
+    ],
+    "nonfinal-1-picnic": [
+      "falling",
+      "finished"
+    ],
+    "nonfinal-1-rains": [
+      "rising"
+    ],
+    "nonfinal-2-amad": [
+      "falling"
+    ],
+    "nonfinal-2-bobby": [
+      "flat",
+      "rising"
+    ],
+    "nonfinal-2-movies": [
+      "falling",
+      "finished",
+      "rising"
+    ],
+    "nonfinal-2-smart": [
+      "flat"
+    ],
+    "nonfinal-rains-bus": [
+      "rising"
+    ],
+    "rise-student": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "rising-1-ask-question": [
+      "rising"
+    ],
+    "rising-1-be-there": [
+      "flat",
+      "rising"
+    ],
+    "rising-1-come-with-me": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "rising-1-guitar": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "rising-1-student": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "rising-2-mrs-smith": [
+      "finished",
+      "flat"
+    ],
+    "tag-sure": [
+      "flat"
+    ],
+    "tag-unsure": [
+      "flat"
+    ],
+    "tags-1-harry": [
+      "flat"
+    ],
+    "tags-1-hungry": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "tags-2-harry": [
+      "flat"
+    ],
+    "tags-2-hungry": [
+      "falling",
+      "finished",
+      "flat",
+      "rising"
+    ],
+    "tags-3-harry": [
+      "flat"
+    ],
+    "tags-3-hungry": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "tags-3-nice-day": [
+      "falling",
+      "rising"
+    ],
+    "tags-3-swim": [
+      "rising"
+    ]
+  }
+}

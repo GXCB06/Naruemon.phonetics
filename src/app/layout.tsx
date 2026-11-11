@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans, Noto_Sans_Thai, Nunito } from "next/font/google";
 import "./globals.css";
+import { AudioUnlock } from "@/components/audio/AudioUnlock";
+import { ThemeSync } from "@/components/theme/ThemeSync";
+import { TabBar } from "@/components/nav/TabBar";
+import { THEME_SCRIPT } from "@/lib/ui/theme";
 
 const nunito = Nunito({ variable: "--nf-ui", subsets: ["latin"] });
 // Noto Sans latin-ext covers the IPA Extensions block (ɪ ʃ ə ɚ ʊ ɹ ð ŋ) and stress marks (ˈ ˌ).
@@ -24,16 +28,26 @@ export const viewport: Viewport = {
   initialScale: 1,
   // Draw under the notch/home indicator; globals.css and the fixed bars pad with env(safe-area-inset-*).
   viewportFit: "cover",
+  // dark by default (ThemeSync retints it when the learner picks light or auto)
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fffbf2" },
+    { media: "(prefers-color-scheme: light)", color: "#15131f" },
     { media: "(prefers-color-scheme: dark)", color: "#15131f" },
   ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${nunito.variable} ${notoIpa.variable} ${notoThai.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    // suppressHydrationWarning: the theme script below sets data-theme on <html> before React starts
+    <html lang="en" data-theme="dark" className={`${nunito.variable} ${notoIpa.variable} ${notoThai.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
+      <body className="min-h-full flex flex-col">
+        <AudioUnlock />
+        <ThemeSync />
+        {children}
+        <TabBar />
+      </body>
     </html>
   );
 }

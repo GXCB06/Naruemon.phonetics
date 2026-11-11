@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import { MynaBot } from "@/components/mascot/MynaBot";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { safeNextPath } from "@/lib/supabase/redirect";
 import { LoginForm } from "./login-form";
@@ -86,9 +87,21 @@ async function LoginBody({ searchParams }: { searchParams: SearchParams }) {
   const errorKey = first(params.error);
   const error = errorKey ? (ERRORS[errorKey] ?? ERRORS.auth) : null;
   const next = safeNextPath(first(params.next));
+  const welcome = first(params.welcome) === "1";
 
   return (
     <>
+      {welcome && (
+        <div className="card flex items-start gap-3 p-4">
+          <MynaBot mood="wink" className="size-14 shrink-0" />
+          <p className="font-bold">
+            Sign in to save your progress and use Myna on every device. You can also do it later.
+            <span className="thai mt-1 block text-sm font-semibold text-muted">
+              เข้าสู่ระบบเพื่อบันทึกความก้าวหน้าและใช้ Myna ได้ทุกเครื่อง จะทำทีหลังก็ได้
+            </span>
+          </p>
+        </div>
+      )}
       {error && (
         <div role="alert" className="card border-bad bg-bad-soft p-4 text-sm">
           <p className="font-semibold">{error.en}</p>
@@ -96,6 +109,10 @@ async function LoginBody({ searchParams }: { searchParams: SearchParams }) {
         </div>
       )}
       <LoginForm next={next} />
+      <Link href={first(params.next) ? next : "/"} className="btn w-full flex-col gap-0! text-center leading-tight">
+        <span>Skip for now</span>
+        <span className="thai text-sm font-semibold text-muted">ข้ามไปก่อน</span>
+      </Link>
     </>
   );
 }

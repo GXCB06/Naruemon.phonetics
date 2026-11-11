@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { ProgressIcon } from "@/components/progress/icons";
 import type { Progress } from "@/lib/progress/store.ts";
 import { MynaBot } from "@/components/mascot/MynaBot";
 import { BoltIcon, FlameIcon } from "./icons";
+import { MoreButton } from "@/components/nav/MoreButton";
 import { LangToggle, useLang } from "./lang";
 
 export function TopBar({ progress, streak }: { progress: Progress; streak: number }) {
@@ -17,17 +16,10 @@ export function TopBar({ progress, streak }: { progress: Progress; streak: numbe
       <div className="mx-auto flex w-full max-w-md items-center gap-2 px-4 py-2">
         <div className="flex min-w-0 items-center gap-1.5">
           <MynaBot className="size-9 shrink-0" />
-          <span className="text-xl font-black tracking-tight">Myna</span>
+          <span className="text-xl font-black tracking-tight max-[430px]:sr-only">Myna</span>
         </div>
 
         <div className="ml-auto flex items-center gap-1.5">
-          <Link
-            href="/progress"
-            aria-label={lang === "th" ? "ความก้าวหน้าของฉัน" : "My Progress"}
-            className="flex size-9 items-center justify-center rounded-xl border-2 border-line bg-card focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-          >
-            <ProgressIcon />
-          </Link>
           <div
             role="status"
             aria-label={streakLabel}
@@ -46,6 +38,7 @@ export function TopBar({ progress, streak }: { progress: Progress; streak: numbe
             <BoltIcon className="size-5" />
             <span aria-hidden>{progress.xp}</span>
           </div>
+          <MoreButton />
           <LangToggle />
         </div>
       </div>

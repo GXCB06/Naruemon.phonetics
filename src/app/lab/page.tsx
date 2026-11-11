@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Lab } from "@/components/lab/Lab";
+import { SpeakHub } from "@/components/speak/SpeakHub";
 
-export const metadata: Metadata = { title: "Myna lab — Phase 0a" };
+export const metadata: Metadata = {
+  title: "Speak — Myna",
+  description: "Pick a kind of sentence, say it aloud, and see your tune next to the target.",
+};
 
-export default function LabPage() {
-  return <Lab />;
+// The shell is static; progress comes from localStorage, which only the client component reads (after hydration).
+export default function SpeakPage() {
+  return <SpeakHub />;
 }

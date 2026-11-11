@@ -9,13 +9,11 @@ import { decodeWav } from "@/lib/audio/wav";
 import type { Contour, Layout, Sentence } from "@/lib/intonation/types";
 import { AzurePanel } from "./AzurePanel";
 import { ContourChart } from "./ContourChart";
-import { Countdown } from "./Countdown";
 import { KaraokeSentence } from "./KaraokeSentence";
 import { LiveChips } from "./LiveChips";
 import { ResultPanel } from "./ResultPanel";
 
 const MAX_SEC = 12;
-const COUNTDOWN_FROM = 3;
 
 export interface SampleInfo {
   file: string;
@@ -23,7 +21,7 @@ export interface SampleInfo {
   expect: string;
 }
 
-type Phase = "idle" | "starting" | "countdown" | "recording" | "analyzing" | "done" | "error";
+type Phase = "idle" | "starting" | "recording" | "analyzing" | "done" | "error";
 
 /** Calls `onTick(seconds)` every 100 ms; returns the interval id. */
 function startElapsedTimer(onTick: (sec: number) => void): number {
@@ -47,18 +45,16 @@ export function VoicePanel({
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
   const [rawWarning, setRawWarning] = useState(false);
   const [elapsed, setElapsed] = useState(0);
-  const [count, setCount] = useState(COUNTDOWN_FROM);
   const [live, setLive] = useState<LiveSnapshot>(EMPTY_SNAPSHOT);
   const [source, setSource] = useState<string>("");
   const recRef = useRef<MicRecorder | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const liveRef = useRef<{ t: number; hz: number | null }[]>([]);
   const timerRef = useRef<number | null>(null);
-  const countdownRef = useRef<number | null>(null);
   const levelsRef = useRef<LevelSample[]>([]);
-  /** Total samples received so far (countdown included). */
+  /** Total samples received so far. */
   const seenRef = useRef(0);
-  /** Sample index where "Go" happened; null until the countdown ends. Samples before it are discarded. */
+  /** Sample index where recording started; null until the mic is open. */
   const goSamplesRef = useRef<number | null>(null);
 
   const playbackUrl = useMemo(
@@ -77,7 +73,6 @@ export function VoicePanel({
   useEffect(
     () => () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
-      if (countdownRef.current) window.clearInterval(countdownRef.current);
       const rec = recRef.current;
       recRef.current = null;
       void rec?.stop().catch(() => undefined);
@@ -149,7 +144,7 @@ export function VoicePanel({
     let livePitch: ReturnType<typeof makeLivePitch> | null = null;
     let ring = new Float32Array(0);
     try {
-      // The mic starts now, during the countdown, so it can settle. Samples before "Go" are dropped.
+      // No countdown: recording starts the moment the mic is open.
       await rec.start({
         onChunk: (chunk, sr) => {
           livePitch ??= makeLivePitch(sr);
@@ -159,7 +154,7 @@ export function VoicePanel({
           ring = merged.slice(Math.max(0, merged.length - livePitch.windowLength));
           seenRef.current += chunk.length;
           const go = goSamplesRef.current;
-          if (go === null) return; // still counting down
+          if (go === null) return; // mic not open yet
           const t = (seenRef.current - go) / sr;
           let voiced = false;
           if (ring.length === livePitch.windowLength) {
@@ -178,7 +173,7 @@ export function VoicePanel({
         return;
       }
       setRawWarning(!rec.rawAudio);
-      beginCountdown();
+      beginRecording();
     } catch (e) {
       recRef.current = null;
       setPhase("error");
@@ -186,36 +181,13 @@ export function VoicePanel({
     }
   };
 
-  const beginCountdown = () => {
-    let n = COUNTDOWN_FROM;
-    setCount(n);
-    setPhase("countdown");
-    countdownRef.current = window.setInterval(() => {
-      n -= 1;
-      if (n > 0) {
-        setCount(n);
-        return;
-      }
-      if (countdownRef.current) window.clearInterval(countdownRef.current);
-      countdownRef.current = null;
-      goSamplesRef.current = seenRef.current;
-      setPhase("recording");
-      timerRef.current = startElapsedTimer((sec) => {
-        setElapsed(sec);
-        setLive(liveSnapshot(liveRef.current, levelsRef.current));
-      });
-    }, 1000);
-  };
-
-  /** Abort during the countdown: nothing is analysed. */
-  const cancel = async () => {
-    if (countdownRef.current) window.clearInterval(countdownRef.current);
-    countdownRef.current = null;
-    const rec = recRef.current;
-    recRef.current = null;
-    goSamplesRef.current = null;
-    setPhase("idle");
-    await rec?.stop().catch(() => undefined);
+  const beginRecording = () => {
+    goSamplesRef.current = seenRef.current;
+    setPhase("recording");
+    timerRef.current = startElapsedTimer((sec) => {
+      setElapsed(sec);
+      setLive(liveSnapshot(liveRef.current, levelsRef.current));
+    });
   };
 
   const stop = async () => {
@@ -250,11 +222,7 @@ export function VoicePanel({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        {phase === "countdown" ? (
-          <button className="btn text-lg" onClick={() => void cancel()}>
-            ✕ Cancel <span className="thai text-base">ยกเลิก</span>
-          </button>
-        ) : phase !== "recording" ? (
+        {phase !== "recording" ? (
           <button className="btn btn-accent text-lg" onClick={start} disabled={phase === "analyzing" || phase === "starting"}>
             🎙️ Record
           </button>
@@ -263,16 +231,16 @@ export function VoicePanel({
             ■ Stop ({elapsed.toFixed(1)}s)
           </button>
         )}
-        <span className={`text-sm text-muted ${phase === "countdown" || phase === "recording" ? "hidden" : ""}`}>
+        <span className={`text-sm text-muted ${phase === "recording" ? "hidden" : ""}`}>
           Tap, read the sentence once, tap again. Quiet room, wired or built-in mic (not Bluetooth).
           <span className="thai block">กดอัด อ่านประโยคหนึ่งครั้ง แล้วกดหยุด ใช้ไมค์ในตัวหรือแบบมีสาย (ไม่ใช่บลูทูธ)</span>
         </span>
       </div>
 
-      {(phase === "countdown" || phase === "recording") && (
+      {phase === "recording" && (
         <div className="card flex flex-col gap-4 p-4 sm:p-5">
-          <KaraokeSentence sentence={sentence} elapsedSec={phase === "recording" ? elapsed : null} />
-          {phase === "countdown" ? <Countdown count={count} /> : <LiveChips snapshot={live} />}
+          <KaraokeSentence sentence={sentence} elapsedSec={elapsed} />
+          <LiveChips snapshot={live} />
         </div>
       )}
 

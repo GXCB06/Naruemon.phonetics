@@ -15,6 +15,8 @@ import {
 } from "@/lib/audio/quality";
 import { MicError, MicRecorder, type MicErrorKind } from "@/lib/audio/recorder";
 import { encodeWav } from "@/lib/audio/wav";
+import type { MicProfile } from "@/lib/audio/micProfile";
+import { saveMicProfile } from "./micProfile";
 import type { Bilingual } from "@/lib/course/units";
 
 /** Let the mic settle before measuring the room (some devices pop or ramp up at the start). */
@@ -88,7 +90,7 @@ const MIC_ERRORS: Record<MicErrorKind, Bilingual> = {
  * stays quiet, warn about Bluetooth / narrowband inputs, then record a 3-second test and play it back.
  * Audio rules: MicRecorder (native-rate AudioContext, AEC/NS/AGC off). Nothing is uploaded or stored.
  */
-export function MicCheck({ compact = false }: { compact?: boolean }) {
+export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDone?: (profile: MicProfile) => void }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [errorKind, setErrorKind] = useState<MicErrorKind | null>(null);
   const [meterDb, setMeterDb] = useState(-120);
@@ -107,6 +109,10 @@ export function MicCheck({ compact = false }: { compact?: boolean }) {
   const roomRef = useRef<NoiseFloorReport | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const finishRef = useRef<() => void>(() => undefined);
+  const onDoneRef = useRef(onDone);
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  });
 
   const go = (p: Phase) => {
     phaseRef.current = p;
@@ -132,11 +138,22 @@ export function MicCheck({ compact = false }: { compact?: boolean }) {
     if (!rec || phaseRef.current !== "testing") return;
     recRef.current = null;
     go("done");
+    const label = rec.inputInfo.label; // read before the stream is closed
     const raw = await rec.stop();
     const sr = rec.sampleRate;
     const clip = raw.subarray(testStartRef.current, testStartRef.current + Math.round(TEST_SEC * sr));
     const { summary } = testTakeVerdict(clip, sr, roomRef.current?.noiseDb);
     setVerdict(summary);
+    // remember how this microphone did, so Myna only asks again for a different one (or after a bad check)
+    const noisyRoom = roomRef.current?.verdict === "noisy";
+    const profile: MicProfile = {
+      label,
+      checkedAt: Date.now(),
+      noiseDb: roomRef.current?.noiseDb ?? null,
+      verdict: summary.level === "fail" ? "fail" : summary.level === "warn" || noisyRoom ? "warn" : "good",
+    };
+    saveMicProfile(profile);
+    onDoneRef.current?.(profile);
     setTake(encodeWav(clip, sr));
     setMeterDb(-120);
   };

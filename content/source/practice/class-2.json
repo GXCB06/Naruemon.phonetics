@@ -1,0 +1,140 @@
+{
+  "_comment": "Class Exercise 2 (the teacher's in-class sheet, 14 items, split into 25 sentences at each //). The sheet gives only the sentences, no answer key, so the groups and patterns follow the course rules: statements, wh- and commands fall 2-3-1; yes/no, names and every item of a list or choice rise 2-3 (the last item of a STATEMENT list falls); parts that are not finished come back to 2 (2-3-2). Judgement calls to confirm with the teacher: item 9 'Life isn't easy, is it?' is read as SURE (the tag falls 3-1); item 10b 'Which one would you like, coffee or tea?' is read as a non-final first part and two rising choices; item 7a keeps the peak on 'please'; item 13b is one falling group.",
+  "id": "class-2",
+  "unit": "practice",
+  "sentences": [
+    { "id": "class2-01a-know-woman", "text": "Do you know that woman?", "kind": "yesno", "nucleusWord": 4, "spelling": { "woman": "wo-man" } },
+    { "id": "class2-01b-how-know-woman", "text": "How do you know that woman?", "kind": "wh", "nucleusWord": 5, "spelling": { "woman": "wo-man" } },
+    { "id": "class2-02a-buy-computer", "text": "Did you buy a new computer?", "kind": "yesno", "nucleusWord": 5, "spelling": { "computer": "com-pu-ter" } },
+    { "id": "class2-02b-kind-computer", "text": "What kind of computer did you buy?", "kind": "wh", "nucleusWord": 6, "spelling": { "computer": "com-pu-ter" } },
+    { "id": "class2-03a-do-you-work", "text": "Do you work?", "kind": "yesno", "nucleusWord": 2 },
+    { "id": "class2-03b-where-work", "text": "Where do you work?", "kind": "wh", "nucleusWord": 3 },
+    {
+      "id": "class2-04-sports",
+      "text": "I like playing football, tennis, basketball, table tennis, and volleyball.",
+      "kind": "list",
+      "groupSizes": [4, 1, 1, 2, 2],
+      "nucleusWord": [3, 4, 5, 7, 9],
+      "patterns": ["2-3", "2-3", "2-3", "2-3", "2-3-1"],
+      "spelling": { "playing": "play-ing", "football": "foot-ball", "tennis": "ten-nis", "basketball": "bas-ket-ball", "table": "ta-ble", "volleyball": "vol-ley-ball" }
+    },
+    {
+      "id": "class2-05a-travel-march",
+      "text": "Are you going to travel in March or April?",
+      "kind": "choice",
+      "groupSizes": [7, 2],
+      "nucleusWord": [6, 8],
+      "patterns": ["2-3", "2-3"],
+      "spelling": { "going": "go-ing", "travel": "trav-el", "april": "a-pril" }
+    },
+    { "id": "class2-05b-where-going", "text": "And where are you going to?", "kind": "wh", "nucleusWord": 4, "spelling": { "going": "go-ing" } },
+    {
+      "id": "class2-06-july-october",
+      "text": "Would you like to travel in July or October?",
+      "kind": "choice",
+      "groupSizes": [7, 2],
+      "nucleusWord": [6, 8],
+      "patterns": ["2-3", "2-3"],
+      "spelling": { "travel": "trav-el", "july": "ju-ly", "october": "oc-to-ber" }
+    },
+    {
+      "id": "class2-07a-mr-president",
+      "text": "Mr. President, can I talk to you please?",
+      "kind": "address",
+      "groupSizes": [2, 6],
+      "nucleusWord": [1, 7],
+      "spelling": { "mr": "M-r", "president": "pres-i-dent" }
+    },
+    { "id": "class2-07b-emergency", "text": "This is an emergency.", "kind": "statement", "nucleusWord": 3, "spelling": { "emergency": "e-mer-gen-cy" } },
+    {
+      "id": "class2-08a-coke-juice",
+      "text": "Would you like coke or some juice?",
+      "kind": "choice",
+      "groupSizes": [4, 3],
+      "nucleusWord": [3, 6],
+      "patterns": ["2-3", "2-3"]
+    },
+    {
+      "id": "class2-08b-thirsty",
+      "text": "I know you are thirsty, aren't you.",
+      "kind": "tag",
+      "groupSizes": [5, 2],
+      "nucleusWord": [4, 5],
+      "groupPatterns": ["2-3-1", "3-1"],
+      "spelling": { "thirsty": "thirs-ty", "aren't": "are-n't" }
+    },
+    {
+      "id": "class2-09a-life-easy",
+      "text": "Life isn't easy, is it?",
+      "kind": "tag",
+      "groupSizes": [3, 2],
+      "nucleusWord": [2, 3],
+      "groupPatterns": ["2-3-1", "3-1"],
+      "spelling": { "isn't": "is-n't", "easy": "ea-sy" }
+    },
+    {
+      "id": "class2-09b-therefore",
+      "text": "Therefore, we must try harder and harder.",
+      "kind": "nonfinal",
+      "groupSizes": [1, 6],
+      "nucleusWord": [0, 6],
+      "patterns": ["2-3-2", "2-3-1"],
+      "spelling": { "therefore": "there-fore", "harder": "hard-er" }
+    },
+    {
+      "id": "class2-10a-coffee-tea",
+      "text": "Would you like coffee or tea?",
+      "kind": "choice",
+      "groupSizes": [4, 2],
+      "nucleusWord": [3, 5],
+      "patterns": ["2-3", "2-3"],
+      "spelling": { "coffee": "cof-fee" }
+    },
+    {
+      "id": "class2-10b-which-one",
+      "text": "Which one would you like, coffee or tea?",
+      "kind": "choice",
+      "groupSizes": [5, 1, 2],
+      "nucleusWord": [4, 5, 7],
+      "patterns": ["2-3-2", "2-3", "2-3"],
+      "spelling": { "coffee": "cof-fee" }
+    },
+    {
+      "id": "class2-11-dress-colour",
+      "text": "Is your dress that you will wear to the party violet, purple, or navy blue?",
+      "kind": "choice",
+      "groupSizes": [10, 1, 1, 3],
+      "nucleusWord": [9, 10, 11, 14],
+      "patterns": ["2-3-2", "2-3", "2-3", "2-3"],
+      "spelling": { "party": "par-ty", "violet": "vi-o-let", "purple": "pur-ple", "navy": "na-vy" }
+    },
+    {
+      "id": "class2-12-baby-sister",
+      "text": "My baby sister, Catherine, is trying to be more active.",
+      "kind": "nonfinal",
+      "groupSizes": [3, 1, 6],
+      "nucleusWord": [2, 3, 9],
+      "patterns": ["2-3-2", "2-3-2", "2-3-1"],
+      "spelling": { "baby": "ba-by", "sister": "sis-ter", "catherine": "cath-er-ine", "trying": "try-ing", "active": "ac-tive" }
+    },
+    {
+      "id": "class2-13a-sir-cigar",
+      "text": "Sir, you've dropped your cigar.",
+      "kind": "address",
+      "groupSizes": [1, 4],
+      "nucleusWord": [0, 4],
+      "patterns": ["2-3", "2-3-1"],
+      "spelling": { "cigar": "ci-gar" }
+    },
+    { "id": "class2-13b-pick-up", "text": "Pick it up, please.", "kind": "command", "nucleusWord": 3 },
+    { "id": "class2-13c-now", "text": "Now!", "kind": "exclamation", "nucleusWord": 0 },
+    { "id": "class2-14a-bravo", "text": "Bravo!", "kind": "exclamation", "nucleusWord": 0, "spelling": { "bravo": "bra-vo" } },
+    {
+      "id": "class2-14b-opportunity",
+      "text": "It's an excellent opportunity!",
+      "kind": "exclamation",
+      "nucleusWord": 3,
+      "spelling": { "excellent": "ex-cel-lent", "opportunity": "op-por-tu-ni-ty" }
+    }
+  ]
+}

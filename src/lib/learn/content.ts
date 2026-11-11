@@ -13,6 +13,7 @@ import nonfinal2 from "../../../content/units/nonfinal/nonfinal-2.json" with { t
 import tags1 from "../../../content/units/tags/tags-1.json" with { type: "json" };
 import tags2 from "../../../content/units/tags/tags-2.json" with { type: "json" };
 import tags3 from "../../../content/units/tags/tags-3.json" with { type: "json" };
+import class2 from "../../../content/units/practice/class-2.json" with { type: "json" };
 import { levelsForFallingTag, levelsForGroup, levelsForNonFinalGroup, levelsForRisingGroup } from "../intonation/buildLesson.ts";
 import type { PatternId, Sentence } from "../intonation/types.ts";
 
@@ -38,6 +39,14 @@ const REGISTRY: Record<string, unknown> = {
   "tags/tags-1": tags1,
   "tags/tags-2": tags2,
   "tags/tags-3": tags3,
+};
+
+/**
+ * Practice packs: sentence sets that are not lessons of the course map (the teacher's in-class sheets). Same file format and
+ * the same checks as a lesson; they feed the Practice hub and are found by `findSentence`, but have no place on the map.
+ */
+const PACKS: Record<string, unknown> = {
+  "practice/class-2": class2,
 };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);
@@ -131,11 +140,39 @@ export function loadLesson(unitId: string, lessonId: string): LessonContent | un
   return lesson.id === lessonId && lesson.unit === unitId ? lesson : undefined;
 }
 
-/** A course sentence by its id, searching every lesson (the server uses it so clients can't send their own sentences). */
+/** The practice pack with this id ("class-2"), or undefined. Unknown ids never throw. */
+export function loadPack(packId: string): LessonContent | undefined {
+  const key = `practice/${packId}`;
+  const raw = Object.hasOwn(PACKS, key) ? PACKS[key] : undefined;
+  if (raw === undefined) return undefined;
+  const pack = parseLesson(raw);
+  return pack.id === packId && pack.unit === "practice" ? pack : undefined;
+}
+
+/** Ids of the registered practice packs. */
+export function packIds(): string[] {
+  return Object.keys(PACKS).map((k) => k.slice("practice/".length));
+}
+
+/** Every sentence of every lesson, then of every practice pack, in course order (a sentence appears once). */
+export function allSentences(): LessonContent["sentences"] {
+  const lessons = Object.keys(REGISTRY).flatMap((key) => {
+    const [unitId, lessonId] = key.split("/");
+    return loadLesson(unitId, lessonId)?.sentences ?? [];
+  });
+  const packs = packIds().flatMap((id) => loadPack(id)?.sentences ?? []);
+  return [...lessons, ...packs];
+}
+
+/** A course sentence by its id, searching every lesson and pack (the server uses it so clients can't send their own sentences). */
 export function findSentence(sentenceId: string): LessonContent["sentences"][number] | undefined {
   for (const key of Object.keys(REGISTRY)) {
     const [unitId, lessonId] = key.split("/");
     const found = loadLesson(unitId, lessonId)?.sentences.find((s) => s.id === sentenceId);
+    if (found) return found;
+  }
+  for (const id of packIds()) {
+    const found = loadPack(id)?.sentences.find((s) => s.id === sentenceId);
     if (found) return found;
   }
   return undefined;

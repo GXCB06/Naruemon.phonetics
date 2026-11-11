@@ -6,7 +6,10 @@ import { endingOf, type Ending, type HearAsk, type HearExercise } from "@/lib/le
 import { hearFeedback } from "@/lib/learn/feedback";
 import { isTagSentence, tagHearFeedback, tagHearHint, tagHearQuestion } from "@/lib/learn/meaning";
 import { rightWrong } from "@/lib/learn/score";
-import { ListenButton, PlaceholderBadge } from "./ListenButton";
+import { Bi } from "@/components/home/lang";
+import { PlaceholderBadge } from "./ListenButton";
+import { prefetchVariants } from "./playReference";
+import { MynaSays, Prompt, SpeakerIcon, useClip, useNumberKeys } from "./ui";
 import type { ExerciseApi } from "./types";
 
 const NAMES = ["A", "B"] as const;
@@ -119,68 +122,62 @@ export function HearIt({
     });
   }, [picked, exercise, ask, tagAsk, textbook, tag, setCheck]);
 
+  const { play, playing, source } = useClip();
+  useEffect(() => {
+    void prefetchVariants(sentence, exercise.clips);
+  }, [sentence, exercise.clips]);
+  const choose = (i: 0 | 1) => {
+    // tap = hear it (also after CHECK): the real voice when both clips exist, otherwise the synthetic one for both
+    void play(`c${i}`, sentence, { variant: exercise.clips[i], forceSynth: true, realVariants: exercise.clips });
+    if (!locked) setPicked(i);
+  };
+  useNumberKeys(2, (i) => choose(i as 0 | 1), true);
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6">
       {notice && (
-        <p className="rounded-xl bg-accent-soft p-3 text-sm font-bold text-accent" role="status">
-          {notice.en}
-          <span className="thai block font-semibold">{notice.th}</span>
+        <p className="rounded-2xl bg-accent-soft p-3 text-sm font-bold text-accent" role="status">
+          <Bi text={notice} />
         </p>
       )}
-      <div>
-        <h1 className="text-2xl font-black leading-snug">
-          {question.en}
-          <span className="thai block text-lg font-bold text-muted">{question.th}</span>
-        </h1>
-        <p className="mt-3 text-xl font-bold">“{sentence.text}”</p>
-        <p className="mt-1 text-sm text-muted">
-          {hintText.en}
-          <span className="thai block">{hintText.th}</span>
-        </p>
-      </div>
+      <Prompt title={question} tip={hintText} />
+      <MynaSays>
+        <p className="text-xl font-bold leading-snug sm:text-2xl">{sentence.text}</p>
+      </MynaSays>
 
-      <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={tag ? (tagAsk === "falling" ? "Pick the clip that sounds sure" : "Pick the clip that sounds like a real question") : `Pick the ${NAME[ask].pick} clip`}>
+      <div
+        className="grid grid-cols-2 gap-3 sm:gap-4"
+        role="radiogroup"
+        aria-label={tag ? (tagAsk === "falling" ? "Pick the clip that sounds sure" : "Pick the clip that sounds like a real question") : `Pick the ${NAME[ask].pick} clip`}
+      >
         {([0, 1] as const).map((i) => {
           const isPicked = picked === i;
           const isRight = i === exercise.correct;
-          const tone =
-            locked && isRight
-              ? "border-good bg-good-soft"
-              : locked && isPicked
-                ? "border-bad bg-bad-soft"
-                : isPicked
-                  ? "border-primary-deep bg-primary/20"
-                  : "border-line bg-card";
+          const state = locked && isRight ? "is-right" : locked && isPicked ? "is-wrong shake" : "";
           return (
-            <div key={i} className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-3 ${tone}`}>
-              <div className="text-3xl font-black" aria-hidden>
+            <button
+              key={i}
+              type="button"
+              role="radio"
+              aria-checked={isPicked}
+              aria-label={tag ? `Play clip ${NAMES[i]} and pick it` : `Play clip ${NAMES[i]}: is it the ${NAME[ask].is}?`}
+              onClick={() => choose(i)}
+              className={`pick flex aspect-[4/3] flex-col items-center justify-center gap-2 p-3 ${state}`}
+            >
+              <span className={`flex size-16 items-center justify-center rounded-2xl sm:size-20 ${isPicked || (locked && isRight) ? "bg-current/15" : "bg-accent-soft text-accent"}`}>
+                <SpeakerIcon className="size-9 sm:size-11" on={playing === `c${i}`} />
+              </span>
+              <span className="flex items-center gap-2 text-xl font-black">
+                <span className="key-hint max-sm:hidden" aria-hidden>
+                  {i + 1}
+                </span>
                 {NAMES[i]}
-              </div>
-              <ListenButton
-                sentence={sentence}
-                variant={exercise.clips[i]}
-                forceSynth
-                label={{ en: `Clip ${NAMES[i]}`, th: `เสียง ${NAMES[i]}` }}
-                ariaLabel={`Play clip ${NAMES[i]}`}
-                className="btn w-full"
-              />
-              <button
-                type="button"
-                role="radio"
-                aria-checked={isPicked}
-                aria-label={tag ? `Clip ${NAMES[i]} is the answer` : `Clip ${NAMES[i]} is the ${NAME[ask].is}`}
-                disabled={locked}
-                onClick={() => setPicked(i)}
-                className={`btn w-full flex-col gap-0 leading-tight ${isPicked ? "btn-primary" : ""}`}
-              >
-                <span>{isPicked ? "✓ " : ""}This one</span>
-                <span className="thai text-sm font-semibold">อันนี้</span>
-              </button>
-            </div>
+              </span>
+            </button>
           );
         })}
       </div>
-      <PlaceholderBadge kind="practice" />
+      {source === "placeholder" && <PlaceholderBadge kind="practice" />}
     </div>
   );
 }

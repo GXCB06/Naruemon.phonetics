@@ -1,5 +1,6 @@
 "use client";
 
+import { Bi } from "@/components/home/lang";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
 import { analyze } from "@/lib/intonation/engine";
@@ -19,6 +20,7 @@ import {
 import { useAiEnabled } from "@/components/ai/useAiEnabled";
 import { AskMyna } from "./AskMyna";
 import { ListenButton } from "./ListenButton";
+import { SpeakerButton } from "./ui";
 import { TuneCanvas, type PenEvent } from "./TuneCanvas";
 import type { ExerciseApi } from "./types";
 
@@ -118,15 +120,14 @@ export function DrawIt({
       <div className="flex items-start gap-3">
         <MynaBot mood={coachMood} look={coachLook} className="h-14 w-14 sm:h-16 sm:w-16" />
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-black leading-snug sm:text-2xl">
-            Draw the tune
-            <span className="thai block text-base font-bold text-muted sm:text-lg">วาดเส้นทำนองเสียง</span>
+          <h1 className="text-[1.6rem] font-black leading-tight sm:text-3xl">
+            <Bi text={{ en: "Draw the tune", th: "วาดเส้นทำนองเสียง" }} subClassName="mt-1 text-[0.62em]" />
           </h1>
           <span className="mt-1 inline-block rounded-full bg-line px-2.5 py-0.5 text-xs font-extrabold text-muted">
             {sentence.kind} · {[...new Set(sentence.groups.map((g) => g.pattern))].join(" | ")}
           </span>
         </div>
-        <ListenButton sentence={sentence} className="btn btn-accent shrink-0 px-3" />
+        <SpeakerButton sentence={sentence} size="md" />
       </div>
 
       <TuneCanvas

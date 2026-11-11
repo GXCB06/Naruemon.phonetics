@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ContourChart } from "@/components/lab/ContourChart";
 import { MicCheckButton } from "@/components/mic/MicCheckButton";
-import { Countdown } from "@/components/lab/Countdown";
+import { MicGateDialog } from "@/components/mic/MicGateDialog";
+import { loadMicProfile } from "@/components/mic/micProfile";
+import { micGate, takeBlocksGrade, takeChips, type GateReason } from "@/lib/audio/micProfile";
 import { KaraokeSentence } from "@/components/lab/KaraokeSentence";
 import { analyzeVoice, type VoiceAnalysis } from "@/lib/audio/analyzeVoice";
 import { MicError, MicRecorder } from "@/lib/audio/recorder";
@@ -12,17 +14,17 @@ import type { Sentence } from "@/lib/intonation/types";
 import type { ShadowExercise } from "@/lib/learn/exercises";
 import { analysisFeedback } from "@/lib/learn/feedback";
 import { graded } from "@/lib/learn/score";
-import { ListenButton } from "./ListenButton";
+import { Bi } from "@/components/home/lang";
+import { MynaSays, Prompt, SpeakerButton } from "./ui";
 import type { ExerciseApi } from "./types";
 
 const MAX_SEC = 10;
-const COUNTDOWN_FROM = 3;
 
-type Phase = "idle" | "starting" | "countdown" | "recording" | "analyzing" | "done" | "error";
+type Phase = "idle" | "starting" | "recording" | "analyzing" | "done" | "error";
 
 /**
  * Shadow it: listen to the sentence, then say it. Uses the same voice pipeline as the lab (MicRecorder → analyzeVoice →
- * rule engine). It never needs a microphone to get through the lesson: "Skip (no mic)" swaps in a listening exercise.
+ * rule engine). It never needs a microphone to get through the lesson: "Can't speak now" swaps in a listening exercise.
  */
 export function ShadowIt({
   exercise,
@@ -37,18 +39,19 @@ export function ShadowIt({
   api: ExerciseApi;
   onSkip: () => void;
 }) {
-  const [heard, setHeard] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
-  const [count, setCount] = useState(COUNTDOWN_FROM);
   const [elapsed, setElapsed] = useState(0);
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
+  /** Set while the mic check dialog is open before speaking; the reason says why Myna is asking. */
+  const [gate, setGate] = useState<GateReason | null>(null);
+  /** The microphone in use is not the one that was checked (known once the mic is open). */
+  const [micChanged, setMicChanged] = useState(false);
   const recRef = useRef<MicRecorder | null>(null);
   const timerRef = useRef<number | null>(null);
-  const countdownRef = useRef<number | null>(null);
-  /** Total samples received so far (countdown included). */
+  /** Total samples received so far. */
   const seenRef = useRef(0);
-  /** Sample index where "Go" happened; null until the countdown ends. Earlier samples are discarded. */
+  /** Sample index where recording started; null until the mic is open. */
   const goRef = useRef<number | null>(null);
   const stopRef = useRef<() => Promise<void>>(async () => undefined);
   const { setCheck } = api;
@@ -65,7 +68,6 @@ export function ShadowIt({
   useEffect(
     () => () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
-      if (countdownRef.current) window.clearInterval(countdownRef.current);
       const rec = recRef.current;
       recRef.current = null;
       void rec?.stop().catch(() => undefined);
@@ -76,12 +78,12 @@ export function ShadowIt({
   // CHECK becomes available once there is a result with a clear voice in it.
   const result = analysis?.result ?? null;
   useEffect(() => {
-    if (!result) return setCheck(null);
+    if (!result || (analysis && takeBlocksGrade(analysis.quality))) return setCheck(null); // a take too quiet to judge fairly gets no score
     setCheck(() => {
       const feedback = analysisFeedback(result);
       return { outcome: graded(exercise.id, "shadow", result.overall, feedback.passed), feedback, analysis: result };
     });
-  }, [result, exercise.id, setCheck]);
+  }, [result, analysis, exercise.id, setCheck]);
 
   const stop = async () => {
     const rec = recRef.current;
@@ -118,7 +120,7 @@ export function ShadowIt({
     const rec = new MicRecorder();
     recRef.current = rec;
     try {
-      // The mic starts during the countdown so it can settle; samples before "Go" are dropped.
+      // No countdown: recording starts the moment the mic is open.
       await rec.start({
         onChunk: (chunk, sr) => {
           seenRef.current += chunk.length;
@@ -130,19 +132,11 @@ export function ShadowIt({
         await rec.stop().catch(() => undefined); // cancelled while the browser asked for the mic
         return;
       }
-      let n = COUNTDOWN_FROM;
-      setCount(n);
-      setPhase("countdown");
-      countdownRef.current = window.setInterval(() => {
-        n -= 1;
-        if (n > 0) return setCount(n);
-        if (countdownRef.current) window.clearInterval(countdownRef.current);
-        countdownRef.current = null;
-        goRef.current = seenRef.current;
-        setPhase("recording");
-        const t0 = performance.now();
-        timerRef.current = window.setInterval(() => setElapsed((performance.now() - t0) / 1000), 100);
-      }, 1000);
+      setMicChanged(micGate(loadMicProfile(), rec.inputInfo.label, Date.now()).reason === "changed");
+      goRef.current = seenRef.current;
+      setPhase("recording");
+      const t0 = performance.now();
+      timerRef.current = window.setInterval(() => setElapsed((performance.now() - t0) / 1000), 100);
     } catch (e) {
       recRef.current = null;
       setPhase("error");
@@ -150,68 +144,91 @@ export function ShadowIt({
     }
   };
 
-  const cancel = async () => {
-    if (countdownRef.current) window.clearInterval(countdownRef.current);
-    countdownRef.current = null;
-    const rec = recRef.current;
-    recRef.current = null;
-    goRef.current = null;
-    setPhase("idle");
-    await rec?.stop().catch(() => undefined);
+  const busy = phase === "starting" || phase === "recording" || phase === "analyzing";
+
+  const again = phase === "done" || phase === "error";
+  // First time on this device (or after a failed check): a short mic check before the first recording
+  const speak = () => {
+    const d = micGate(loadMicProfile(), null, Date.now());
+    if (d.need && d.reason) setGate(d.reason);
+    else void start();
   };
 
-  const busy = phase === "starting" || phase === "countdown" || phase === "recording" || phase === "analyzing";
-
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-2xl font-black leading-snug">
-          Say it
-          <span className="thai block text-lg font-bold text-muted">พูดตาม</span>
-        </h1>
-        <p className="mt-1 text-sm text-muted">
-          First listen. Then tap the microphone and say the sentence once.
-          <span className="thai block">ฟังก่อน แล้วกดไมค์และพูดประโยคนี้หนึ่งครั้ง</span>
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <Prompt
+        title={{ en: "Say this sentence", th: "พูดประโยคนี้" }}
+        tip={{
+          en: "Tap the speaker to hear it first if you like. Tap the mic, say the sentence once, then tap again to stop.",
+          th: "แตะลำโพงเพื่อฟังก่อนก็ได้ แตะไมค์ พูดประโยคหนึ่งครั้ง แล้วแตะอีกครั้งเพื่อหยุด",
+        }}
+      />
 
-      <div className="card flex flex-col gap-4 p-4">
-        {phase === "countdown" || phase === "recording" ? (
-          <KaraokeSentence sentence={sentence} elapsedSec={phase === "recording" ? elapsed : null} />
-        ) : (
-          <p className="text-2xl font-bold leading-snug">“{sentence.text}”</p>
-        )}
-        <ListenButton sentence={sentence} onPlay={() => setHeard(true)} />
-      </div>
+      <MynaSays mood={phase === "recording" ? "listening" : phase === "analyzing" ? "thinking" : "idle"}>
+        <div className="flex items-center gap-3">
+          <SpeakerButton sentence={sentence} size="md" />
+          <div className="min-w-0 flex-1">
+            {phase === "recording" ? (
+              <KaraokeSentence sentence={sentence} elapsedSec={elapsed} />
+            ) : (
+              <p className="text-xl font-bold leading-snug sm:text-2xl">{sentence.text}</p>
+            )}
+          </div>
+        </div>
+      </MynaSays>
 
-      {phase === "countdown" && <Countdown count={count} />}
-
-      <div className="flex flex-wrap items-center gap-3">
-        {phase === "countdown" ? (
-          <button type="button" className="btn text-lg" onClick={() => void cancel()}>
-            ✕ Cancel <span className="thai text-base">ยกเลิก</span>
-          </button>
-        ) : phase === "recording" ? (
-          <button type="button" className="btn btn-danger text-lg" onClick={() => void stop()}>
-            ■ Stop ({elapsed.toFixed(1)}s) <span className="thai text-base">หยุด</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="btn btn-accent text-lg"
-            onClick={() => void start()}
-            disabled={busy || locked || !heard}
-          >
-            🎙️ {phase === "done" || phase === "error" ? "Record again" : "Record"}
-            <span className="thai text-base font-semibold">{phase === "done" || phase === "error" ? "อัดใหม่" : "อัดเสียง"}</span>
-          </button>
-        )}
-        {!heard && phase === "idle" && (
-          <span className="text-sm font-semibold text-muted">
-            Listen first.<span className="thai ml-1">ฟังก่อนนะ</span>
+      {phase === "recording" ? (
+        <button
+          type="button"
+          className="btn btn-bad w-full flex-col gap-1 py-5 text-lg"
+          onClick={() => void stop()}
+          aria-label={`Stop recording (${elapsed.toFixed(1)} seconds)`}
+        >
+          <span className="flex h-8 items-end gap-1" aria-hidden>
+            {[0, 1, 2, 3, 4, 5, 6].map((k) => (
+              <span
+                key={k}
+                className="w-1.5 rounded-full bg-white motion-safe:animate-pulse"
+                style={{ height: `${30 + 70 * Math.abs(Math.sin(elapsed * 6 + k * 0.9))}%`, animationDelay: `${k * 90}ms` }}
+              />
+            ))}
           </span>
-        )}
-      </div>
+          <Bi text={{ en: `Tap to stop · ${elapsed.toFixed(1)}s`, th: "แตะเพื่อหยุด" }} className="items-center leading-tight" subClassName="text-white/80" />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn-accent w-full gap-3 py-5 text-lg"
+          onClick={speak}
+          disabled={busy || locked}
+        >
+          <svg viewBox="0 0 24 24" className="size-8" aria-hidden fill="currentColor">
+            <rect x="9" y="3" width="6" height="11" rx="3" />
+            <path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <Bi
+            text={phase === "starting" ? { en: "Opening the mic…", th: "กำลังเปิดไมค์…" } : again ? { en: "TAP TO SPEAK AGAIN", th: "แตะเพื่อพูดอีกครั้ง" } : { en: "TAP TO SPEAK", th: "แตะเพื่อพูด" }}
+            className="items-start leading-tight"
+            subClassName="text-white/80"
+          />
+        </button>
+      )}
+
+      {micChanged && phase !== "recording" && (
+        <div className="flex flex-wrap items-center gap-3 rounded-xl bg-warn-soft p-3 text-sm font-semibold text-warn" role="status">
+          <Bi text={{ en: "This looks like a different microphone. A quick check keeps your score fair.", th: "ดูเหมือนเป็นไมค์คนละตัว เช็กสั้น ๆ เพื่อให้คะแนนยุติธรรม" }} className="min-w-0 flex-1" />
+          <MicCheckButton />
+        </div>
+      )}
+
+      <MicGateDialog
+        open={gate !== null}
+        reason={gate ?? "never"}
+        onContinue={() => {
+          setGate(null);
+          void start(); // inside the tap: the microphone opens here
+        }}
+      />
 
       {phase === "analyzing" && <p className="font-bold text-muted">Analysing… <span className="thai">กำลังวิเคราะห์…</span></p>}
 
@@ -219,7 +236,7 @@ export function ShadowIt({
         <div className="rounded-xl bg-bad-soft p-3 font-semibold text-bad" role="alert">
           {error}
           <span className="thai block text-sm font-normal">
-            ใช้ไมค์ไม่ได้ตอนนี้ ไม่เป็นไร กด “Skip (no mic)” เพื่อทำแบบฝึกหัดฟังแทน
+            ใช้ไมค์ไม่ได้ตอนนี้ ไม่เป็นไร กด “พูดไม่สะดวกตอนนี้” เพื่อทำแบบฝึกหัดฟังแทน
           </span>
           <MicCheckButton className="mt-3" />
         </div>
@@ -250,12 +267,30 @@ export function ShadowIt({
             </p>
           </div>
           {playbackUrl && <audio controls src={playbackUrl} className="w-full" />}
+          <div className="flex flex-wrap gap-2" aria-label="Recording quality · คุณภาพเสียงที่อัด">
+            {takeChips(analysis.quality).map((c) => (
+              <span
+                key={c.key}
+                className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-sm font-extrabold ${
+                  c.level === "good" ? "border-good bg-good-soft text-good" : c.level === "warn" ? "border-warn bg-warn-soft text-warn" : "border-bad bg-bad-soft text-bad"
+                }`}
+              >
+                <span aria-hidden>{c.level === "good" ? "✓" : "!"}</span>
+                <Bi text={{ en: `${c.label.en}: ${c.value.en}`, th: `${c.label.th}: ${c.value.th}` }} inline className="flex-row! items-baseline gap-1.5" />
+              </span>
+            ))}
+          </div>
           {analysis.quality.issues.slice(0, 1).map((q, i) => (
             <p
               key={i}
               className={`rounded-xl p-3 text-sm font-semibold ${q.level === "fail" ? "bg-bad-soft text-bad" : "bg-warn-soft text-warn"}`}
             >
               {q.en} <span className="thai block font-normal">{q.th}</span>
+              {q.level === "fail" && (
+                <span className="mt-1 block font-extrabold">
+                  <Bi text={{ en: "This take can't be scored fairly. Record it again.", th: "เทคนี้ให้คะแนนอย่างยุติธรรมไม่ได้ อัดใหม่อีกครั้งนะ" }} />
+                </span>
+              )}
             </p>
           ))}
           {analysis.quality.issues.some((q) => q.level === "fail") && <MicCheckButton className="self-start" />}
@@ -265,15 +300,14 @@ export function ShadowIt({
         </div>
       )}
 
-      <div className="flex flex-col items-start gap-1 border-t-2 border-line pt-4">
-        <button type="button" className="btn text-base" onClick={onSkip} disabled={locked || phase === "recording"}>
-          Skip (no mic) <span className="thai text-sm font-semibold">ข้าม (ไม่มีไมค์)</span>
-        </button>
-        <span className="text-xs text-muted">
-          Swaps this for a listening exercise instead.
-          <span className="thai ml-1">จะเปลี่ยนเป็นแบบฝึกหัดฟังแทน</span>
-        </span>
-      </div>
+      <button
+        type="button"
+        className="self-center rounded-xl px-3 py-2 text-sm font-extrabold uppercase tracking-wide text-muted hover:bg-line disabled:opacity-40"
+        onClick={onSkip}
+        disabled={locked || phase === "recording"}
+      >
+        <Bi text={{ en: "Can't speak now", th: "พูดไม่สะดวกตอนนี้" }} className="items-center" />
+      </button>
     </div>
   );
 }

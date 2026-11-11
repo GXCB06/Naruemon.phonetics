@@ -6,7 +6,7 @@ import type { Sentence } from "../intonation/types.ts";
 import { completeLesson, emptyProgress } from "../progress/store.ts";
 import { loadLesson } from "./content.ts";
 import { analysisFeedback, hearFeedback, peakFeedback, peakLabel } from "./feedback.ts";
-import { PLAN, buildExercises, distractorFor, hasBusyVariant, listeningFallback, makeHear } from "./exercises.ts";
+import { PLAN, buildExercises, endingOf, distractorFor, hasBusyVariant, listeningFallback, makeHear } from "./exercises.ts";
 import type { HearExercise } from "./exercises.ts";
 import { placeholderClip, referenceUrl } from "./reference.ts";
 import { PASS_SCORE, graded, rightWrong, summarize, xpFor } from "./score.ts";
@@ -15,11 +15,11 @@ const lesson = (id: string) => loadLesson("falling", id)!;
 const sentenceOf = (lessonId: string, id: string): Sentence => lesson(lessonId).sentences.find((s) => s.id === id)!;
 
 describe("buildExercises", () => {
-  it("makes 8 to 10 exercises, listening first, in a fixed type order", () => {
+  it("makes 10 to 12 exercises, listening first, in a fixed type order", () => {
     for (const id of ["falling-1", "falling-2", "falling-3"]) {
       const ex = buildExercises(lesson(id).sentences, id);
-      expect(ex.length).toBeGreaterThanOrEqual(8);
-      expect(ex.length).toBeLessThanOrEqual(10);
+      expect(ex.length).toBeGreaterThanOrEqual(10);
+      expect(ex.length).toBeLessThanOrEqual(12);
       expect(ex.map((e) => e.type)).toEqual([...PLAN]);
       expect(ex[0].type).toBe("hear");
       expect(ex.at(-1)!.type).toBe("shadow");
@@ -58,8 +58,19 @@ describe("hear it", () => {
         expect(e.clips[e.correct]).toBe("falling");
       }
       expect(new Set(h.map((e) => e.correct)).size).toBe(2);
-      expect(new Set(h.flatMap((e) => e.clips.filter((c) => c !== "falling"))).size).toBeGreaterThan(1);
+      // which mistakes appear depends on which real-voice clips exist (a pair is real-voice when it can be)
+      expect(new Set(h.flatMap((e) => e.clips.filter((c) => c !== "falling"))).size).toBeGreaterThanOrEqual(1);
     }
+  });
+
+  it("prefers a mistake that has a real-voice clip next to the target", async () => {
+    const { default: manifest } = await import("../../../public/audio/variants/manifest.json", { with: { type: "json" } });
+    const clips = (manifest as { clips: Record<string, string[]> }).clips;
+    // a sentence with real falling + rising clips but no real flat clip: asking for the falling one must pair it with rising
+    const all = ["falling-1", "falling-2", "falling-3"].flatMap((id) => lesson(id).sentences);
+    const s = all.find((x) => clips[x.id]?.includes("falling") && clips[x.id]?.includes("rising") && !clips[x.id]?.includes("flat") && endingOf(x) === "falling");
+    if (!s) return; // none in the committed clips: nothing to prove
+    for (let k = 0; k < 4; k++) expect(makeHear(s, k, `t-${k}`).clips).toContain("rising");
   });
 
   it("never offers a 'busy' distractor that sounds the same as the falling clip", () => {

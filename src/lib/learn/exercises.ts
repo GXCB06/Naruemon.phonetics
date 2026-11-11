@@ -3,6 +3,9 @@
 
 import { LIST_KIND_LABELS } from "../intonation/buildLesson.ts";
 import type { Sentence } from "../intonation/types.ts";
+import variantManifest from "../../../public/audio/variants/manifest.json" with { type: "json" };
+import { hasRealVariants, parseVariantManifest } from "../synth/variantManifest.ts";
+import { hashSeed, seededShuffle, tuneBank } from "./build.ts";
 import { isTagSentence } from "./meaning.ts";
 
 /**
@@ -88,11 +91,48 @@ export interface MeaningExercise {
   id: string;
   sentenceId: string;
 }
-export type Exercise = HearExercise | PeakExercise | DrawExercise | ShadowExercise | MeaningExercise;
+/**
+ * Match the pairs: three clips of the same sentence (ends low / ends high / flat) on the left, three descriptions on the
+ * right. Tap a clip to hear it, then tap what it does.
+ */
+export interface MatchExercise {
+  type: "match";
+  id: string;
+  sentenceId: string;
+  /** Clip order on the left. */
+  clips: [ClipVariant, ClipVariant, ClipVariant];
+  /** Description order on the right (a different order from `clips`). */
+  labels: [ClipVariant, ClipVariant, ClipVariant];
+}
+/** Build the tune: tap level tiles (and "|" between thought groups) into a line, e.g. 2 3 2 | 2 3 1. */
+export interface BuildExercise {
+  type: "build";
+  id: string;
+  sentenceId: string;
+  /** The shuffled tile bank, answer tiles plus distractors (see `tuneBank`). */
+  bank: string[];
+}
+export type Exercise = HearExercise | PeakExercise | DrawExercise | ShadowExercise | MeaningExercise | MatchExercise | BuildExercise;
 export type ExerciseType = Exercise["type"];
 
-/** Listening first, then reading the tune, then producing it. 10 exercises. */
-export const PLAN: readonly ExerciseType[] = ["hear", "hear", "hear", "peak", "peak", "peak", "draw", "draw", "shadow", "shadow"];
+/** Listening first (with a pairs board), then reading the tune (with a tile line), then producing it. 12 exercises. */
+export const PLAN: readonly ExerciseType[] = ["hear", "match", "hear", "peak", "build", "hear", "peak", "peak", "draw", "draw", "shadow", "shadow"];
+
+/** The three clips of "Match the pairs": always distinct, whatever the sentence. */
+export const MATCH_VARIANTS: readonly ClipVariant[] = ["falling", "rising", "flat"];
+
+export function makeMatch(sentence: Sentence, id: string): MatchExercise {
+  const seed = hashSeed(id);
+  const clips = seededShuffle(MATCH_VARIANTS, seed) as MatchExercise["clips"];
+  let labels = seededShuffle(MATCH_VARIANTS, seed + 1) as MatchExercise["labels"];
+  // never line the answers up straight across
+  if (labels.some((l, i) => l === clips[i])) labels = [clips[1], clips[2], clips[0]];
+  return { type: "match", id, sentenceId: sentence.id, clips, labels };
+}
+
+export function makeBuild(sentence: Sentence, id: string): BuildExercise {
+  return { type: "build", id, sentenceId: sentence.id, bank: tuneBank(sentence, hashSeed(id)) };
+}
 
 /**
  * Lessons whose "Hear it" exercises alternate between asking for the rising and the falling clip. Every other lesson asks
@@ -136,6 +176,17 @@ export function distractorFor(sentence: Sentence, k: number): ClipVariant {
   return rising ? "falling" : "rising";
 }
 
+/** Real-voice clips that exist (made by tools/make-variants.ts). Exercises prefer clips that all have a real voice. */
+const REAL_CLIPS = parseVariantManifest(variantManifest);
+
+/** The mistakes that make sense for a sentence, starting from the k-th (the order `distractorFor` walks). */
+function distractorOrder(sentence: Sentence, k: number): ClipVariant[] {
+  const rising = endingOf(sentence) === "rising";
+  const groups = hasOpenGroup(sentence) || isListSentence(sentence);
+  const pool: readonly ClipVariant[] = groups ? ["finished", "flat"] : rising ? ["falling", "flat"] : ["rising", "flat", "busy"];
+  return pool.map((_, i) => pool[(k + i) % pool.length]).filter((d) => d !== "busy" || hasBusyVariant(sentence));
+}
+
 /**
  * A "hear it" exercise; `k` decides which mistake is the distractor and whether the right clip is A or B.
  * `ask` is the tune the learner must find (default: `defaultAsk`). Asking for the OTHER ending ("which one falls?" on a
@@ -145,7 +196,11 @@ export function makeHear(sentence: Sentence, k: number, id: string, ask?: HearAs
   const textbook = endingOf(sentence);
   const wanted = ask ?? defaultAsk(sentence);
   const target = askedClip(wanted, sentence);
-  const other: ClipVariant = target === textbook ? distractorFor(sentence, k) : textbook;
+  let other: ClipVariant = target === textbook ? distractorFor(sentence, k) : textbook;
+  // both clips a real voice when possible: among the sensible mistakes, take the first that has a real clip next to the target
+  if (target === textbook && !hasRealVariants(REAL_CLIPS, sentence.id, [target, other])) {
+    other = distractorOrder(sentence, k).find((d) => hasRealVariants(REAL_CLIPS, sentence.id, [target, d])) ?? other;
+  }
   const correct: 0 | 1 = k % 2 === 0 ? 1 : 0; // B, A, B ...: the answer is not always in the same place
   return {
     type: "hear",
@@ -179,6 +234,12 @@ export function buildExercises(sentences: readonly Sentence[], lessonId: string)
         base === "unfinished" ? (k % 2 === 1 ? "finished" : base) : (mixed || isTagSentence(sentence)) && k % 2 === 1 ? (textbook === "rising" ? "falling" : "rising") : base;
       return makeHear(sentence, k, id, ask);
     }
+    if (type === "match") {
+      // the sentence of this lesson whose three clips all exist as a real voice, when there is one
+      const real = sentences.filter((s) => hasRealVariants(REAL_CLIPS, s.id, MATCH_VARIANTS));
+      return makeMatch(real.length ? real[(i + lessonId.length) % real.length] : sentence, id);
+    }
+    if (type === "build") return makeBuild(sentence, id);
     return { type, id, sentenceId: sentence.id };
   });
 }

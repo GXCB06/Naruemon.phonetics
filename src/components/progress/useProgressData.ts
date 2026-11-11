@@ -5,6 +5,7 @@ import { IPA_STATS_KEY, MASTERY_KEY, QUEUE_KEY, loadIpaStats, loadMastery, loadQ
 import { mergeIpaStats } from "@/lib/ipa/stats.ts";
 import { DRAW_GRADES_KEY, loadGradeTally, mergeGradeTallies } from "@/lib/progress/grades.ts";
 import { hasEnoughData, type MasteryMap } from "@/lib/mastery/mastery.ts";
+import { skillRadar, weekActivity } from "@/lib/progress/skills.ts";
 import {
   buildDrawGradeRows,
   buildHeatMap,
@@ -86,6 +87,8 @@ export function useProgressData() {
     return {
       settled: remote !== undefined,
       isEmpty: heat.length === 0 && points.length === 0 && drawGrades.length === 0 && ipa === null,
+      radar: skillRadar(mastery, ipa),
+      week: weekActivity(points, now),
       heat,
       hasEnoughSomewhere: Object.values(mastery).some((e) => hasEnoughData(e.attemptsN)),
       improvements: topImprovements(mastery, 3),

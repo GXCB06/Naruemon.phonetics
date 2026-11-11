@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Bi, useText } from "@/components/home/lang";
+import { courseForPattern } from "@/lib/practice/courses.ts";
 import { MODALITY_LABEL, type Improvement } from "@/lib/progress/view.ts";
 import type { MasteryModality } from "@/lib/mastery/mastery.ts";
 import { COPY } from "./copy";
@@ -48,9 +49,16 @@ export function Improvements({ items, hasEnoughSomewhere }: { items: Improvement
                     </p>
                   </div>
                 </div>
-                <Link href={item.target.href} className="btn btn-primary min-h-12 self-stretch text-sm sm:self-start">
-                  <Bi text={COPY.improve.practice} className="items-center" subClassName="text-primary-ink/80" />
-                </Link>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  {courseForPattern(item.pattern) && (
+                    <Link href={`/practice/${courseForPattern(item.pattern)}`} className="btn btn-primary min-h-12 text-sm">
+                      <Bi text={{ en: "Start a 10-question drill", th: "เริ่มฝึก 10 ข้อ" }} className="items-center" subClassName="text-primary-ink/80" />
+                    </Link>
+                  )}
+                  <Link href={item.target.href} className="btn min-h-12 text-sm">
+                    <Bi text={COPY.improve.practice} className="items-center" />
+                  </Link>
+                </div>
               </li>
             );
           })}

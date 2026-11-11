@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AI_ERROR, aiErrorFor, type AiError } from "@/components/ai/useAiEnabled";
 import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
 import type { Bilingual } from "@/lib/intonation/types";
 import { drawGroupsOf, syllableLabel, type DrawGrade, type Levels } from "@/lib/learn/tuneDraw";
 import type { Sentence } from "@/lib/intonation/types";
+import type { AskAbout } from "@/lib/ai/askMyna";
 
 interface Turn {
   role: "user" | "assistant";
@@ -18,7 +19,22 @@ interface Turn {
  * Ask Myna: the student asks "why?" about this sentence and their own line, in English or Thai, and gets a short
  * answer in both. The server builds the prompt from the course sentence and the drawing (src/app/api/ask-myna).
  */
-export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; assigned: (Levels | null)[]; grade: DrawGrade }) {
+export function AskMyna({
+  sentence,
+  assigned = [],
+  grade = "miss",
+  about = "draw",
+  firstQuestion,
+}: {
+  sentence: Sentence;
+  /** The learner's drawing (draw only). */
+  assigned?: (Levels | null)[];
+  grade?: DrawGrade;
+  /** Which exercise this is about; anything but "draw" sends no answer data. */
+  about?: AskAbout;
+  /** Asked straight away when the panel opens ("Why?" after a wrong answer). */
+  firstQuestion?: string;
+}) {
   const [turns, setTurns] = useState<Turn[]>([]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<AiError | null>(null);
@@ -33,10 +49,11 @@ export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; ass
     const nuc = syllableLabel(last, last.nucleus);
     const peak = { en: `Why is the peak on ${nuc}?`, th: `ทำไมเสียงสูงอยู่ที่ ${nuc}` };
     const end = { en: "Why does it end like this?", th: "ทำไมตอนจบเป็นแบบนี้" };
+    if (about !== "draw") return [peak, end, { en: "How can I hear the difference?", th: "ฟังความต่างได้ยังไง" }];
     if (grade === "miss") return [{ en: "Why is my line wrong?", th: "ทำไมเส้นของฉันผิด" }, peak, { en: "How can I hear the difference?", th: "ฟังความต่างได้ยังไง" }];
     if (grade === "good") return [{ en: "How do I get a Perfect?", th: "ทำยังไงให้ได้ Perfect" }, peak, end];
     return [peak, end, { en: "When else do we use this tune?", th: "ใช้ทำนองนี้ตอนไหนอีก" }];
-  }, [sentence, grade]);
+  }, [sentence, grade, about]);
 
   const react = (m: BotMood) => {
     clearTimeout(moodTimer.current);
@@ -60,7 +77,7 @@ export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; ass
       const res = await fetch("/api/ask-myna", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sentenceId: sentence.id, assigned, turns: recent.map((t) => ({ role: t.role, content: t.content })) }),
+        body: JSON.stringify({ sentenceId: sentence.id, assigned: about === "draw" ? assigned : [], about, turns: recent.map((t) => ({ role: t.role, content: t.content })) }),
         signal: ctl.current.signal,
       });
       if (!res.ok) {
@@ -82,6 +99,15 @@ export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; ass
     }
   };
 
+  useEffect(() => {
+    if (!firstQuestion) return;
+    // a tick later, so a dev-mode remount cancels the first one instead of aborting a request in flight
+    const t = setTimeout(() => void ask(firstQuestion), 0);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, when the panel opens
+  }, []);
+  useEffect(() => () => ctl.current?.abort(), []);
+
   return (
     <section id="ask-myna" className="mt-4 scroll-mt-3 rounded-2xl border-2 border-accent p-4" aria-labelledby="ask-title">
       <div className="flex items-center gap-3">
@@ -90,10 +116,17 @@ export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; ass
           Ask Myna<span className="thai block text-sm font-semibold text-muted">ถาม Myna ครูผู้ช่วย AI</span>
         </h3>
       </div>
-      <p className="mt-2 text-sm font-bold text-muted">
-        Still not sure why? Ask about this sentence and your line, in English or Thai.
-        <span className="thai block font-medium">ยังไม่เข้าใจ? ถามเกี่ยวกับประโยคนี้และเส้นของคุณได้ ทั้งภาษาอังกฤษและภาษาไทย</span>
-      </p>
+      {about === "draw" ? (
+        <p className="mt-2 text-sm font-bold text-muted">
+          Still not sure why? Ask about this sentence and your line, in English or Thai.
+          <span className="thai block font-medium">ยังไม่เข้าใจ? ถามเกี่ยวกับประโยคนี้และเส้นของคุณได้ ทั้งภาษาอังกฤษและภาษาไทย</span>
+        </p>
+      ) : (
+        <p className="mt-2 text-sm font-bold text-muted">
+          Ask anything about this sentence&apos;s tune, in English or Thai.
+          <span className="thai block font-medium">ถามเรื่องทำนองเสียงของประโยคนี้ได้ ทั้งภาษาอังกฤษและภาษาไทย</span>
+        </p>
+      )}
 
       {(turns.length > 0 || pending) && (
         <div className="mt-3 flex flex-col gap-2.5" aria-live="polite">
@@ -162,8 +195,10 @@ export function AskMyna({ sentence, assigned, grade }: { sentence: Sentence; ass
         </p>
       )}
       <p className="mt-2 text-xs font-bold text-muted">
-        Myna is AI and can make mistakes. The green line is the course answer.
-        <span className="thai block font-medium">Myna เป็น AI อาจตอบผิดได้ เส้นสีเขียวคือคำตอบตามบทเรียน</span>
+        {about === "draw" ? "Myna is AI and can make mistakes. The green line is the course answer." : "Myna is AI and can make mistakes. The answer in green is the course answer."}
+        <span className="thai block font-medium">
+          {about === "draw" ? "Myna เป็น AI อาจตอบผิดได้ เส้นสีเขียวคือคำตอบตามบทเรียน" : "Myna เป็น AI อาจตอบผิดได้ คำตอบสีเขียวคือคำตอบตามบทเรียน"}
+        </span>
       </p>
     </section>
   );

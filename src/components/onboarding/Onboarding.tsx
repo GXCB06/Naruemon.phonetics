@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Bi, LangToggle, useLang } from "@/components/home/lang";
@@ -27,8 +26,17 @@ interface Step {
   mood: BotMood;
   title: Bilingual;
   body: Bilingual;
-  art?: "levels" | "draw";
+  art?: "levels" | "draw" | "features";
 }
+
+/** The places in the app, for the last tour screen ("what you can do in Myna"). */
+const FEATURES: { emoji: string; name: Bilingual; text: Bilingual }[] = [
+  { emoji: "🏠", name: { en: "Learn", th: "เรียน" }, text: { en: "Lessons on the map, one tune at a time", th: "บทเรียนบนแผนที่ ทีละทำนอง" } },
+  { emoji: "🎯", name: { en: "Practice", th: "ฝึกฝน" }, text: { en: "Pick a pattern to draw: 2-3-1, 2-3, 2-3-2, lists, tags, or a quick quiz", th: "เลือกรูปแบบมาวาด: 2-3-1, 2-3, 2-3-2, รายการ, tag หรือควิซเร็ว" } },
+  { emoji: "🎙️", name: { en: "Speak", th: "ฝึกพูด" }, text: { en: "Say a sentence and see your tune next to the target", th: "พูดประโยคแล้วดูทำนองของคุณเทียบกับแบบ" } },
+  { emoji: "ə", name: { en: "IPA", th: "IPA" }, text: { en: "Hear a word and build or write its sounds", th: "ฟังคำแล้วเรียงหรือเขียนเสียง" } },
+  { emoji: "📊", name: { en: "Progress", th: "สถิติ" }, text: { en: "Charts of how you're doing, and what to improve", th: "กราฟความก้าวหน้า และสิ่งที่ควรพัฒนา" } },
+];
 
 const STEPS: Step[] = [
   {
@@ -61,9 +69,18 @@ const STEPS: Step[] = [
     mood: "listening",
     title: { en: "Listen, then say it", th: "ฟัง แล้วพูดตาม" },
     body: {
-      en: "Tap 🔊 to hear the sentence, then tap 🎙️ and say it. You'll see your tune next to the target. Your voice is never saved.",
-      th: "แตะ 🔊 เพื่อฟังประโยค แล้วแตะ 🎙️ และพูดตาม คุณจะเห็นทำนองเสียงของคุณเทียบกับแบบ เสียงของคุณจะไม่ถูกเก็บไว้",
+      en: "Tap 🔊 to hear the sentence, then tap 🎙️ and say it. You'll see your tune next to the target. Myna checks your microphone first, and your voice is never saved.",
+      th: "แตะ 🔊 เพื่อฟังประโยค แล้วแตะ 🎙️ และพูดตาม คุณจะเห็นทำนองเสียงของคุณเทียบกับแบบ Myna จะเช็กไมค์ให้ก่อน และเสียงของคุณจะไม่ถูกเก็บไว้",
     },
+  },
+  {
+    mood: "happy",
+    title: { en: "Everything in Myna", th: "ทุกอย่างใน Myna" },
+    body: {
+      en: "Find all of it in the bar at the bottom of the screen. IPA lives in Practice.",
+      th: "หาได้จากแถบด้านล่างของจอ ส่วน IPA อยู่ในหน้าฝึกฝน",
+    },
+    art: "features",
   },
 ];
 
@@ -71,9 +88,7 @@ const T = {
   skip: { en: "Skip", th: "ข้าม" },
   next: { en: "Next", th: "ถัดไป" },
   back: { en: "Back", th: "ย้อนกลับ" },
-  start: { en: "Start learning", th: "เริ่มเรียนเลย" },
-  mic: { en: "Check my mic first", th: "เช็กไมค์ก่อน" },
-  micSub: { en: "Optional · about 10 seconds", th: "ไม่บังคับ · ประมาณ 10 วินาที" },
+  start: { en: "Let's go", th: "ไปกันเลย" },
   step: { en: "Step", th: "ขั้นที่" },
 } satisfies Record<string, Bilingual>;
 
@@ -102,13 +117,17 @@ export function Onboarding({ inline = false }: { inline?: boolean }) {
     headingRef.current?.focus();
   }, [i]);
 
-  const finish = (dest: "/" | "/mic-check") => {
+  /**
+   * Finishing the tour on a first visit (inline) leads to the sign-in page, where "Skip for now" goes on to the map.
+   * Skipping the tour, or looking at it again later from More, never asks for a sign-in.
+   */
+  const finish = (dest: "home" | "sign-in") => {
     markOnboarded();
-    if (dest === "/mic-check") router.push("/mic-check");
+    if (dest === "sign-in" && inline) router.push("/login?next=%2F&welcome=1");
     else if (!inline) router.push("/");
     else window.scrollTo(0, 0);
   };
-  const next = () => (last ? finish("/") : setI((n) => Math.min(STEPS.length - 1, n + 1)));
+  const next = () => (last ? finish("sign-in") : setI((n) => Math.min(STEPS.length - 1, n + 1)));
   const back = () => setI((n) => Math.max(0, n - 1));
 
   useEffect(() => {
@@ -133,7 +152,7 @@ export function Onboarding({ inline = false }: { inline?: boolean }) {
           {!last && (
             <button
               type="button"
-              onClick={() => finish("/")}
+              onClick={() => finish("home")}
               className="min-h-11 rounded-xl px-3 font-extrabold text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-accent"
             >
               <Bi text={T.skip} className="items-center" />
@@ -158,7 +177,26 @@ export function Onboarding({ inline = false }: { inline?: boolean }) {
       >
         <div className="flex w-full max-w-md shrink-0 flex-col items-center gap-4 md:landscape:w-1/2">
           <MynaBot mood={step.mood} className={step.art ? "size-28 sm:size-36" : "size-36 sm:size-48"} key={i} />
-          {step.art && (
+          {step.art === "features" && (
+            <Card>
+              <ul className="flex flex-col gap-2.5">
+                {FEATURES.map((f) => (
+                  <li key={f.name.en} className="flex items-center gap-3">
+                    <span aria-hidden className="ipa flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-xl font-black text-accent">
+                      {f.emoji}
+                    </span>
+                    <span className="min-w-0 text-sm font-semibold">
+                      <span className="block text-base font-black">
+                        <Bi text={f.name} inline className="flex-row! items-baseline gap-1.5" />
+                      </span>
+                      <Bi text={f.text} subClassName="hidden" />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          )}
+          {step.art && step.art !== "features" && (
             <Card>
               <TuneArt mode={step.art} key={`${step.art}-${i}`} />
               {step.art === "levels" && (
@@ -188,27 +226,6 @@ export function Onboarding({ inline = false }: { inline?: boolean }) {
             <Bi text={step.body} subClassName="mt-1 text-[0.85em]" />
           </p>
 
-          {last && (
-            <Link
-              href="/mic-check"
-              onClick={(e) => {
-                e.preventDefault();
-                finish("/mic-check");
-              }}
-              className="card flex items-center gap-3 p-3 transition-transform hover:-translate-y-0.5"
-            >
-              <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-2xl">
-                🎙️
-              </span>
-              <span className="min-w-0 flex-1 font-extrabold">
-                <Bi text={T.mic} />
-                <span className="block text-xs font-semibold text-muted">{T.micSub[lang]}</span>
-              </span>
-              <span aria-hidden className="text-xl text-muted">
-                →
-              </span>
-            </Link>
-          )}
         </section>
       </main>
 

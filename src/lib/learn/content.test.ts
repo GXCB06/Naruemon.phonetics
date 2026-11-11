@@ -7,7 +7,7 @@ import type { LessonSource } from "../intonation/buildLesson.ts";
 import { OVERRIDES } from "../ipa/overrides.ts";
 import { buildWordIpa } from "../ipa/words.ts";
 import type { WordIpa } from "../ipa/words.ts";
-import { contentKeys, lessonProblems, loadLesson, parseLesson } from "./content.ts";
+import { allSentences, contentKeys, findSentence, lessonProblems, loadLesson, loadPack, packIds, parseLesson } from "./content.ts";
 import type { LessonContent } from "./content.ts";
 
 const lessons = UNITS.filter((u) => !u.locked).flatMap((u) => u.lessons.map((l) => ({ unit: u.id, lesson: l.id })));
@@ -118,6 +118,35 @@ describe("lesson content", () => {
         expect(() => readFileSync(new URL(`source/${u}/${f}`, root)), `${u}/${f}`).not.toThrow();
       }
     }
+  });
+});
+
+describe("practice packs", () => {
+  it("Class Exercise 2 is valid, built from its source, and has the 25 sentences of the teacher's sheet", () => {
+    const pack = loadPack("class-2")!;
+    expect(pack).toBeDefined();
+    expect(pack.sentences).toHaveLength(25);
+    const root = new URL("../../../content/", import.meta.url);
+    const src = JSON.parse(readFileSync(new URL("source/practice/class-2.json", root), "utf8")) as LessonSource;
+    const table: Record<string, WordIpa> = {};
+    for (const w of lessonWords(src)) table[w] = buildWordIpa(w, dictionary, OVERRIDES);
+    expect(pack.sentences).toEqual(src.sentences.map((s) => buildSentence(s, table)));
+  });
+
+  it("pack sentences are found by id, never clash with a lesson sentence, and never throw for unknown packs", () => {
+    expect(findSentence("class2-04-sports")).toBeDefined();
+    const ids = allSentences().map((s) => s.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(loadPack("nope")).toBeUndefined();
+    expect(loadPack("__proto__")).toBeUndefined();
+    expect(packIds()).toContain("class-2");
+  });
+
+  it("keeps the teacher's wording (spot checks)", () => {
+    const text = (id: string) => findSentence(id)!.text;
+    expect(text("class2-01a-know-woman")).toBe("Do you know that woman?");
+    expect(text("class2-11-dress-colour")).toBe("Is your dress that you will wear to the party violet, purple, or navy blue?");
+    expect(text("class2-14b-opportunity")).toBe("It's an excellent opportunity!");
   });
 });
 

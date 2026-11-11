@@ -7,7 +7,7 @@ import { analyze } from "../intonation/engine.ts";
 import { SENTENCES } from "../intonation/lessons.ts";
 import type { Sentence } from "../intonation/types.ts";
 import { loadLesson } from "./content.ts";
-import { PLAN_BY_LESSON, buildExercises, endingOf, listeningFallback, makeHear } from "./exercises.ts";
+import { PLAN, PLAN_BY_LESSON, buildExercises, endingOf, listeningFallback, makeHear } from "./exercises.ts";
 import type { HearExercise } from "./exercises.ts";
 import { analysisFeedback } from "./feedback.ts";
 import {
@@ -190,7 +190,7 @@ describe("Meaning match", () => {
   it("other lessons keep the standard plan and never get a Meaning match", () => {
     for (const id of ["tags-1", "tags-2"]) {
       const ex = buildExercises(lesson(id).sentences, id);
-      expect(ex.map((e) => e.type)).toEqual(["hear", "hear", "hear", "peak", "peak", "peak", "draw", "draw", "shadow", "shadow"]);
+      expect(ex.map((e) => e.type)).toEqual([...PLAN]);
     }
     for (const e of buildExercises(loadLesson("falling", "falling-1")!.sentences, "falling-1")) expect(e.type).not.toBe("meaning");
   });

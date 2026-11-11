@@ -24,6 +24,17 @@
   --level-line: #e7e0d0;
   /* the learner's line, red like ink on a worksheet */
   --pen: #d62c2c;
+  /* unit colours on the home path (white icons sit on all of them, in both themes) */
+  --u1: #2a9d8f;
+  --u1-deep: #1d7066;
+  --u2: #e9a100;
+  --u2-deep: #b07800;
+  --u3: #7c5cf2;
+  --u3-deep: #5a3dc8;
+  --u4: #e86a4f;
+  --u4-deep: #b44a33;
+  --u5: #2f87d8;
+  --u5-deep: #1f63a6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -49,7 +60,37 @@
     --learner: #5cc0ae;
     --level-line: #2c2840;
     --pen: #ff5a4f;
+    color-scheme: dark;
   }
+}
+
+/* The theme switch (components/theme): data-theme="dark" forces dark, "light" forces light, none follows the device. */
+:root[data-theme="dark"] {
+  --bg: #15131f;
+  --card: #1e1b2b;
+  --ink: #f1eefa;
+  --muted: #a7a2bd;
+  --line: #2f2b40;
+  --primary: #f2b705;
+  --primary-deep: #a67c00;
+  --primary-ink: #2a1f00;
+  --accent: #5cc0ae;
+  --accent-deep: #3a8f80;
+  --accent-soft: #1d3330;
+  --good: #4cc47f;
+  --good-soft: #17301f;
+  --warn: #f0b340;
+  --warn-soft: #33290f;
+  --bad: #ef6b6b;
+  --bad-soft: #3a1b1b;
+  --target: #7d7699;
+  --learner: #5cc0ae;
+  --level-line: #2c2840;
+  --pen: #ff5a4f;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
 }
 
 @theme inline {
@@ -139,11 +180,144 @@ body {
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
+   Lesson screens: answer cards, tiles, the CHECK bar and the result sheet
+   --------------------------------------------------------------------------------------------------------------- */
+.btn-good {
+  background: var(--good);
+  border-color: color-mix(in oklab, var(--good) 72%, black);
+  color: #fff;
+}
+.btn-bad {
+  background: var(--bad);
+  border-color: color-mix(in oklab, var(--bad) 72%, black);
+  color: #fff;
+}
+/* CHECK with nothing picked yet: flat grey, not a faded yellow */
+.btn-check:disabled {
+  opacity: 1;
+  background: var(--line);
+  border-color: var(--line);
+  color: var(--muted);
+}
+/* in a layer so Tailwind utilities on the same element (hidden, flex, padding) win */
+@layer components {
+.pick {
+  position: relative;
+  border: 2px solid var(--line);
+  border-bottom-width: 4px;
+  border-radius: 1rem;
+  background: var(--card);
+  color: var(--ink);
+  transition: transform 0.06s ease, background-color 0.12s ease, border-color 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.pick:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--card) 92%, var(--accent));
+}
+.pick:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+.pick[aria-checked="true"],
+.pick[aria-pressed="true"],
+.pick.is-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.pick.is-right {
+  border-color: var(--good);
+  background: var(--good-soft);
+  color: var(--good);
+}
+.pick.is-wrong {
+  border-color: var(--bad);
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+.pick.is-done {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+  opacity: 0.45;
+}
+.pick:disabled {
+  cursor: default;
+}
+/* empty place a tile can go */
+.slot {
+  border: 2px dashed var(--line);
+  border-radius: 0.9rem;
+}
+.key-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border: 2px solid currentColor;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  opacity: 0.55;
+}
+/* Myna's speech bubble */
+.bubble {
+  position: relative;
+  border: 2px solid var(--line);
+  border-radius: 1.1rem;
+  background: var(--card);
+}
+.bubble::before,
+.bubble::after {
+  content: "";
+  position: absolute;
+  top: 1.1rem;
+  border: 9px solid transparent;
+}
+.bubble::before {
+  left: -20px;
+  border-right: 11px solid var(--line);
+}
+.bubble::after {
+  left: -16px;
+  border-right: 11px solid var(--card);
+}
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.sheet-up {
+  animation: sheet-up 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+.shake {
+  animation: shake 0.35s ease;
+}
+@keyframes pop-in {
+  0% { transform: scale(0.85); opacity: 0; }
+  70% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.pop-in {
+  animation: pop-in 0.2s ease-out;
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
    Draw the tune on the sentence (TuneCanvas)
    --------------------------------------------------------------------------------------------------------------- */
 .tune-ln {
   white-space: nowrap;
   line-height: 1;
+  /* padding is set inline from rowMetrics() so the level band always fits inside its row */
   padding-block: 0.85em 0.9em;
   letter-spacing: 0.02em;
   font-weight: 700;
@@ -176,12 +350,22 @@ body {
   text-decoration-thickness: 0.07em;
   text-underline-offset: 0.22em;
 }
+/* the 1-2-3 guide lines are always faintly there (so a learner can see where each level is), and clear while drawing */
 .tune-guides {
-  opacity: 0;
+  opacity: 0.4;
   transition: opacity 0.35s ease;
 }
 .tune-guides.on {
   opacity: 1;
+}
+.tune-band {
+  fill: var(--line);
+  fill-opacity: 0.16;
+  transition: fill-opacity 0.15s ease;
+  pointer-events: none;
+}
+.tune-band.on {
+  fill-opacity: 0.5;
 }
 .tune-guides line {
   stroke: var(--target);
@@ -297,20 +481,8 @@ body {
 .bot .fx .z.z2 { animation-delay: 0.8s !important; }
 @keyframes zz { 0% { transform: translate(0, 0) scale(0.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: translate(8px, -16px) scale(1.1); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .bot .b-body, .bot .eye, .bot .fx > *, .bot .eyes-star path, .tune-target, .tune-ghost, .combo-pop { animation: none !important; }
+  .bot .b-body, .bot .eye, .bot .fx > *, .bot .eyes-star path, .tune-target, .tune-ghost, .combo-pop, .sheet-up, .shake, .pop-in { animation: none !important; }
   .tune-target { stroke-dasharray: none; }
-}
-
-/* Countdown number pops in (only applied under motion-safe) */
-@keyframes countdown-pop {
-  from {
-    transform: scale(0.7);
-    opacity: 0.4;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 /* ---------------------------------------------------------------------------------------------------------------
@@ -354,4 +526,107 @@ body {
     -webkit-user-select: none;
     user-select: none;
   }
+}
+
+/* ---------------------------------------------------------------------------------------------------------------
+   Home path: stops, the START bubble, the bottom tab bar
+   --------------------------------------------------------------------------------------------------------------- */
+.stop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 66px;
+  border-radius: 50%;
+  background: var(--u);
+  color: #fff;
+  box-shadow: 0 7px 0 var(--u-deep);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.stop::after {
+  /* a soft shine across the top-left */
+  content: "";
+  position: absolute;
+  inset: 9px 14px auto 12px;
+  height: 13px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.28);
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+.stop:active:not([aria-disabled="true"]) {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 var(--u-deep);
+}
+.stop.is-grey {
+  background: var(--line);
+  color: var(--muted);
+  box-shadow: 0 7px 0 color-mix(in oklab, var(--line) 70%, var(--muted));
+}
+.stop.is-grey::after {
+  background: rgb(255 255 255 / 0.18);
+}
+.stop-ring {
+  position: absolute;
+  inset: -11px -11px -15px;
+  border-radius: 50%;
+  border: 6px solid color-mix(in oklab, var(--u) 30%, transparent);
+}
+.start-bubble {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  border: 2px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--card);
+  color: var(--u);
+  padding: 0.35rem 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.start-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  border: 8px solid transparent;
+  border-top-color: var(--card);
+}
+.start-bubble::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -10px;
+  border: 10px solid transparent;
+  border-top-color: var(--line);
+}
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -6px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .start-bubble { animation: bob 1.6s ease-in-out infinite; }
+}
+.unit-banner {
+  background: var(--u);
+  box-shadow: 0 5px 0 var(--u-deep);
+}
+/* while stuck under the top bar, a strip of page colour hides what scrolls past above it */
+.unit-banner.sticky {
+  box-shadow: 0 5px 0 var(--u-deep), 0 -16px 0 4px var(--bg);
+  color: #fff;
+}
+.tabbar-spacer {
+  height: calc(4.75rem + env(safe-area-inset-bottom));
+}
+body[data-immersive] .tabbar,
+body[data-immersive] .tabbar-spacer {
+  display: none;
 }

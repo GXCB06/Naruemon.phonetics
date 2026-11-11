@@ -25,6 +25,34 @@ describe("Ask Myna requests", () => {
   });
 });
 
+describe("Ask Myna about other exercises (Why?)", () => {
+  const why = { sentenceId: SENTENCE_ID, assigned: [], about: "peak", turns: [{ role: "user", content: "Why is the correct answer right?" }] };
+
+  it("accepts every exercise type, with no answer data", () => {
+    for (const about of ["hear", "meaning", "match", "peak", "build"]) expect(parseAskRequest({ ...why, about }).ok).toBe(true);
+    expect(parseAskRequest({ ...why, about: "draw", assigned: [[2], [2], [2], [2], [2], [3], [1]] }).ok).toBe(true);
+  });
+
+  it("rejects unknown types and drawings sent with a non-drawing question", () => {
+    expect(parseAskRequest({ ...why, about: "system" }).ok).toBe(false);
+    expect(parseAskRequest({ ...why, assigned: [[2]] }).ok).toBe(false);
+  });
+
+  it("an old request without `about` is a drawing question", () => {
+    const r = parseAskRequest({ ...why, about: undefined, assigned: [[2], [2], [2], [2], [2], [3], [1]] });
+    expect(r.ok && r.value.about).toBe("draw");
+  });
+
+  it("the prompt names the exercise and the correct tune, not a drawing", () => {
+    const s = findSentence(SENTENCE_ID)!;
+    const p = askSystemPrompt(s, [], "build")!;
+    expect(p).toContain("Build the tune");
+    expect(p).toContain("Correct tune: 2-3-1");
+    expect(p).not.toContain("The student drew a line");
+    expect(p).not.toContain("THEIR line");
+  });
+});
+
 describe("Ask Myna prompt", () => {
   const sentence = findSentence(SENTENCE_ID)!;
   const target = targetLevels(drawGroupsOf(sentence));

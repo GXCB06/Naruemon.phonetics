@@ -8,6 +8,9 @@ export function LessonComplete({
   streak,
   bestCombo = 0,
   nextHref,
+  nextLabel = { en: "NEXT LESSON", th: "บทต่อไป" },
+  backHref = "/",
+  backLabel = { en: "Back to the path", th: "กลับไปหน้าหลัก" },
 }: {
   summary: LessonSummary;
   streak: number;
@@ -15,6 +18,9 @@ export function LessonComplete({
   bestCombo?: number;
   /** Link to the next lesson of the unit, if there is one. */
   nextHref: string | null;
+  nextLabel?: { en: string; th: string };
+  backHref?: string;
+  backLabel?: { en: string; th: string };
 }) {
   const headline =
     summary.stars === 3
@@ -70,11 +76,11 @@ export function LessonComplete({
       <div className="flex w-full flex-col gap-3">
         {nextHref && (
           <Link href={nextHref} className="btn btn-primary w-full py-4 text-lg">
-            NEXT LESSON <span className="thai text-base font-semibold">บทต่อไป</span>
+            {nextLabel.en} <span className="thai text-base font-semibold">{nextLabel.th}</span>
           </Link>
         )}
-        <Link href="/" className={`btn w-full py-4 text-lg ${nextHref ? "" : "btn-primary"}`}>
-          Back to the path <span className="thai text-base font-semibold">กลับไปหน้าหลัก</span>
+        <Link href={backHref} className={`btn w-full py-4 text-lg ${nextHref ? "" : "btn-primary"}`}>
+          {backLabel.en} <span className="thai text-base font-semibold">{backLabel.th}</span>
         </Link>
       </div>
     </main>

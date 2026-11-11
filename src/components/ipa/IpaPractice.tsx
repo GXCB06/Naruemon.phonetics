@@ -1,5 +1,6 @@
 "use client";
 
+import { Immersive } from "@/components/nav/TabBar";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { playResult } from "@/components/learn/chime";
@@ -311,6 +312,7 @@ export function IpaPractice() {
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col">
+      <Immersive />
       <header className="sticky top-0 z-10 flex items-center gap-3 bg-bg px-4 py-3">
         <Link href="/" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl font-black text-muted hover:bg-line" aria-label="Leave practice">
           ✕

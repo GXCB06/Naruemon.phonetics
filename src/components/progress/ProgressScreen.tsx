@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { Bi, LangToggle } from "@/components/home/lang";
 import { MynaBot } from "@/components/mascot/MynaBot";
+import { useProgress } from "@/components/home/useProgress";
+import { SkillsRadar, SummaryTiles, WeekBars } from "./Charts";
+import { MoreButton } from "@/components/nav/MoreButton";
 import { COPY } from "./copy";
 import { DrawGrades } from "./DrawGrades";
 import { HeatMap } from "./HeatMap";
@@ -44,6 +47,7 @@ function EmptyState() {
 
 export function ProgressScreen() {
   const data = useProgressData();
+  const { progress, streak } = useProgress();
 
   return (
     <>
@@ -60,7 +64,8 @@ export function ProgressScreen() {
           <h1 className="min-w-0 truncate text-lg font-black leading-tight">
             <Bi text={COPY.title} />
           </h1>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-1.5">
+            <MoreButton />
             <LangToggle />
           </div>
         </div>
@@ -75,8 +80,11 @@ export function ProgressScreen() {
           <EmptyState />
         ) : (
           <>
-            {data.heat.length > 0 && <HeatMap rows={data.heat} />}
+            <SummaryTiles progress={progress} streak={streak} />
+            <SkillsRadar axes={data.radar} />
+            <WeekBars days={data.week} />
             <Improvements items={data.improvements} hasEnoughSomewhere={data.hasEnoughSomewhere} />
+            {data.heat.length > 0 && <HeatMap rows={data.heat} />}
             {data.insights.length > 0 && <Insights items={data.insights} />}
             {data.drawGrades.length > 0 && <DrawGrades rows={data.drawGrades} />}
             <Trend days={data.trend} firstLatest={data.firstLatest} />

@@ -15,6 +15,8 @@ import {
   type ReferenceVoice,
 } from "@/lib/learn/reference";
 import type { Sentence } from "@/lib/intonation/types";
+import { prepareToPlay } from "@/components/audio/webAudio";
+import { EMPTY_VARIANTS, VARIANT_MANIFEST_URL, hasRealVariants, parseVariantManifest, variantUrl, type VariantManifest } from "@/lib/synth/variants";
 
 export type ReferenceSource = "file" | "placeholder";
 
@@ -28,7 +30,6 @@ export interface Playing {
   ended: Promise<void>;
 }
 
-let ctx: AudioContext | null = null;
 let current: AudioBufferSourceNode | null = null;
 let manifest: Promise<ReferenceManifest> | null = null;
 /** Fetched mp3 bytes by url (may be prefetched before the tap); null = the file failed to load. */
@@ -39,17 +40,6 @@ const synth = new Map<string, AudioBuffer>();
 /** Bumped on every play/stop so a clip that finished loading after a newer tap never starts. */
 let token = 0;
 
-function audioContext(): AudioContext | null {
-  if (typeof window === "undefined") return null;
-  if (!ctx || ctx.state === "closed") {
-    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!Ctor) return null;
-    ctx = new Ctor(); // native rate: never request 16 kHz
-  }
-  if (ctx.state === "suspended") void ctx.resume();
-  return ctx;
-}
-
 /** manifest.json, fetched once. A missing or broken manifest means "no real clips". */
 export function loadManifest(): Promise<ReferenceManifest> {
   manifest ??= fetch(MANIFEST_URL)
@@ -57,6 +47,22 @@ export function loadManifest(): Promise<ReferenceManifest> {
     .then(parseManifest)
     .catch(() => EMPTY_MANIFEST);
   return manifest;
+}
+
+let variantManifest: Promise<VariantManifest> | null = null;
+
+/** Real-voice practice clips (public/audio/variants/manifest.json), fetched once. Missing or broken = none. */
+export function loadVariantManifest(): Promise<VariantManifest> {
+  variantManifest ??= fetch(VARIANT_MANIFEST_URL)
+    .then((res) => (res.ok ? res.json() : null))
+    .then(parseVariantManifest)
+    .catch(() => EMPTY_VARIANTS);
+  return variantManifest;
+}
+
+/** Start downloading the real clips of an exercise before the tap (only if all of them exist). Starts no audio. */
+export async function prefetchVariants(sentence: Sentence, variants: readonly ClipVariant[]): Promise<void> {
+  if (hasRealVariants(await loadVariantManifest(), sentence.id, variants)) for (const v of variants) void fetchBytes(variantUrl(sentence.id, v));
 }
 
 const VOICE_KEY = "myna.referenceVoice";
@@ -141,11 +147,22 @@ export function stopReference(): void {
  */
 export async function playReference(
   sentence: Sentence,
-  opts: { variant?: ClipVariant; forceSynth?: boolean; fairWith?: readonly string[]; voice?: ReferenceVoice } = {},
+  opts: {
+    variant?: ClipVariant;
+    forceSynth?: boolean;
+    fairWith?: readonly string[];
+    voice?: ReferenceVoice;
+    /**
+     * Every clip this exercise plays (e.g. both clips of a "Hear it" pair). When all of them exist as real-voice clips,
+     * `variant` plays the real clip; if even one is missing the synthetic voice plays for all of them, so a real voice never
+     * sits next to the synthetic one.
+     */
+    realVariants?: readonly ClipVariant[];
+  } = {},
 ): Promise<Playing> {
   const textbook = endingOf(sentence);
   const variant = opts.variant ?? textbook;
-  const c = audioContext(); // before any await: still inside the user's tap
+  const c = prepareToPlay(); // before any await: still inside the user's tap (shared context, playback session, resume)
   if (!c) throw new Error("This browser can't play audio.");
   stopReference();
   const mine = token;
@@ -154,7 +171,13 @@ export async function playReference(
   let voice: ReferenceVoice | null = null;
   let alternative: ReferenceVoice | null = null;
   let buffer: AudioBuffer | null = null;
-  if (variant === textbook && !opts.forceSynth) {
+  if (opts.realVariants) {
+    const vm = await loadVariantManifest();
+    if (hasRealVariants(vm, sentence.id, [...opts.realVariants, variant])) {
+      buffer = await loadFile(c, variantUrl(sentence.id, variant));
+      if (buffer) source = "file";
+    }
+  } else if (variant === textbook && !opts.forceSynth) {
     const m = await loadManifest();
     voice = pickReferenceVoice(m, sentence.id, opts.voice ?? preferredVoice(), opts.fairWith);
     const other = voice === "f" ? "m" : "f";

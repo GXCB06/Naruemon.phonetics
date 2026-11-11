@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { levelsFromStroke, stepPath, type DrawGroup, type Levels, type SlotRef, type StrokePoint } from "@/lib/learn/tuneDraw";
+import { rowMetrics } from "@/lib/learn/tuneGeo";
 
 /**
  * The sentence IS the drawing surface (like the textbook): the learner draws the tune over the words with a Pencil or a
@@ -99,6 +100,8 @@ export function TuneCanvas({
   const [layout, setLayout] = useState<{ fs: number; perGroup: boolean } | null>(null);
   const [geo, setGeo] = useState<Geo | null>(null);
   const [ghost, setGhost] = useState<string | null>(null);
+  /** The row the pen is drawing in right now (it gets a stronger background), null when not drawing. */
+  const [activeRow, setActiveRow] = useState<number | null>(null);
 
   const stageRef = useRef<HTMLDivElement>(null);
   const linesRef = useRef<HTMLDivElement>(null);
@@ -166,18 +169,20 @@ export function TuneCanvas({
       // keep the default
     }
     const sr = stage.getBoundingClientRect();
+    // getBoundingClientRect includes CSS transforms (a scale-in animation, a zoomed page): measure in the stage's own pixels
+    const k = stage.offsetWidth ? sr.width / stage.offsetWidth : 1;
+    const rm = rowMetrics(fs, capRatio);
     const lineEls = [...linesEl.querySelectorAll<HTMLElement>("[data-line]")];
     const lines: Line[] = lineEls.map((ln) => {
       const b = ln.querySelector("[data-base]")!.getBoundingClientRect();
-      const baseline = b.top - sr.top;
-      const cap = capRatio * fs;
-      // textbook notation: 1 slightly below the word, 2 right below it, 3 slightly above it, 4 well above
-      return { y: { 1: baseline + 0.42 * fs, 2: baseline + 0.15 * fs, 3: baseline - cap - 0.16 * fs, 4: baseline - cap - 0.5 * fs }, slots: [] };
+      const baseline = (b.top - sr.top) / k;
+      // textbook notation: 1 below the word, 2 right under it, 3 above it, 4 well above; every gap has a floor in real pixels
+      return { y: { 1: baseline + rm.y[1], 2: baseline + rm.y[2], 3: baseline + rm.y[3], 4: baseline + rm.y[4] }, slots: [] };
     });
     linesEl.querySelectorAll<HTMLElement>("[data-i]").forEach((sp) => {
       const r = sp.getBoundingClientRect();
       const li = Number(sp.closest<HTMLElement>("[data-line]")!.dataset.line);
-      lines[li].slots.push({ i: Number(sp.dataset.i), g: Number(sp.dataset.g), x0: r.left - sr.left, x1: r.right - sr.left, c0: 0, c1: 0 });
+      lines[li].slots.push({ i: Number(sp.dataset.i), g: Number(sp.dataset.g), x0: (r.left - sr.left) / k, x1: (r.right - sr.left) / k, c0: 0, c1: 0 });
     });
     for (const L of lines) {
       L.slots.sort((a, b) => a.i - b.i);
@@ -198,7 +203,7 @@ export function TuneCanvas({
         }
       });
     }
-    setGeo({ fs, w: stage.clientWidth, h: stage.clientHeight, lines });
+    setGeo({ fs, w: stage.offsetWidth, h: stage.offsetHeight, lines });
   }, [layout]);
 
   useLayoutEffect(() => {
@@ -244,6 +249,15 @@ export function TuneCanvas({
     if (locked || !strokes.length) return;
     commit(Array(total).fill(null), []);
   };
+  /** Erase one row (one line of the sentence) and keep the others. */
+  const clearRow = (li: number) => {
+    if (locked || !geo) return;
+    const mine = new Set(geo.lines[li].slots.map((sl) => sl.i));
+    commit(
+      assigned.map((a, i) => (mine.has(i) ? null : a)),
+      strokes.filter((st) => st.line !== li),
+    );
+  };
 
   const showGuides = (on: boolean) => {
     clearTimeout(guideTimer.current);
@@ -252,14 +266,17 @@ export function TuneCanvas({
   };
 
   const local = (e: { clientX: number; clientY: number }) => {
-    const r = stageRef.current!.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
+    const el = stageRef.current!;
+    const r = el.getBoundingClientRect();
+    const k = el.offsetWidth ? r.width / el.offsetWidth : 1;
+    return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k };
   };
+  /** The row a stroke belongs to: the row whose level band the pen starts in, else the closest band. */
   const lineAt = (y: number) => {
     let best = 0;
     let bd = Infinity;
     geo!.lines.forEach((L, i) => {
-      const d = Math.abs(y - (L.y[1] + L.y[4]) / 2);
+      const d = y < L.y[4] ? L.y[4] - y : y > L.y[1] ? y - L.y[1] : 0;
       if (d < bd) {
         bd = d;
         best = i;
@@ -305,7 +322,9 @@ export function TuneCanvas({
     e.preventDefault();
     e.currentTarget.setPointerCapture(e.pointerId);
     const p = local(e);
-    live.current = { id: e.pointerId, type: e.pointerType, line: lineAt(p.y), pts: [], pressure: 0 };
+    const row = lineAt(p.y);
+    live.current = { id: e.pointerId, type: e.pointerType, line: row, pts: [], pressure: 0 };
+    setActiveRow(row);
     showGuides(true);
     onPenRef.current?.({ kind: "start" });
     addPoint(e);
@@ -332,6 +351,7 @@ export function TuneCanvas({
       return;
     }
     live.current = null;
+    setActiveRow(null);
     const raw = livePath.current?.getAttribute("d") ?? "";
     livePath.current?.setAttribute("d", "");
     const pts = st.pts.slice().sort((a, b) => a.u - b.u);
@@ -374,13 +394,20 @@ export function TuneCanvas({
   }, [groups]);
   const targets = useMemo(() => groups.flatMap((g) => g.syl.map((s) => s.target)), [groups]);
   const goodSet = new Set(marks.good ?? []);
+  const rm = layout ? rowMetrics(layout.fs) : null;
+  const rowHasInk = (li: number) => !!geo?.lines[li]?.slots.some((sl) => assigned[sl.i]);
 
   return (
     <div className="flex flex-col gap-2">
       <div ref={stageRef} className="tune-stage relative w-full min-w-0 select-none" style={{ WebkitTouchCallout: "none" }}>
         <div ref={linesRef} className="tune-lines flex flex-col items-center" style={{ fontSize: layout ? `${layout.fs}px` : "32px" }} aria-hidden>
           {lineGroups.map((gIdx, li) => (
-            <div key={li} data-line={li} className="tune-ln">
+            <div
+              key={li}
+              data-line={li}
+              className="tune-ln"
+              style={rm ? { paddingTop: `${rm.padTop}px`, paddingBottom: `${rm.padBottom}px` } : undefined}
+            >
               <span data-base className="tune-base" />
               {gIdx.map((gi, k) => (
                 <span key={gi}>
@@ -423,6 +450,22 @@ export function TuneCanvas({
         >
           {geo && (
             <>
+              {geo.lines.map((L, li) => {
+                if (!L.slots.length) return null;
+                const xa = L.slots[0].c0 - 0.2 * geo.fs;
+                const xb = L.slots[L.slots.length - 1].c1 + 0.2 * geo.fs;
+                return (
+                  <rect
+                    key={`band-${li}`}
+                    className={`tune-band ${activeRow === li ? "on" : ""}`}
+                    x={xa - 4}
+                    y={L.y[4] - 12}
+                    width={xb - xa + 8}
+                    height={L.y[1] - L.y[4] + 24}
+                    rx={16}
+                  />
+                );
+              })}
               <g className={`tune-guides ${guides ? "on" : ""}`}>
                 {geo.lines.map((L, li) => {
                   if (!L.slots.length) return null;
@@ -470,6 +513,14 @@ export function TuneCanvas({
           <button type="button" className="btn px-3 py-2 text-sm" onClick={clear} disabled={!strokes.length} aria-label="Clear">
             ✕ <span className="max-sm:sr-only">Clear</span>
           </button>
+          {geo && geo.lines.length > 1 &&
+            geo.lines.map((_, li) =>
+              rowHasInk(li) ? (
+                <button key={`row-${li}`} type="button" className="btn px-3 py-2 text-sm" onClick={() => clearRow(li)} aria-label={`Clear row ${li + 1}`}>
+                  ✕ <span>Row {li + 1}</span>
+                </button>
+              ) : null,
+            )}
           <button
             type="button"
             className={`btn px-3 py-2 text-sm ${snap ? "border-good bg-good-soft text-good" : ""}`}

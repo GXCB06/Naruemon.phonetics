@@ -11,10 +11,15 @@ export interface AskTurn {
   role: "user" | "assistant";
   content: string;
 }
+/** Which exercise the question is about. "draw" sends the learner's line; the others send no answer data. */
+export type AskAbout = "draw" | "hear" | "meaning" | "match" | "peak" | "build";
+export const ASK_ABOUT: readonly AskAbout[] = ["draw", "hear", "meaning", "match", "peak", "build"];
+
 export interface AskRequest {
   sentenceId: string;
   assigned: (Levels | null)[];
   turns: AskTurn[];
+  about: AskAbout;
 }
 
 const isLevels = (x: unknown): x is Levels =>
@@ -37,7 +42,10 @@ export function parseAskRequest(body: unknown): { ok: true; value: AskRequest } 
     turns.push({ role: r, content: c.trim() });
   }
   if (turns[0].role !== "user" || turns[turns.length - 1].role !== "user") return { ok: false, error: "turns must start and end with the student" };
-  return { ok: true, value: { sentenceId: b.sentenceId, assigned: b.assigned as (Levels | null)[], turns } };
+  const about = b.about === undefined ? "draw" : b.about;
+  if (typeof about !== "string" || !ASK_ABOUT.includes(about as AskAbout)) return { ok: false, error: "bad about" };
+  if (about !== "draw" && b.assigned.length !== 0) return { ok: false, error: "assigned is only for drawings" };
+  return { ok: true, value: { sentenceId: b.sentenceId, assigned: b.assigned as (Levels | null)[], turns, about: about as AskAbout } };
 }
 
 const MYNA_RULES = `You are Myna, a warm, encouraging English intonation tutor for Thai learners (secondary school and university). Teach ONLY this course's system:
@@ -54,6 +62,9 @@ How to answer:
 - If the question is not about this sentence's pronunciation or intonation, say kindly (in both fields) that you can only help with that.`;
 
 const lv = (x: Levels | null) => (x ? x.join("→") : "(not drawn)");
+
+const DRAW_LINE = "The student drew a line over the sentence; the app turned it into a level for each syllable.";
+const EXERCISE_LINE = "The student just answered a listening or reading exercise about this sentence wrong (described below) and tapped \"Why?\".";
 
 /** The data block: the sentence, the correct and the drawn level of every syllable, every rule check and the grade. */
 export function askContext(sentence: Sentence, assigned: readonly (Levels | null)[]): string {
@@ -87,8 +98,39 @@ ${parts}
 Result shown to the student: ${grade}`;
 }
 
+/** What the student was asked to do in each exercise type (they answered it wrong and tapped "Why?"). */
+const EXERCISE_INFO: Record<Exclude<AskAbout, "draw">, string> = {
+  hear: "Hear it: two clips of this sentence in the same synthetic voice, only the tune differs. The student had to pick the clip with the tune they were asked for, and picked the wrong one.",
+  meaning: "Meaning match (tag question): the student heard the sentence and had to say whether the speaker is sure (falling tag 3-1) or really asking (rising tag 2-3), and chose wrong.",
+  match: "Match the pairs: three clips of this sentence, one ends low (falls), one ends high (rises), one is flat with no peak. The student matched some of them wrong.",
+  peak: "Find the peak: tap the nucleus (the peak syllable) of each thought group. The student tapped a wrong syllable.",
+  build: "Build the tune: put level tiles in order for each thought group (for example 2-3-2 | 2-3-1). The student's order was wrong.",
+};
+
+/** The data block for a non-drawing exercise: the sentence and its correct tune, no student data. */
+export function exerciseContext(sentence: Sentence, about: Exclude<AskAbout, "draw">): string {
+  const groups = drawGroupsOf(sentence);
+  const text = groups.map((g) => g.syl.reduce((s, x, i) => s + (i && x.word !== g.syl[i - 1].word ? " " : "") + x.text, "")).join(" | ");
+  const parts = groups
+    .map(
+      (g, gi) =>
+        `Part ${gi + 1}: pattern ${g.pattern} (${PATTERN_INFO[g.pattern].en}). Nucleus: ${syllableLabel(g, g.nucleus)}.
+  Correct level of each syllable: ${g.syl.map((x, si) => `${syllableLabel(g, si)} ${lv(x.target)}`).join("; ")}`,
+    )
+    .join("\n");
+  return `Exercise: ${EXERCISE_INFO[about]}
+Sentence: "${text}" (${sentence.kind})
+Course explanation: ${sentence.note.en}
+Correct tune: ${groups.map((g) => g.pattern).join(" | ")}
+${parts}`;
+}
+
 /** The system prompt for one Ask Myna request. Null when the drawing doesn't fit the sentence. */
-export function askSystemPrompt(sentence: Sentence, assigned: readonly (Levels | null)[]): string | null {
+export function askSystemPrompt(sentence: Sentence, assigned: readonly (Levels | null)[], about: AskAbout = "draw"): string | null {
+  if (about !== "draw") {
+    const rules = MYNA_RULES.replace(DRAW_LINE, EXERCISE_LINE).replace("about THIS sentence and THEIR line", "about THIS sentence and why the correct answer is right");
+    return `${rules}\n\n--- Data ---\n${exerciseContext(sentence, about)}`;
+  }
   if (assigned.length !== totalSyllables(drawGroupsOf(sentence))) return null;
   return `${MYNA_RULES}\n\n--- Data ---\n${askContext(sentence, assigned)}`;
 }

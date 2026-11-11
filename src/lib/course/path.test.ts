@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Progress } from "../progress/store.ts";
-import { PATH_WIDTH, buildPath, clampStars, columnHeight, connectorPath, nodeCentre, nodeOffset } from "./path.ts";
+import { CIRCLE_CENTRE_Y, PATH_WIDTH, ROW_HEIGHT, buildPath, clampStars, columnHeight, connectorPath, nodeCentre, nodeOffset, parseOpenedChests, unitStops } from "./path.ts";
 import { UNITS } from "./units.ts";
 import type { UnitMeta } from "./units.ts";
 
@@ -135,12 +135,44 @@ describe("geometry", () => {
     expect(connectorPath(1)).toBe("");
     expect(connectorPath(0)).toBe("");
     const d = connectorPath(3);
-    expect(d.startsWith("M 160 66")).toBe(true);
+    expect(d.startsWith(`M 160 ${CIRCLE_CENTRE_Y}`)).toBe(true);
     expect(d.match(/C/g)).toHaveLength(2);
   });
 
   it("column height grows with the node count", () => {
     expect(columnHeight(0)).toBe(0);
-    expect(columnHeight(3)).toBe(3 * 150);
+    expect(columnHeight(3)).toBe(3 * ROW_HEIGHT);
+  });
+});
+
+describe("stops", () => {
+  const unitOf = (stars: number[]) => {
+    const lessons = stars.map((s, i) => [`u-${i + 1}`, { stars: s, best: s ? 80 : 0 }] as const);
+    const units = [{ id: "u", title: { en: "U", th: "U" }, blurb: { en: "", th: "" }, locked: false, lessons: stars.map((_, i) => ({ id: `u-${i + 1}`, title: { en: "L", th: "L" } })) }];
+    return buildPath(Object.fromEntries(lessons) as never, units).units[0];
+  };
+
+  it("puts the chest after the first half, then IPA and the trophy last", () => {
+    expect(unitStops(unitOf([0, 0, 0]), []).map((s) => s.kind)).toEqual(["lesson", "lesson", "chest", "lesson", "ipa", "trophy"]);
+    expect(unitStops(unitOf([0, 0]), []).map((s) => s.kind)).toEqual(["lesson", "chest", "lesson", "ipa", "trophy"]);
+  });
+
+  it("the chest opens once the lessons before it are done, and stays opened", () => {
+    expect(unitStops(unitOf([3, 0, 0]), []).find((s) => s.kind === "chest")!.state).toBe("locked");
+    expect(unitStops(unitOf([3, 2, 0]), []).find((s) => s.kind === "chest")!.state).toBe("available");
+    expect(unitStops(unitOf([3, 2, 0]), ["u"]).find((s) => s.kind === "chest")!.state).toBe("done");
+  });
+
+  it("IPA opens after the first lesson; the trophy when every lesson is done", () => {
+    expect(unitStops(unitOf([0, 0]), []).find((s) => s.kind === "ipa")!.state).toBe("locked");
+    expect(unitStops(unitOf([1, 0]), []).find((s) => s.kind === "ipa")!.state).toBe("available");
+    expect(unitStops(unitOf([1, 0]), []).at(-1)!.state).toBe("locked");
+    expect(unitStops(unitOf([1, 3]), []).at(-1)!.state).toBe("done");
+  });
+
+  it("reads saved chests defensively", () => {
+    expect(parseOpenedChests(null)).toEqual([]);
+    expect(parseOpenedChests("{bad")).toEqual([]);
+    expect(parseOpenedChests('["falling", 3, "rising"]')).toEqual(["falling", "rising"]);
   });
 });
