@@ -1,7 +1,8 @@
 {
-  "_comment": "Real-voice practice clips per sentence id and tune (made by tools/make-variants.ts, or added by hand then run npm run build:variants -- --manifest). The app uses them only when every clip an exercise needs exists.",
+  "_comment": "Real-voice practice clips per sentence id and tune (made by tools/make-variants.ts and tools/make-variants-psola.ts, or added by hand then run npm run build:variants -- --manifest). The app uses them only when every clip an exercise needs exists.",
   "clips": {
     "class2-01a-know-woman": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -19,6 +20,7 @@
       "rising"
     ],
     "class2-03a-do-you-work": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -33,11 +35,17 @@
       "rising"
     ],
     "class2-05b-where-going": [
-      "falling"
+      "falling",
+      "flat",
+      "rising"
     ],
     "class2-06-july-october": [
       "falling",
       "finished",
+      "rising"
+    ],
+    "class2-07a-mr-president": [
+      "flat",
       "rising"
     ],
     "class2-07b-emergency": [
@@ -61,7 +69,17 @@
       "rising"
     ],
     "class2-10a-coffee-tea": [
-      "falling"
+      "flat",
+      "rising"
+    ],
+    "class2-10b-which-one": [
+      "flat"
+    ],
+    "class2-11-dress-colour": [
+      "flat"
+    ],
+    "class2-12-baby-sister": [
+      "flat"
     ],
     "class2-13a-sir-cigar": [
       "flat"
@@ -78,17 +96,22 @@
     ],
     "class2-14b-opportunity": [
       "falling",
+      "flat",
       "rising"
     ],
     "fall-pretty-woman": [
       "falling",
+      "flat",
       "rising"
     ],
     "fall-what-name": [
-      "falling"
+      "falling",
+      "flat",
+      "rising"
     ],
     "falling-1-book-table": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-1-buy-house": [
@@ -109,6 +132,7 @@
       "rising"
     ],
     "falling-1-work-tomorrow": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -117,16 +141,21 @@
       "flat"
     ],
     "falling-2-what-name": [
-      "falling"
+      "falling",
+      "flat",
+      "rising"
     ],
     "falling-2-when-arrive": [
       "falling",
       "rising"
     ],
     "falling-2-where-going": [
-      "falling"
+      "falling",
+      "flat",
+      "rising"
     ],
     "falling-2-why-late": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -148,10 +177,25 @@
     ],
     "falling-3-let-her-go": [
       "falling",
+      "flat",
       "rising"
     ],
     "falling-3-speak-loudly": [
       "falling",
+      "flat",
+      "rising"
+    ],
+    "lists-1-need": [
+      "flat"
+    ],
+    "lists-1-pasta": [
+      "flat",
+      "rising"
+    ],
+    "lists-1-store": [
+      "flat"
+    ],
+    "lists-2-coffee": [
       "flat",
       "rising"
     ],
@@ -161,10 +205,12 @@
     ],
     "lists-2-read": [
       "falling",
+      "flat",
       "rising"
     ],
     "lists-2-red": [
       "falling",
+      "flat",
       "rising"
     ],
     "nonfinal-1-fact": [
@@ -192,9 +238,11 @@
     "nonfinal-2-movies": [
       "falling",
       "finished",
+      "flat",
       "rising"
     ],
     "nonfinal-2-smart": [
+      "flat",
       "rising"
     ],
     "nonfinal-rains-bus": [
@@ -206,9 +254,11 @@
       "rising"
     ],
     "rising-1-ask-question": [
+      "flat",
       "rising"
     ],
     "rising-1-be-there": [
+      "falling",
       "flat",
       "rising"
     ],
@@ -227,17 +277,34 @@
       "flat",
       "rising"
     ],
+    "rising-2-john": [
+      "flat"
+    ],
     "rising-2-mrs-smith": [
+      "falling",
+      "flat",
+      "rising"
+    ],
+    "rising-2-professor": [
+      "flat",
+      "rising"
+    ],
+    "rising-2-wow": [
+      "falling",
+      "flat",
       "rising"
     ],
     "tag-sure": [
-      "flat"
+      "flat",
+      "rising"
     ],
     "tag-unsure": [
-      "flat"
+      "flat",
+      "rising"
     ],
     "tags-1-harry": [
-      "flat"
+      "flat",
+      "rising"
     ],
     "tags-1-hungry": [
       "falling",
@@ -247,8 +314,12 @@
     "tags-1-late": [
       "flat"
     ],
-    "tags-2-harry": [
+    "tags-1-susan": [
       "flat"
+    ],
+    "tags-2-harry": [
+      "flat",
+      "rising"
     ],
     "tags-2-hungry": [
       "falling",
@@ -259,8 +330,12 @@
     "tags-2-late": [
       "flat"
     ],
-    "tags-3-harry": [
+    "tags-2-susan": [
       "flat"
+    ],
+    "tags-3-harry": [
+      "flat",
+      "rising"
     ],
     "tags-3-hungry": [
       "falling",
@@ -274,7 +349,11 @@
       "falling",
       "rising"
     ],
+    "tags-3-susan": [
+      "flat"
+    ],
     "tags-3-swim": [
+      "flat",
       "rising"
     ]
   }

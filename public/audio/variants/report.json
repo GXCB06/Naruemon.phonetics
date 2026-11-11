@@ -1,17 +1,12 @@
 {
-  "_comment": "Made by tools/make-variants.ts. needsHumanRecording: clips where Azure never produced the asked-for tune in our analysis; record them as public/audio/variants/<id>--<variant>.mp3 and run `npm run build:variants -- --manifest`. Exercises that need a missing clip play the synthetic voice instead.",
+  "_comment": "Made by tools/make-variants.ts and tools/make-variants-psola.ts. needsHumanRecording: clips neither method could make; record them as public/audio/variants/<id>--<variant>.mp3 and run `npm run build:variants -- --manifest`. Exercises that need a missing clip play the synthetic voice instead.",
   "passed": {
-    "falling": "41/86",
-    "rising": "50/86",
-    "flat": "36/86",
+    "falling": "47/86",
+    "rising": "65/86",
+    "flat": "66/86",
     "finished": "5/39"
   },
   "needsHumanRecording": [
-    {
-      "id": "falling-1-book-table",
-      "variant": "flat",
-      "why": "pitch range 5.5 st is too wide for a flat clip"
-    },
     {
       "id": "falling-1-situation",
       "variant": "falling",
@@ -28,31 +23,6 @@
       "why": "pitch range 10.5 st is too wide for a flat clip; the end falls 7.4 st"
     },
     {
-      "id": "falling-1-work-tomorrow",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
-    },
-    {
-      "id": "falling-2-where-going",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "falling-2-where-going",
-      "variant": "flat",
-      "why": "pitch range 7.2 st is too wide for a flat clip; the end falls 3.9 st"
-    },
-    {
-      "id": "falling-2-what-name",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "falling-2-what-name",
-      "variant": "flat",
-      "why": "pitch range 7.6 st is too wide for a flat clip; the end falls 4.4 st"
-    },
-    {
       "id": "falling-2-when-arrive",
       "variant": "flat",
       "why": "pitch range 8.0 st is too wide for a flat clip"
@@ -63,19 +33,9 @@
       "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
     },
     {
-      "id": "falling-2-why-late",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
       "id": "falling-3-come-see-me",
       "variant": "flat",
       "why": "pitch range 5.9 st is too wide for a flat clip; the end falls 4.2 st"
-    },
-    {
-      "id": "falling-3-let-her-go",
-      "variant": "flat",
-      "why": "pitch range 10.3 st is too wide for a flat clip; the end falls 9.8 st"
     },
     {
       "id": "falling-3-beautiful-day",
@@ -95,102 +55,62 @@
     {
       "id": "lists-1-pasta",
       "variant": "falling",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.); group 2 (2-3"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.); group 2 (2-3"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "flat",
-      "why": "pitch range 6.6 st is too wide for a flat clip"
+      "why": "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
     },
     {
       "id": "lists-1-pasta",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (Your rise is on EAT (too early). Put it on PAS, the stressed syllable of the last content word.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SAL.); group 4 (2-3-1) peakPlacem"
     },
     {
       "id": "lists-1-need",
       "variant": "falling",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 2 (2-3"
+      "why": "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 2 (2-3) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
     },
     {
       "id": "lists-1-need",
       "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 2 (2-3"
-    },
-    {
-      "id": "lists-1-need",
-      "variant": "flat",
-      "why": "pitch range 5.1 st is too wide for a flat clip"
+      "why": "group 1 (2-3) ending: warn (Almost — go a little higher at the end.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 2 (2-3) ending: warn (Almost — go a lit"
     },
     {
       "id": "lists-1-need",
       "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MA.)"
+      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.); group 2 (2-3-1) ending: fail (Not f"
     },
     {
       "id": "lists-1-store",
       "variant": "falling",
-      "why": "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 3 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound f"
+      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STORE.); group 3 "
     },
     {
       "id": "lists-1-store",
       "variant": "rising",
-      "why": "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "lists-1-store",
-      "variant": "flat",
-      "why": "pitch range 8.6 st is too wide for a flat clip"
+      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
     },
     {
       "id": "lists-1-store",
       "variant": "finished",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 3 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finishe"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NA.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); group "
     },
     {
       "id": "lists-2-coffee",
       "variant": "falling",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.); group "
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "flat",
-      "why": "pitch range 6.8 st is too wide for a flat clip"
+      "why": "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
     },
     {
       "id": "lists-2-coffee",
       "variant": "finished",
-      "why": "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
-    },
-    {
-      "id": "lists-2-red",
-      "variant": "flat",
-      "why": "pitch range 9.8 st is too wide for a flat clip; the end rises 7.0 st"
+      "why": "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
     },
     {
       "id": "lists-2-red",
       "variant": "finished",
-      "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "lists-2-read",
-      "variant": "flat",
-      "why": "pitch range 7.3 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on RED.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1) "
     },
     {
       "id": "lists-2-read",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (Your rise is on WANT (too early). Put it on EAT, the stressed syllable of the last content word.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your l"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on EAT.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1) "
     },
     {
       "id": "lists-2-inout",
@@ -273,124 +193,59 @@
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAN.)"
     },
     {
-      "id": "nonfinal-2-movies",
-      "variant": "flat",
-      "why": "pitch range 5.8 st is too wide for a flat clip; the end rises 3.7 st"
-    },
-    {
       "id": "nonfinal-2-smart",
       "variant": "falling",
-      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMART.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
-    },
-    {
-      "id": "nonfinal-2-smart",
-      "variant": "flat",
-      "why": "pitch range 8.4 st is too wide for a flat clip"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
     },
     {
       "id": "nonfinal-2-smart",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMART.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1"
+      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
     },
     {
       "id": "rising-1-ask-question",
       "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "rising-1-ask-question",
-      "variant": "flat",
-      "why": "pitch range 9.7 st is too wide for a flat clip; the end rises 4.5 st"
-    },
-    {
-      "id": "rising-1-be-there",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on QUES.)"
     },
     {
       "id": "rising-2-john",
       "variant": "falling",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.); group 2 (2-3-1) ending:"
+      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.); group 2 "
     },
     {
       "id": "rising-2-john",
       "variant": "rising",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-    },
-    {
-      "id": "rising-2-john",
-      "variant": "flat",
-      "why": "pitch range 8.1 st is too wide for a flat clip; the end rises 3.7 st"
+      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.); group 1 (2-3) range: fa"
     },
     {
       "id": "rising-2-john",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "rising-2-professor",
       "variant": "falling",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.)"
-    },
-    {
-      "id": "rising-2-professor",
-      "variant": "rising",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-    },
-    {
-      "id": "rising-2-professor",
-      "variant": "flat",
-      "why": "pitch range 6.6 st is too wide for a flat clip; the end rises 3.6 st"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
     },
     {
       "id": "rising-2-professor",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.); group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
-    },
-    {
-      "id": "rising-2-mrs-smith",
-      "variant": "falling",
-      "why": "group 1 (2-3) ending: warn (Almost — go a little higher at the end.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "rising-2-mrs-smith",
-      "variant": "flat",
-      "why": "pitch range 12.0 st is too wide for a flat clip"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
     },
     {
       "id": "rising-2-mrs-smith",
       "variant": "finished",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finishe"
-    },
-    {
-      "id": "rising-2-wow",
-      "variant": "falling",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.); group 2 (2-3-1) peakPlacement: fail (Your rise is on ING (too late). Put it on FAS, the stressed syllable of the la"
-    },
-    {
-      "id": "rising-2-wow",
-      "variant": "rising",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.); group 2 (2-3) ending: wa"
-    },
-    {
-      "id": "rising-2-wow",
-      "variant": "flat",
-      "why": "pitch range 7.8 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMITH.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1"
     },
     {
       "id": "rising-2-wow",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.); group 2 (2-3-1) peakPlacement: fail (Your rise is on ING (too late). Put it on FAS, the stressed syllable of the "
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1) "
     },
     {
       "id": "tags-1-harry",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-1-harry",
-      "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3) range: fail (To"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (3-1) ending: warn (Good di"
     },
     {
       "id": "tags-1-late",
@@ -405,32 +260,22 @@
     {
       "id": "tags-1-susan",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-1-susan",
       "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-1-susan",
-      "variant": "flat",
-      "why": "pitch range 5.7 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-2-harry",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3-1) ending: fai"
-    },
-    {
-      "id": "tags-2-harry",
-      "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3) range: fail (To"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail"
     },
     {
       "id": "tags-2-harry",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3-1) ending: fai"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail"
     },
     {
       "id": "tags-2-late",
@@ -450,32 +295,22 @@
     {
       "id": "tags-2-susan",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-2-susan",
       "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-2-susan",
-      "variant": "flat",
-      "why": "pitch range 5.7 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-2-susan",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-3-harry",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-3-harry",
-      "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3) range: fail (To"
+      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (3-1) ending: warn (Good direction — fall a bit lower at the end.)"
     },
     {
       "id": "tags-3-late",
@@ -500,52 +335,27 @@
     {
       "id": "tags-3-swim",
       "variant": "falling",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-3-swim",
-      "variant": "flat",
-      "why": "pitch range 6.9 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.); group 2 (2-3-1) ending: fail (Not"
     },
     {
       "id": "tags-3-swim",
       "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+      "why": "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.); group 2 (2-3-1) ending: fail (Not"
     },
     {
       "id": "tags-3-susan",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-3-susan",
       "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tags-3-susan",
-      "variant": "flat",
-      "why": "pitch range 5.7 st is too wide for a flat clip"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "tags-3-susan",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
-    },
-    {
-      "id": "fall-pretty-woman",
-      "variant": "flat",
-      "why": "the end falls 2.8 st"
-    },
-    {
-      "id": "fall-what-name",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "fall-what-name",
-      "variant": "flat",
-      "why": "pitch range 7.6 st is too wide for a flat clip; the end falls 4.4 st"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.); group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.); group 1 (2-3-1)"
     },
     {
       "id": "nonfinal-rains-bus",
@@ -565,32 +375,17 @@
     {
       "id": "tag-sure",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "tag-sure",
-      "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3) range: fail (To"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (3-1) ending: warn (Good di"
     },
     {
       "id": "tag-unsure",
       "variant": "falling",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3-1) ending: fai"
-    },
-    {
-      "id": "tag-unsure",
-      "variant": "rising",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3) range: fail (To"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail"
     },
     {
       "id": "tag-unsure",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.); group 2 (2-3-1) ending: fai"
-    },
-    {
-      "id": "class2-01a-know-woman",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.); group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.); group 2 (2-3-1) peakPlacement: fail"
     },
     {
       "id": "class2-02a-buy-computer",
@@ -601,11 +396,6 @@
       "id": "class2-02b-kind-computer",
       "variant": "falling",
       "why": "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-    },
-    {
-      "id": "class2-03a-do-you-work",
-      "variant": "falling",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
     },
     {
       "id": "class2-03b-where-work",
@@ -643,16 +433,6 @@
       "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MARCH.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); gro"
     },
     {
-      "id": "class2-05b-where-going",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "class2-05b-where-going",
-      "variant": "flat",
-      "why": "pitch range 8.7 st is too wide for a flat clip"
-    },
-    {
       "id": "class2-06-july-october",
       "variant": "flat",
       "why": "pitch range 7.2 st is too wide for a flat clip"
@@ -660,22 +440,12 @@
     {
       "id": "class2-07a-mr-president",
       "variant": "falling",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.); group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound f"
-    },
-    {
-      "id": "class2-07a-mr-president",
-      "variant": "rising",
-      "why": "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-    },
-    {
-      "id": "class2-07a-mr-president",
-      "variant": "flat",
-      "why": "pitch range 7.4 st is too wide for a flat clip; the end rises 5.4 st"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
     },
     {
       "id": "class2-07a-mr-president",
       "variant": "finished",
-      "why": "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PRES.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
     },
     {
       "id": "class2-08a-coke-juice",
@@ -714,78 +484,58 @@
     },
     {
       "id": "class2-10a-coffee-tea",
-      "variant": "rising",
-      "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.); group 2 (2-3) peakPlacem"
-    },
-    {
-      "id": "class2-10a-coffee-tea",
-      "variant": "flat",
-      "why": "pitch range 10.8 st is too wide for a flat clip; the end falls 7.8 st"
+      "variant": "falling",
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
     },
     {
       "id": "class2-10a-coffee-tea",
       "variant": "finished",
-      "why": "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "falling",
-      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.); group 2 (2-3) ending: fail "
+      "why": "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "rising",
-      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.); group 2 (2-3) ending: fail "
-    },
-    {
-      "id": "class2-10b-which-one",
-      "variant": "flat",
-      "why": "pitch range 5.0 st is too wide for a flat clip; the end rises 2.6 st"
+      "why": "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.); group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.); grou"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "falling",
-      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.); group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is "
+      "why": "group 2 (2-3) peakPlacement: fail (Your rise is on LET (too late). Put it on VI, the stressed syllable of the last content word.); group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to le"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "rising",
-      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.); group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is "
-    },
-    {
-      "id": "class2-11-dress-colour",
-      "variant": "flat",
-      "why": "pitch range 7.1 st is too wide for a flat clip; the end rises 2.5 st"
+      "why": "group 2 (2-3) peakPlacement: fail (Your rise is on LET (too late). Put it on VI, the stressed syllable of the last content word.); group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to le"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "finished",
-      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.); group 3 (2-3-1) peakPlaceme"
+      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.); group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "falling",
-      "why": "group 2 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.); group 2 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is"
+      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.); group"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "rising",
-      "why": "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.); group 2 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 "
-    },
-    {
-      "id": "class2-12-baby-sister",
-      "variant": "flat",
-      "why": "pitch range 5.4 st is too wide for a flat clip"
+      "why": "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.); group"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "finished",
-      "why": "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.); group 3 (2-3-1) peakPlacement: fail (Your rise is on ING (too early). Put it on AC, the stressed syllable of the"
+      "why": "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.); group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)"
     },
     {
       "id": "class2-13a-sir-cigar",
@@ -826,39 +576,35 @@
       "id": "class2-14a-bravo",
       "variant": "rising",
       "why": "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.); group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-    },
-    {
-      "id": "class2-14b-opportunity",
-      "variant": "flat",
-      "why": "pitch range 6.1 st is too wide for a flat clip; the end falls 3.4 st"
     }
   ],
   "clips": [
     {
       "id": "falling-1-book-table",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "b084cbd2a72c"
+      "signature": "psola"
     },
     {
       "id": "falling-1-book-table",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "48b67a9d9b3f"
+      "signature": "psola"
     },
     {
       "id": "falling-1-book-table",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.5 st is too wide for a flat clip"
-      ],
-      "signature": "18f335aa1f3c"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rise-student",
@@ -1000,89 +746,83 @@
     {
       "id": "falling-1-work-tomorrow",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
-      ],
-      "signature": "71a614307a5d"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-1-work-tomorrow",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "9f11d262d92d"
+      "signature": "psola"
     },
     {
       "id": "falling-1-work-tomorrow",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 4,
-      "why": [
-        "pitch range 8.8 st is too wide for a flat clip",
-        "the end falls 4.0 st"
-      ],
-      "signature": "e169fae244b9"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-where-going",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "474c0a3723d2"
+      "signature": "psola"
     },
     {
       "id": "falling-2-where-going",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "cf8759621e25"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-where-going",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.2 st is too wide for a flat clip",
-        "the end falls 3.9 st"
-      ],
-      "signature": "7bae494e846c"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-what-name",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "08090a6acc4f"
+      "signature": "psola"
     },
     {
       "id": "falling-2-what-name",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "53edcf97fd30"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-what-name",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.6 st is too wide for a flat clip",
-        "the end falls 4.4 st"
-      ],
-      "signature": "d8f4ff8899ad"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-when-arrive",
@@ -1145,31 +885,29 @@
     {
       "id": "falling-2-why-late",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "d57fa9a36f32"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-2-why-late",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "cf9619153f5c"
+      "signature": "psola"
     },
     {
       "id": "falling-2-why-late",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
-      "why": [
-        "pitch range 6.0 st is too wide for a flat clip",
-        "the end falls 2.9 st"
-      ],
-      "signature": "88f9c5f3c223"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-3-speak-loudly",
@@ -1231,29 +969,29 @@
     {
       "id": "falling-3-let-her-go",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "822abcdecc11"
+      "signature": "psola"
     },
     {
       "id": "falling-3-let-her-go",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "fdde1f653349"
+      "signature": "psola"
     },
     {
       "id": "falling-3-let-her-go",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 10.3 st is too wide for a flat clip",
-        "the end falls 9.8 st"
-      ],
-      "signature": "9c8c9f2b4e3a"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "falling-3-beautiful-day",
@@ -1343,270 +1081,269 @@
     {
       "id": "lists-1-pasta",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.)",
+        "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-pasta",
+      "variant": "rising",
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-pasta",
+      "variant": "flat",
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-pasta",
+      "variant": "finished",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.)",
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SAL.)",
+        "group 4 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-need",
+      "variant": "falling",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
+        "group 2 (2-3) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-need",
+      "variant": "rising",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 1 (2-3) ending: warn (Almost — go a little higher at the end.)",
+        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
         "group 2 (2-3) ending: warn (Almost — go a little higher at the end.)",
-        "group 3 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
+        "group 2 (2-3) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)",
+        "group 3 (2-3) ending: warn (Almost — go a little higher at the end.)",
+        "group 4 (2-3) ending: warn (Almost — go a little higher at the end.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-need",
+      "variant": "flat",
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-1-need",
+      "variant": "finished",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
+        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 2 (2-3-1) range: fail (Too flat / monotone (0.1 semitones). English needs a big rise and fall here.)",
+        "group 3 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 4 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "e4decc495f75"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.)",
-        "group 2 (2-3) ending: warn (Almost — go a little higher at the end.)",
-        "group 3 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 4 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "5e1805c86bfd"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.6 st is too wide for a flat clip"
-      ],
-      "signature": "ea7c9dfdb504"
-    },
-    {
-      "id": "lists-1-pasta",
-      "variant": "finished",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (Your rise is on EAT (too early). Put it on PAS, the stressed syllable of the last content word.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PIZ.)",
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SAL.)"
-      ],
-      "signature": "94ebfb202e51"
-    },
-    {
-      "id": "lists-1-need",
-      "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on MA.)",
-        "group 3 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "69ca7b895fc1"
-    },
-    {
-      "id": "lists-1-need",
-      "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on MA.)",
-        "group 3 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 4 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "b8b80b451dce"
-    },
-    {
-      "id": "lists-1-need",
-      "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.1 st is too wide for a flat clip"
-      ],
-      "signature": "d758f94268d5"
-    },
-    {
-      "id": "lists-1-need",
-      "variant": "finished",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HAM.)",
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MA.)"
-      ],
-      "signature": "abc6ebb0709d"
+      "signature": "psola"
     },
     {
       "id": "lists-1-store",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 3 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STORE.)",
+        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 3 (2-3-1) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "7fa87fa075d6"
+      "signature": "psola"
     },
     {
       "id": "lists-1-store",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 2 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
+        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
       ],
-      "signature": "bfe796aea60d"
+      "signature": "psola"
     },
     {
       "id": "lists-1-store",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 8.6 st is too wide for a flat clip"
-      ],
-      "signature": "6959175ebbef"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "lists-1-store",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NA.)",
+        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.6 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CA.)",
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STORE.)",
+        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 3 (2-3-1) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-coffee",
+      "variant": "falling",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-coffee",
+      "variant": "rising",
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-coffee",
+      "variant": "flat",
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-coffee",
+      "variant": "finished",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MILK.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-red",
+      "variant": "falling",
+      "voice": "m",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-red",
+      "variant": "rising",
+      "voice": "m",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-red",
+      "variant": "flat",
+      "voice": "m",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
+    },
+    {
+      "id": "lists-2-red",
+      "variant": "finished",
+      "voice": "m",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on RED.)",
         "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 3 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BLUE.)"
       ],
-      "signature": "788ffb5f0569"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
-      ],
-      "signature": "a8bd957cce36"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "f7acba53aff8"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.8 st is too wide for a flat clip"
-      ],
-      "signature": "647fdc3dbaa8"
-    },
-    {
-      "id": "lists-2-coffee",
-      "variant": "finished",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
-      ],
-      "signature": "37e95296a1dd"
-    },
-    {
-      "id": "lists-2-red",
-      "variant": "falling",
-      "voice": "m",
-      "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "daffba4fdfd5m"
-    },
-    {
-      "id": "lists-2-red",
-      "variant": "rising",
-      "voice": "m",
-      "pass": true,
-      "kept": "reference",
-      "why": [],
-      "signature": "c1611b8deef1m"
-    },
-    {
-      "id": "lists-2-red",
-      "variant": "flat",
-      "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 9.8 st is too wide for a flat clip",
-        "the end rises 7.0 st"
-      ],
-      "signature": "cb4b591c47f1m"
-    },
-    {
-      "id": "lists-2-red",
-      "variant": "finished",
-      "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "ab7a2a865f55m"
+      "signature": "psola"
     },
     {
       "id": "lists-2-read",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (Your rise is on WANT (too early). Put it on EAT, the stressed syllable of the last content word.)",
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "a2959ca003c3"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "lists-2-read",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "680b95de4117"
+      "signature": "psola"
     },
     {
       "id": "lists-2-read",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.3 st is too wide for a flat clip"
-      ],
-      "signature": "1f4108bd70eb"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "lists-2-read",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (Your rise is on WANT (too early). Put it on EAT, the stressed syllable of the last content word.)",
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on EAT.)",
         "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) range: fail (Too flat / monotone (0.1 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "fcfbf64974e4"
+      "signature": "psola"
     },
     {
       "id": "lists-2-inout",
@@ -1891,41 +1628,38 @@
     {
       "id": "nonfinal-2-movies",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "bb4675a33ec2"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-movies",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
-      "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOV.)",
-        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
-        "group 2 (2-3) ending: warn (Almost — go a little higher at the end.)"
-      ],
-      "signature": "d11cd1c95cd5"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-movies",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 3.7 st"
-      ],
-      "signature": "b46c0c735cc3"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-movies",
       "variant": "finished",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "a032e9196f45"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-smart",
@@ -1934,30 +1668,27 @@
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMART.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
       ],
-      "signature": "67fe75ed45a7m"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-smart",
       "variant": "rising",
       "voice": "m",
       "pass": true,
-      "kept": 1,
+      "kept": "psola",
       "why": [],
-      "signature": "a8b25d4799a4m"
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-smart",
       "variant": "flat",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 8.4 st is too wide for a flat clip"
-      ],
-      "signature": "d90fc858f95dm"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-2-smart",
@@ -1966,11 +1697,10 @@
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMART.)",
         "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SCHOOL.)"
       ],
-      "signature": "1c5ba6dc3e02m"
+      "signature": "psola"
     },
     {
       "id": "rising-1-student",
@@ -2055,180 +1785,176 @@
     {
       "id": "rising-1-ask-question",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on QUES.)"
       ],
-      "signature": "67eaeb54bef5"
+      "signature": "psola"
     },
     {
       "id": "rising-1-ask-question",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "39b7089a9164"
+      "signature": "psola"
     },
     {
       "id": "rising-1-ask-question",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 9.7 st is too wide for a flat clip",
-        "the end rises 4.5 st"
-      ],
-      "signature": "d5886684b4a8"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-1-be-there",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "d6466fa07f4e"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-1-be-there",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "71bdc68dd55d"
+      "signature": "psola"
     },
     {
       "id": "rising-1-be-there",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
-      "why": [
-        "pitch range 6.3 st is too wide for a flat clip",
-        "the end falls 5.9 st"
-      ],
-      "signature": "5e804e8ae28f"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-john",
       "variant": "falling",
+      "voice": "f",
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.)",
+        "group 1 (2-3) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STAND.)"
+      ],
+      "signature": "psola"
+    },
+    {
+      "id": "rising-2-john",
+      "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.)",
         "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3) ending: warn (Almost — go a little higher at the end.)"
       ],
-      "signature": "decfcba14c26"
-    },
-    {
-      "id": "rising-2-john",
-      "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.)",
-        "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "3355362ce661"
+      "signature": "psola"
     },
     {
       "id": "rising-2-john",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 8.1 st is too wide for a flat clip",
-        "the end rises 3.7 st"
-      ],
-      "signature": "06022b8d6bbb"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-john",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on JOHN.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (0.9 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on STAND.)",
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "819ba501a638"
+      "signature": "psola"
     },
     {
       "id": "rising-2-professor",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.)"
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
       ],
-      "signature": "bf5b2423cdf5"
+      "signature": "psola"
     },
     {
       "id": "rising-2-professor",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.)",
-        "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "c85464b57b53"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-professor",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.6 st is too wide for a flat clip",
-        "the end rises 3.6 st"
-      ],
-      "signature": "abd5bb04e4c0"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-professor",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FES.)",
-        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on HOS.)"
       ],
-      "signature": "c0c24e371de2"
+      "signature": "psola"
     },
     {
       "id": "rising-2-mrs-smith",
       "variant": "falling",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: warn (Almost — go a little higher at the end.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "ce62a35d282em"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-mrs-smith",
       "variant": "rising",
       "voice": "m",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "046a522f5f76m"
+      "signature": "psola"
     },
     {
       "id": "rising-2-mrs-smith",
       "variant": "flat",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 12.0 st is too wide for a flat clip"
-      ],
-      "signature": "72211ee61ea4m"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-mrs-smith",
@@ -2237,90 +1963,85 @@
       "pass": false,
       "kept": null,
       "why": [
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SMITH.)",
         "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LA.)"
       ],
-      "signature": "92a09bc2b173m"
+      "signature": "psola"
     },
     {
       "id": "rising-2-wow",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.)",
-        "group 2 (2-3-1) peakPlacement: fail (Your rise is on ING (too late). Put it on FAS, the stressed syllable of the last content word.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
-      ],
-      "signature": "81afe9913910"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-wow",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.)",
-        "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 2 (2-3) ending: warn (Almost — go a little higher at the end.)"
-      ],
-      "signature": "818220eb4e79"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-wow",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.8 st is too wide for a flat clip"
-      ],
-      "signature": "7c44d70c3fda"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "rising-2-wow",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WOW.)",
-        "group 2 (2-3-1) peakPlacement: fail (Your rise is on ING (too late). Put it on FAS, the stressed syllable of the last content word.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FAS.)",
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "df2415fd57e6"
+      "signature": "psola"
     },
     {
       "id": "tags-1-harry",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
+        "group 2 (3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "511325613887"
+      "signature": "psola"
     },
     {
       "id": "tags-1-harry",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
-      ],
-      "signature": "8fad59c197b1"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-1-harry",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 4.2 st"
-      ],
-      "signature": "7b6f553bc564"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-1-late",
@@ -2359,35 +2080,37 @@
     {
       "id": "tags-1-susan",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "2099c14c3015"
+      "signature": "psola"
     },
     {
       "id": "tags-1-susan",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "65c220eb0cef"
+      "signature": "psola"
     },
     {
       "id": "tags-1-susan",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.7 st is too wide for a flat clip"
-      ],
-      "signature": "bb87c60f4bdd"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-1-hungry",
@@ -2418,49 +2141,48 @@
     {
       "id": "tags-2-harry",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "02578421128f"
+      "signature": "psola"
     },
     {
       "id": "tags-2-harry",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
-      ],
-      "signature": "f1b509041772"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-2-harry",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 4.2 st"
-      ],
-      "signature": "080c8c90b479"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-2-harry",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "6ceec95eda9a"
+      "signature": "psola"
     },
     {
       "id": "tags-2-late",
@@ -2511,47 +2233,52 @@
     {
       "id": "tags-2-susan",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WON'T.)"
       ],
-      "signature": "8a9b00296dc5"
+      "signature": "psola"
     },
     {
       "id": "tags-2-susan",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "1e96acbabe39"
+      "signature": "psola"
     },
     {
       "id": "tags-2-susan",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.7 st is too wide for a flat clip"
-      ],
-      "signature": "902ef0487a09"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-2-susan",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WON'T.)"
       ],
-      "signature": "c2ced35f8501"
+      "signature": "psola"
     },
     {
       "id": "tags-2-hungry",
@@ -2598,36 +2325,32 @@
     {
       "id": "tags-3-harry",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
+        "group 2 (3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "511325613887"
+      "signature": "psola"
     },
     {
       "id": "tags-3-harry",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
-      ],
-      "signature": "8fad59c197b1"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-3-harry",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 4.2 st"
-      ],
-      "signature": "7b6f553bc564"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-3-late",
@@ -2705,42 +2428,48 @@
     {
       "id": "tags-3-swim",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 2 (2-3-1) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "bf02891eae3c"
+      "signature": "psola"
     },
     {
       "id": "tags-3-swim",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "23cf11fdde2b"
+      "signature": "psola"
     },
     {
       "id": "tags-3-swim",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.9 st is too wide for a flat clip"
-      ],
-      "signature": "cbbfdb9995c9"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-3-swim",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CAN'T.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 2 (2-3-1) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "38ecc8823f57"
+      "signature": "psola"
     },
     {
       "id": "tags-3-hungry",
@@ -2771,102 +2500,106 @@
     {
       "id": "tags-3-susan",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WON'T.)"
       ],
-      "signature": "8a9b00296dc5"
+      "signature": "psola"
     },
     {
       "id": "tags-3-susan",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "1e96acbabe39"
+      "signature": "psola"
     },
     {
       "id": "tags-3-susan",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.7 st is too wide for a flat clip"
-      ],
-      "signature": "902ef0487a09"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tags-3-susan",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+        "group 1 (2-3-1) range: fail (Too flat / monotone (1.3 semitones). English needs a big rise and fall here.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WON'T.)"
       ],
-      "signature": "c2ced35f8501"
+      "signature": "psola"
     },
     {
       "id": "fall-pretty-woman",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "5d7d97ae6edb"
+      "signature": "psola"
     },
     {
       "id": "fall-pretty-woman",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "bbe75618eb91"
+      "signature": "psola"
     },
     {
       "id": "fall-pretty-woman",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "the end falls 2.8 st"
-      ],
-      "signature": "710bea1b9be8"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "fall-what-name",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": "reference",
+      "kept": "psola",
       "why": [],
-      "signature": "08090a6acc4f"
+      "signature": "psola"
     },
     {
       "id": "fall-what-name",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "53edcf97fd30"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "fall-what-name",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.6 st is too wide for a flat clip",
-        "the end falls 4.4 st"
-      ],
-      "signature": "d8f4ff8899ad"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "nonfinal-rains-bus",
@@ -2914,112 +2647,106 @@
     {
       "id": "tag-sure",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
+        "group 2 (3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "511325613887"
+      "signature": "psola"
     },
     {
       "id": "tag-sure",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
-      ],
-      "signature": "8fad59c197b1"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tag-sure",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 4.2 st"
-      ],
-      "signature": "7b6f553bc564"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tag-unsure",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "02578421128f"
+      "signature": "psola"
     },
     {
       "id": "tag-unsure",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
-      ],
-      "signature": "f1b509041772"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tag-unsure",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 6,
-      "why": [
-        "pitch range 5.8 st is too wide for a flat clip",
-        "the end rises 4.2 st"
-      ],
-      "signature": "080c8c90b479"
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "tag-unsure",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COM.)",
+        "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on IS.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
       ],
-      "signature": "6ceec95eda9a"
+      "signature": "psola"
     },
     {
       "id": "class2-01a-know-woman",
       "variant": "falling",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
-      ],
-      "signature": "4c6f5a96ed9cm"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-01a-know-woman",
       "variant": "rising",
       "voice": "m",
       "pass": true,
-      "kept": 2,
+      "kept": "psola",
       "why": [],
-      "signature": "a226ab900250m"
+      "signature": "psola"
     },
     {
       "id": "class2-01a-know-woman",
       "variant": "flat",
       "voice": "m",
       "pass": true,
-      "kept": 5,
+      "kept": "psola",
       "why": [],
-      "signature": "150af23a52a0m"
+      "signature": "psola"
     },
     {
       "id": "class2-01b-how-know-woman",
@@ -3109,31 +2836,29 @@
     {
       "id": "class2-03a-do-you-work",
       "variant": "falling",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
-      ],
-      "signature": "8a750d180718",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-03a-do-you-work",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "dbb1b2c8dd84",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-03a-do-you-work",
       "variant": "flat",
+      "voice": "f",
       "pass": true,
-      "kept": 2,
+      "kept": "psola",
       "why": [],
-      "signature": "486b0bb40339",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-03b-where-work",
@@ -3273,33 +2998,29 @@
     {
       "id": "class2-05b-where-going",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "48d9d86b8e33",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-05b-where-going",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "a86c79b8a285",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-05b-where-going",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 8.7 st is too wide for a flat clip"
-      ],
-      "signature": "4007528e9391",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-06-july-october",
@@ -3342,48 +3063,43 @@
     {
       "id": "class2-07a-mr-president",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)",
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
       ],
-      "signature": "7765a071ac62",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-07a-mr-president",
       "variant": "rising",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) ending: fail (Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.)"
-      ],
-      "signature": "abe6f8db475b",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-07a-mr-president",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.4 st is too wide for a flat clip",
-        "the end rises 5.4 st"
-      ],
-      "signature": "be26e976c75a",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-07a-mr-president",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 2 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PRES.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
       ],
-      "signature": "b4cc7e8dfaf0",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-07b-emergency",
@@ -3561,36 +3277,30 @@
       "id": "class2-10a-coffee-tea",
       "variant": "falling",
       "voice": "m",
-      "pass": true,
-      "kept": 0,
-      "why": [],
-      "signature": "aec75c771d21m"
+      "pass": false,
+      "kept": null,
+      "why": [
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
+      ],
+      "signature": "psola"
     },
     {
       "id": "class2-10a-coffee-tea",
       "variant": "rising",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "group 1 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)",
-        "group 1 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
-      ],
-      "signature": "a8433d6927b2m"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-10a-coffee-tea",
       "variant": "flat",
       "voice": "m",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 10.8 st is too wide for a flat clip",
-        "the end falls 7.8 st"
-      ],
-      "signature": "c40cbd1c0ff7m"
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-10a-coffee-tea",
@@ -3599,171 +3309,152 @@
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEA.)"
       ],
-      "signature": "da42330ca160m"
+      "signature": "psola"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.)",
+        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
         "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+        "group 2 (2-3) range: fail (Too flat / monotone (0.8 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "90a055146359",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.)",
+        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
         "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
+        "group 2 (2-3) range: fail (Too flat / monotone (0.8 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "deceaa1ed776",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.0 st is too wide for a flat clip",
-        "the end rises 2.6 st"
-      ],
-      "signature": "f67f8e1538b3",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-10b-which-one",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
         "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LIKE.)",
-        "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)",
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)",
-        "group 2 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
-        "group 3 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on COF.)"
       ],
-      "signature": "2be4e148a400",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.)",
-        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
+        "group 2 (2-3) peakPlacement: fail (Your rise is on LET (too late). Put it on VI, the stressed syllable of the last content word.)",
         "group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)",
-        "group 4 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 3 (2-3) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "0c78cc89c69d",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.)",
-        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
-        "group 2 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.)",
-        "group 2 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)",
-        "group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)"
+        "group 2 (2-3) peakPlacement: fail (Your rise is on LET (too late). Put it on VI, the stressed syllable of the last content word.)",
+        "group 3 (2-3) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)",
+        "group 3 (2-3) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "35c9ac56a55e",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 7.1 st is too wide for a flat clip",
-        "the end rises 2.5 st"
-      ],
-      "signature": "f50105fea47a",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-11-dress-colour",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PAR.)",
         "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on VI.)",
-        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)",
-        "group 4 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+        "group 3 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PUR.)"
       ],
-      "signature": "437ae117fe5b",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "falling",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
+        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.)",
+        "group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)",
         "group 2 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)",
-        "group 2 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
-        "group 3 (2-3-1) peakPlacement: fail (Your rise is on ING (too early). Put it on AC, the stressed syllable of the last content word.)"
+        "group 2 (2-3-2) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "ffd2f94c9d5a",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "rising",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 1 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
+        "group 1 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.)",
+        "group 1 (2-3-2) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)",
         "group 2 (2-3-2) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)",
-        "group 2 (2-3-2) ending: fail (You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.)",
-        "group 3 (2-3) peakPlacement: fail (Your rise is on ING (too early). Put it on AC, the stressed syllable of the last content word.)",
-        "group 3 (2-3) ending: fail (Not rising enough. Lift your voice up to level 3 at the end.)"
+        "group 2 (2-3-2) range: fail (Too flat / monotone (0.0 semitones). English needs a big rise and fall here.)"
       ],
-      "signature": "d1127bb45a86",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 5.4 st is too wide for a flat clip"
-      ],
-      "signature": "de09d52de737",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     },
     {
       "id": "class2-12-baby-sister",
       "variant": "finished",
+      "voice": "f",
       "pass": false,
       "kept": null,
       "why": [
-        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)",
-        "group 3 (2-3-1) peakPlacement: fail (Your rise is on ING (too early). Put it on AC, the stressed syllable of the last content word.)"
+        "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on SIS.)",
+        "group 2 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on CATH.)"
       ],
-      "signature": "eb506169df14",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-13a-sir-cigar",
@@ -3912,32 +3603,29 @@
     {
       "id": "class2-14b-opportunity",
       "variant": "falling",
+      "voice": "f",
       "pass": true,
-      "kept": 0,
+      "kept": "psola",
       "why": [],
-      "signature": "14d3ef476fab",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-14b-opportunity",
       "variant": "rising",
+      "voice": "f",
       "pass": true,
-      "kept": 1,
+      "kept": "psola",
       "why": [],
-      "signature": "0abad9630a0e",
-      "voice": "f"
+      "signature": "psola"
     },
     {
       "id": "class2-14b-opportunity",
       "variant": "flat",
-      "pass": false,
-      "kept": null,
-      "why": [
-        "pitch range 6.1 st is too wide for a flat clip",
-        "the end falls 3.4 st"
-      ],
-      "signature": "8d65c1e8118b",
-      "voice": "f"
+      "voice": "f",
+      "pass": true,
+      "kept": "psola",
+      "why": [],
+      "signature": "psola"
     }
   ]
 }

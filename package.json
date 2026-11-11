@@ -16,7 +16,8 @@
     "compare:readers": "node tools/compare-readers.ts",
     "build:ipa-sounds": "node tools/make-ipa-sounds.ts",
     "build:tts": "node tools/make-tts.ts",
-    "build:variants": "node tools/make-variants.ts"
+    "build:variants": "node tools/make-variants.ts",
+    "build:variants:psola": "node tools/make-variants-psola.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.6.0",
@@ -32,6 +33,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24.19.2",
     "@types/react": "^19",
