@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { analyze } from "../intonation/engine.ts";
 import { getSentence } from "../intonation/lessons.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
+import { speakerBaseline } from "./baseline.ts";
 import { extendTail, median, toLevelContour, trackPitch } from "./pitch.ts";
 import { assessQuality, trimSilence } from "./quality.ts";
 import { resampleAudio } from "./resample.ts";
@@ -158,5 +159,35 @@ describe("trail-off of a learner's voice", () => {
   it("leaves a recording without voice alone", () => {
     const none = strict.map((f) => ({ ...f, hz: null }));
     expect(extendTail(none, none)).toBe(none);
+  });
+});
+
+describe("the learner's normal voice (level 2) comes from the parts that should be level 2", () => {
+  // "Do you work?"-style rising sentence: mid for the first part, then up, and the learner HOLDS the high end
+  const s = getSentence("rise-student")!;
+  const frames = Array.from({ length: 120 }, (_, i) => {
+    const t = i * 0.01;
+    const hz = t < 0.5 ? 180 : 180 * 2 ** (Math.min(1, (t - 0.5) / 0.2) * (3 / 12)); // +3 st, held for the last half
+    return { time: t, hz, clarity: 0.95, rms: 0.1 };
+  });
+
+  it("is the mid part, not pulled up by a long high ending", () => {
+    const base = speakerBaseline(frames, s)!;
+    expect(Math.abs(12 * Math.log2(base / 180))).toBeLessThan(0.6);
+    expect(median(frames.map((f) => f.hz))).toBeGreaterThan(190); // the old baseline was pulled up
+  });
+
+  it("turns a rise that was right into a passing ending", () => {
+    const level = toLevelContour(frames, speakerBaseline(frames, s))!;
+    const r = analyze(s, level.contour, { modality: "speak", timingKnown: false, durationSec: level.durationSec });
+    expect(r.groups[0].checks.find((c) => c.id === "ending")!.status).toBe("pass");
+    // with the old baseline (median of the whole take) the same rise only got "almost"
+    const old = toLevelContour(frames)!;
+    const ro = analyze(s, old.contour, { modality: "speak", timingKnown: false, durationSec: old.durationSec });
+    expect(ro.groups[0].checks.find((c) => c.id === "ending")!.status).not.toBe("pass");
+  });
+
+  it("falls back to the whole take when there is too little voice", () => {
+    expect(speakerBaseline(frames.slice(0, 3), s)).toBeNull();
   });
 });

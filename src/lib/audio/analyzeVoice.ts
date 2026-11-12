@@ -1,5 +1,6 @@
 import { analyze } from "../intonation/engine.ts";
 import type { AnalysisResult, Sentence } from "../intonation/types.ts";
+import { speakerBaseline } from "./baseline.ts";
 import { toLevelContour, trackSpeech, type LevelContour } from "./pitch.ts";
 import { assessQuality, trimSilence, type QualityReport } from "./quality.ts";
 import { resampleAudio } from "./resample.ts";
@@ -21,7 +22,9 @@ export interface VoiceAnalysis {
 export function analyzeVoice(raw: Float32Array, sampleRate: number, sentence: Sentence): VoiceAnalysis {
   const samples = trimSilence(raw, sampleRate);
   const quality = assessQuality(samples, sampleRate);
-  const level = toLevelContour(trackSpeech(samples, sampleRate));
+  const frames = trackSpeech(samples, sampleRate);
+  // level 2 = the learner's voice in the parts of the sentence that should be level 2, not the median of the whole tune
+  const level = toLevelContour(frames, speakerBaseline(frames, sentence));
   const result = level
     ? analyze(sentence, level.contour, { modality: "speak", timingKnown: false, durationSec: level.durationSec })
     : null;

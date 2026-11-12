@@ -5,6 +5,7 @@ import {
   movingAverage,
   percentile,
   resample,
+  SEMITONES_PER_LEVEL,
   sliceContour,
   targetContour,
 } from "./contour.ts";
@@ -326,6 +327,16 @@ function checkPeakPlacement(
   );
 }
 
+/** "About 2 semitones": how far the end was from where it needed to be, in words a learner can act on. */
+function howFar(levels: number, dir: "higher" | "lower"): { en: string; th: string } {
+  const st = Math.max(0.5, Math.round(Math.abs(levels) * SEMITONES_PER_LEVEL * 2) / 2);
+  const n = st % 1 === 0 ? String(st) : st.toFixed(1);
+  return {
+    en: ` Your end needs to be about ${n} semitone${st === 1 ? "" : "s"} ${dir} (compared with your normal voice in this take).`,
+    th: ` ตอนจบต้อง${dir === "higher" ? "สูง" : "ต่ำ"}กว่านี้อีกประมาณ ${n} ครึ่งเสียง (เทียบกับเสียงปกติของคุณในครั้งนี้)`,
+  };
+}
+
 function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
   const up = f.endSlope > 0.3;
   const down = f.endSlope < -0.3;
@@ -343,13 +354,14 @@ function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
         );
       if (low <= 1.6 && fall >= THRESHOLDS.fallPass)
         return check("ending", "pass", "Nice fall to low (level 1) at the end.", "เสียงตกลงต่ำ (ระดับ 1) ตอนจบได้ดี");
+      const lower = howFar(Math.max(low - 1.6, THRESHOLDS.fallPass - fall), "lower");
       if (low <= 2.1 && fall >= THRESHOLDS.fallWarn)
-        return check("ending", "warn", "Good direction — fall a bit lower at the end.", "ทิศทางถูกแล้ว ลงเสียงให้ต่ำกว่านี้อีกนิดตอนท้าย");
+        return check("ending", "warn", "Good direction — fall a bit lower at the end." + lower.en, "ทิศทางถูกแล้ว ลงเสียงให้ต่ำกว่านี้อีกนิดตอนท้าย" + lower.th);
       return check(
         "ending",
         "fail",
-        "Not falling enough. Drop to your low voice (level 1) at the end.",
-        "เสียงตกไม่พอ ให้ลงไปที่เสียงต่ำ (ระดับ 1) ตอนท้าย",
+        "Not falling enough. Drop to your low voice (level 1) at the end." + lower.en,
+        "เสียงตกไม่พอ ให้ลงไปที่เสียงต่ำ (ระดับ 1) ตอนท้าย" + lower.th,
       );
     }
     case "2-3-2": {
@@ -357,15 +369,15 @@ function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
         return check(
           "ending",
           "fail",
-          "You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming.",
-          "คุณลงเสียงถึงระดับ 1 จึงฟังเหมือนจบแล้ว ให้กลับมาแค่ระดับ 2 เพราะยังพูดไม่จบ",
+          "You dropped to level 1, so it sounds finished. Come back only to level 2 — more is coming." + howFar(1.75 - f.endLevel, "higher").en,
+          "คุณลงเสียงถึงระดับ 1 จึงฟังเหมือนจบแล้ว ให้กลับมาแค่ระดับ 2 เพราะยังพูดไม่จบ" + howFar(1.75 - f.endLevel, "higher").th,
         );
       if (f.endLevel > 2.6 && !down)
         return check(
           "ending",
           "warn",
-          "You stayed high, which sounds like a question. Come back down to level 2.",
-          "คุณค้างเสียงสูงไว้ ฟังเหมือนคำถาม ให้ลงกลับมาที่ระดับ 2",
+          "You stayed high, which sounds like a question. Come back down to level 2." + howFar(f.endLevel - 2.4, "lower").en,
+          "คุณค้างเสียงสูงไว้ ฟังเหมือนคำถาม ให้ลงกลับมาที่ระดับ 2" + howFar(f.endLevel - 2.4, "lower").th,
         );
       return check("ending", "pass", "Good: back to mid (level 2), so we know more is coming.", "ดีมาก กลับมาระดับ 2 ผู้ฟังรู้ว่ายังมีต่อ");
     }
@@ -379,9 +391,10 @@ function checkEnding(pattern: PatternId, f: GroupFeatures): Check {
           "Your voice went DOWN at the end. Yes/no questions and unsure tags go UP.",
           "เสียงของคุณลงตอนท้าย คำถาม Yes/No และ tag ที่ไม่แน่ใจต้องขึ้นเสียง",
         );
+      const higher = howFar(2.5 - f.endLevel, "higher");
       if (f.endLevel >= 2.25)
-        return check("ending", "warn", "Almost — go a little higher at the end.", "เกือบแล้ว ขึ้นเสียงให้สูงกว่านี้อีกนิดตอนท้าย");
-      return check("ending", "fail", "Not rising enough. Lift your voice up to level 3 at the end.", "เสียงขึ้นไม่พอ ยกเสียงขึ้นไปถึงระดับ 3 ตอนท้าย");
+        return check("ending", "warn", "Almost — go a little higher at the end." + higher.en, "เกือบแล้ว ขึ้นเสียงให้สูงกว่านี้อีกนิดตอนท้าย" + higher.th);
+      return check("ending", "fail", "Not rising enough. Lift your voice up to level 3 at the end." + higher.en, "เสียงขึ้นไม่พอ ยกเสียงขึ้นไปถึงระดับ 3 ตอนท้าย" + higher.th);
     }
   }
 }

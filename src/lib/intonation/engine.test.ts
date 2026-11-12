@@ -196,3 +196,17 @@ describe("a falling ending is judged by how low the voice got, not by its last b
     expect(statusOf(run(contour(1.2, 2.8)), 0, "ending")).toBe("fail");
   });
 });
+
+describe("an ending that misses says how far, in semitones", () => {
+  it("a fall that is not low enough names the distance", () => {
+    const s = getSentence("fall-pretty-woman")!;
+    const c: Contour = Array.from({ length: 100 }, (_, i) => {
+      const t = i / 99;
+      return { t, v: t < 0.5 ? 2 + t : 2.5 - (t - 0.5) * 0.9 };
+    });
+    const ending = analyze(s, c, { modality: "speak", timingKnown: false, durationSec: 2 }).groups[0].checks.find((x) => x.id === "ending")!;
+    expect(ending.status).not.toBe("pass");
+    expect(ending.message.en).toMatch(/about [\d.]+ semitones? lower/);
+    expect(ending.message.th).toMatch(/ครึ่งเสียง/);
+  });
+});

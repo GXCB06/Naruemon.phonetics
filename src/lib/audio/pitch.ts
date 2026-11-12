@@ -139,12 +139,13 @@ export interface LevelContour {
 
 /**
  * Convert Hz to the course's 1–4 levels relative to this speaker.
- * Baseline (= level 2) is the median pitch of the utterance, so male and female voices compare fairly.
+ * Baseline (= level 2) is the median pitch of the utterance unless `baseline` is given (see speakerBaseline), so male and
+ * female voices compare fairly.
  */
-export function toLevelContour(frames: PitchFrame[]): LevelContour | null {
+export function toLevelContour(frames: PitchFrame[], baseline?: number | null): LevelContour | null {
   const voiced = frames.filter((f) => f.hz !== null);
   if (voiced.length < 5) return null;
-  const baselineHz = median(voiced.map((f) => f.hz as number));
+  const baselineHz = baseline && baseline > 0 ? baseline : median(voiced.map((f) => f.hz as number));
   const t0 = voiced[0].time;
   const t1 = voiced[voiced.length - 1].time;
   const dur = Math.max(1e-6, t1 - t0);
