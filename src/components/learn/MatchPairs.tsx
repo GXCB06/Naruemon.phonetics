@@ -80,7 +80,7 @@ export function MatchPairs({
   };
 
   const stateOf = (s: Side) => {
-    if (found.includes(variantOf(s))) return "is-right"; // green, with the pair number: which clip goes with which label stays readable
+    if (found.includes(variantOf(s))) return "is-right pair-pop"; // green, with the pair number: which clip goes with which label stays readable
     if (wrong?.some((w) => w.side === s.side && w.index === s.index)) return "is-wrong shake";
     if (sel && sel.side === s.side && sel.index === s.index) return "is-on";
     return "";

@@ -149,3 +149,31 @@ export function playComplete() {
     [5, 7, 8].forEach((k) => note(ctx, d, { f: SCALE[k] / 2, t: t + 0.42, dur: 0.9, vol: 0.07, bell: true }));
   });
 }
+
+/**
+ * When the parts of the "Mission Complete" moment happen (seconds after the FINISH tap), shared with LessonComplete so
+ * every star lands on its own note.
+ */
+export const MISSION = { starsAt: 0.7, starGap: 0.3 } as const;
+
+/**
+ * Mission Complete: a low thump, a quick rising C-major arpeggio, a held bright chord, then one bell per star earned
+ * (in time with the stars popping in), and a sparkle run for three stars. All made here, nothing borrowed.
+ */
+export function playMissionComplete(stars: number) {
+  play((ctx, d, t) => {
+    note(ctx, d, { f: 140, to: 60, t, dur: 0.22, vol: 0.22 }); // thump
+    [261.63, 329.63, 392, 523.25].forEach((f, i) => {
+      note(ctx, d, { f, t: t + 0.06 + i * 0.08, dur: 0.18, vol: 0.11, type: "triangle" });
+      note(ctx, d, { f: f / 2, t: t + 0.06 + i * 0.08, dur: 0.16, vol: 0.035, type: "square" });
+    });
+    [523.25, 659.25, 783.99].forEach((f) => note(ctx, d, { f, t: t + 0.4, dur: 1.1, vol: 0.06, type: "triangle", bell: true }));
+    for (let i = 0; i < stars; i++) {
+      note(ctx, d, { f: SCALE[2 + i * 2], t: t + MISSION.starsAt + i * MISSION.starGap, dur: 0.45, vol: 0.13, bell: true });
+    }
+    if (stars === 3) {
+      const at = t + MISSION.starsAt + 3 * MISSION.starGap;
+      [5, 6, 7, 8, 9].forEach((k, i) => note(ctx, d, { f: SCALE[k], t: at + i * 0.045, dur: 0.35, vol: 0.05, bell: true }));
+    }
+  });
+}

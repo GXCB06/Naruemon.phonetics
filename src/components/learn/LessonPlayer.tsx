@@ -9,7 +9,7 @@ import { summarize, type ExerciseOutcome, type LessonSummary } from "@/lib/learn
 import { completeLesson, loadProgress, saveProgress } from "@/lib/progress/store";
 import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
 import { Bi } from "@/components/home/lang";
-import { playComplete, playResult, setSfxEnabled, sfxEnabled, subscribeSfx } from "./chime";
+import { playMissionComplete, playResult, setSfxEnabled, sfxEnabled, subscribeSfx } from "./chime";
 import { DrawIt } from "./DrawIt";
 import { FindPeak } from "./FindPeak";
 import { HearIt } from "./HearIt";
@@ -114,8 +114,8 @@ export function LessonPlayer({
       setChecked(null);
       return;
     }
-    playComplete(); // inside the FINISH tap (iPad)
     const summary = summarize(all);
+    playMissionComplete(summary.stars); // inside the FINISH tap (iPad)
     const progress = completeLesson(loadProgress(), lesson.id, { score: summary.score, xp: summary.xp });
     saveProgress(progress);
     setDone({ summary, streak: progress.streak, bestCombo });
