@@ -1,6 +1,6 @@
 // The 🐢 Slow switch: one setting for every clip and every read-aloud in the app. Pure.
 
-/** Playback speed of a recorded clip when Slow is on (1 = normal). Slower than this and the voice drags and sounds too low. */
+/** Speed of a recorded clip when Slow is on (1 = normal). The clip is time-stretched, so its pitch does not change. */
 export const SLOW_CLIP_RATE = 0.7;
 
 /** Speech-engine rates (the device voice in Read aloud): a sentence and a single word. */

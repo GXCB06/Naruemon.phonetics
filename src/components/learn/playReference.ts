@@ -17,6 +17,7 @@ import {
 import type { Sentence } from "@/lib/intonation/types";
 import { prepareToPlay } from "@/components/audio/webAudio";
 import { clipRate } from "@/lib/learn/slow";
+import { timeStretch } from "@/lib/audio/stretch";
 import { getMelody } from "./clipSound";
 import { getSlow } from "./slow";
 import { EMPTY_VARIANTS, VARIANT_MANIFEST_URL, hasRealVariants, parseVariantManifest, variantUrl, type VariantManifest } from "@/lib/synth/variants";
@@ -118,6 +119,22 @@ async function loadFile(c: AudioContext, url: string): Promise<AudioBuffer | nul
   return buf;
 }
 
+/** Time-stretched copies of clips (same pitch, slower), made once per clip and speed. */
+const stretched = new WeakMap<AudioBuffer, Map<number, AudioBuffer>>();
+
+function slowed(c: AudioContext, buf: AudioBuffer, rate: number): AudioBuffer {
+  let byRate = stretched.get(buf);
+  if (!byRate) stretched.set(buf, (byRate = new Map()));
+  let out = byRate.get(rate);
+  if (!out) {
+    const samples = timeStretch(buf.getChannelData(0), buf.sampleRate, rate);
+    out = c.createBuffer(1, samples.length, buf.sampleRate);
+    out.copyToChannel(samples as Float32Array<ArrayBuffer>, 0);
+    byRate.set(rate, out);
+  }
+  return out;
+}
+
 function placeholderBuffer(c: AudioContext, sentence: Sentence, variant: ClipVariant): AudioBuffer {
   const key = `${sentence.id}|${variant}`;
   let buf = synth.get(key);
@@ -196,8 +213,10 @@ export async function playReference(
   buffer ??= placeholderBuffer(c, sentence, variant);
 
   const node = c.createBufferSource();
-  node.buffer = buffer;
-  node.playbackRate.value = opts.rate ?? clipRate(getSlow());
+  // 🐢 Slow stretches the clip in time instead of playing it slower: a slower playbackRate would also lower the voice by
+  // about 6 semitones, in exercises that are all about hearing pitch
+  const rate = opts.rate ?? clipRate(getSlow());
+  node.buffer = rate === 1 ? buffer : slowed(c, buffer, rate);
   node.connect(c.destination);
   const ended = new Promise<void>((resolve) => {
     node.onended = () => {
