@@ -1,0 +1,19 @@
+{
+  "_comment": "The fixed sentences of the Practice sessions (Set A and Set B). Six one-group 2-3-1 sentences: Set A is a statement, a wh-question and a command; Set B is a statement, a statement and a wh-question. The peak sits on the last important word of each sentence (the word the sentence answers for).",
+  "id": "session-sets",
+  "unit": "practice",
+  "sentences": [
+    { "id": "session-a-home", "text": "I left my keys at home.", "kind": "statement", "nucleusWord": 5 },
+    { "id": "session-a-book", "text": "Where did you put the book?", "kind": "wh", "nucleusWord": 5 },
+    { "id": "session-a-door", "text": "Please close the door.", "kind": "command", "nucleusWord": 3 },
+    { "id": "session-b-teacher", "text": "He is not a teacher.", "kind": "statement", "nucleusWord": 4, "spelling": { "teacher": "teach-er" } },
+    {
+      "id": "session-b-driver",
+      "text": "His brother is a bus driver.",
+      "kind": "statement",
+      "nucleusWord": 5,
+      "spelling": { "brother": "broth-er", "driver": "driv-er" }
+    },
+    { "id": "session-b-from", "text": "Where do you come from?", "kind": "wh", "nucleusWord": 4 }
+  ]
+}

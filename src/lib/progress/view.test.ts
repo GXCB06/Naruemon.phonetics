@@ -65,7 +65,7 @@ describe("buildHeatMap", () => {
     const rows = buildHeatMap(mastery);
     expect(rows.map((r) => r.pattern)).toEqual(["2-3-1", "2-3"]);
     expect(rows[0].label).toEqual(PATTERN_LABEL["2-3-1"]);
-    expect(rows[0].cells.map((c) => c.skill)).toEqual(["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening"]);
+    expect(rows[0].cells.map((c) => c.skill)).toEqual(["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening", "pronunciation"]);
   });
 
   it("splits cells by modality and hides scores below 5 attempts", () => {
@@ -76,6 +76,8 @@ describe("buildHeatMap", () => {
     expect(ending.parts[1]).toMatchObject({ score: null, attemptsN: 3, band: "few" });
     const listening = rising.cells.find((c) => c.skill === "listening")!;
     expect(listening.parts).toEqual([{ modality: "listen", score: null, attemptsN: 0, band: "none" }]);
+    const pronunciation = rising.cells.find((c) => c.skill === "pronunciation")!;
+    expect(pronunciation.parts).toEqual([{ modality: "speak", score: null, attemptsN: 0, band: "none" }]);
   });
 
   it("is empty for a brand-new learner", () => {
@@ -136,7 +138,7 @@ describe("improvementSentence", () => {
   it("writes the ending sentence for each pattern in both languages", () => {
     expect(improvementSentence("2-3", "ending")?.en).toBe("Your yes/no questions go down at the end");
     for (const p of ["2-3-1", "2-3", "2-3-2", "3-1"]) {
-      for (const s of ["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening"]) {
+      for (const s of ["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening", "pronunciation"]) {
         const sentence = improvementSentence(p, s);
         expect(sentence?.en, `${p}/${s}`).toBeTruthy();
         expect(sentence?.th, `${p}/${s}`).toMatch(/[฀-๿]/);
@@ -223,6 +225,7 @@ describe("dailyTrend", () => {
         point("old", at(2026, 10, 31), 90),
         point("future", at(2026, 11, 15), 90),
         point("listen", at(2026, 11, 14), 100, "2-3-1", "listen"),
+        { id: "pron", at: at(2026, 11, 14), pattern: "2-3-1", modality: "speak", overall: 70, checks: [{ id: "pronunciation" }] },
         point("nan", at(2026, 11, 14), Number.NaN),
         point("bad-date", "not a date", 50),
       ],

@@ -6,6 +6,7 @@ import { AudioUnlock } from "@/components/audio/AudioUnlock";
 import { SfxClicks } from "@/components/audio/SfxClicks";
 import { ThemeSync } from "@/components/theme/ThemeSync";
 import { TabBar } from "@/components/nav/TabBar";
+import { ServiceWorker } from "@/components/pwa/ServiceWorker";
 import { THEME_SCRIPT } from "@/lib/ui/theme";
 
 const nunito = Nunito({ variable: "--nf-ui", subsets: ["latin"] });
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <AudioUnlock />
         <SfxClicks />
         <ThemeSync />
+        <ServiceWorker />
         {children}
         <TabBar />
         {/* Vercel Web Analytics: page views only, no cookies, no learner content (switch it on in the Vercel project: Analytics tab) */}

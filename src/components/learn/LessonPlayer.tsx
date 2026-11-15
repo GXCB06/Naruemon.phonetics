@@ -91,7 +91,12 @@ export function LessonPlayer({
   const onCheck = () => {
     const result = check?.();
     if (!result) return;
-    recordExerciseAttempt(sentence, ATTEMPT_KIND[exercise.type], { passed: result.outcome.passed, analysis: result.analysis, grade: result.grade }); // C5/D2: never throws
+    recordExerciseAttempt(sentence, ATTEMPT_KIND[exercise.type], {
+      passed: result.outcome.passed,
+      analysis: result.analysis,
+      grade: result.grade,
+      pronunciation: result.pronunciation,
+    }); // C5/D2: never throws
     const ok = result.feedback.passed;
     const nextCombo = ok ? combo + 1 : 0;
     setLostCombo(ok ? 0 : combo);

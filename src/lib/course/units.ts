@@ -80,7 +80,13 @@ export const UNITS: UnitMeta[] = [
       { id: "tags-3", title: { en: "Which do you mean?", th: "คุณหมายถึงแบบไหน?" } },
     ],
   },
-  { id: "review", title: { en: "Mixed review", th: "ทบทวนรวม" }, blurb: { en: "All patterns together.", th: "ทุกรูปแบบรวมกัน" }, locked: true, lessons: [] },
+  {
+    id: "review",
+    title: { en: "Mixed review", th: "ทบทวนรวม" },
+    blurb: { en: "All patterns together, in mixed sentences.", th: "ทุกรูปแบบรวมกันในประโยคที่คละกัน" },
+    locked: false,
+    lessons: [{ id: "review-1", title: { en: "One of each pattern", th: "อย่างละหนึ่งรูปแบบ" } }],
+  },
 ];
 
 export function getUnit(unitId: string): UnitMeta | undefined {

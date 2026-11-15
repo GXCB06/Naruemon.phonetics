@@ -1,6 +1,7 @@
 import type { AnalysisResult } from "@/lib/intonation/types";
 import type { Feedback } from "@/lib/learn/feedback";
 import type { ExerciseOutcome } from "@/lib/learn/score";
+import type { PronunciationScore } from "@/lib/azure/score";
 
 /** What an exercise hands the player when the learner presses CHECK. */
 export interface Checked {
@@ -10,6 +11,8 @@ export interface Checked {
   analysis?: AnalysisResult;
   /** Draw it only: Perfect (matches the book), Good (rules pass) or Miss. The player shows it and cheers louder for Perfect. */
   grade?: "perfect" | "good" | "miss";
+  /** Shadow it only: Azure's optional pronunciation check, saved with the attempt. Symbols and numbers only, no audio. */
+  pronunciation?: PronunciationScore;
 }
 
 /** How an exercise tells the player whether CHECK can be pressed, and what it does. Stable identity. */

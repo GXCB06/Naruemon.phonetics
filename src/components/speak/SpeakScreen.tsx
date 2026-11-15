@@ -14,7 +14,8 @@ import { MicGateDialog } from "@/components/mic/MicGateDialog";
 import { loadMicProfile } from "@/components/mic/micProfile";
 import { Immersive } from "@/components/nav/TabBar";
 import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
-import { recordExerciseAttempt } from "@/lib/attempts";
+import { recordExerciseAttempt, recordPronunciationAttempt } from "@/lib/attempts";
+import { PronunciationCheck } from "@/components/azure/PronunciationCheck";
 import { micGate, takeBlocksGrade, takeChips, type GateReason } from "@/lib/audio/micProfile";
 import { layoutSentence, targetContour } from "@/lib/intonation/contour";
 import { allSentences } from "@/lib/learn/content";
@@ -276,6 +277,14 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
               <div className="card p-4 sm:p-5">
                 <ResultPanel result={result} />
               </div>
+            )}
+
+            {!blocked && (
+              <PronunciationCheck
+                voice={analysis}
+                sentence={sentence}
+                onScored={(p) => recordPronunciationAttempt(sentence, p)}
+              />
             )}
 
             <div className="flex flex-col gap-3">

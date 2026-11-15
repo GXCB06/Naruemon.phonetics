@@ -4,7 +4,7 @@ import { analyze } from "../intonation/engine.ts";
 import { SENTENCES } from "../intonation/lessons.ts";
 import type { Contour, Sentence } from "../intonation/types.ts";
 import { skillKey, applyResults, type MasteryMap } from "../mastery/mastery.ts";
-import { buildAttempt, buildAttemptRow, buildListenAttempt, skillsFromRow } from "./build.ts";
+import { buildAttempt, buildAttemptRow, buildListenAttempt, buildPronunciationAttempt, skillsFromRow } from "./build.ts";
 import { flushQueue, type RemoteDb } from "./flush.ts";
 import {
   IPA_QUEUE_KEY,
@@ -133,6 +133,65 @@ describe("buildListenAttempt", () => {
     const fail = buildListenAttempt(single, false, NOW);
     expect(fail.row.overall).toBe(0);
     expect(fail.row.checks[0].status).toBe("fail");
+  });
+});
+
+const PRON = {
+  accuracy: 78,
+  prosody: 55,
+  overall: 70,
+  status: "warn" as const,
+  phonemeErrors: [{ ipa: "θ", accuracy: 20, word: "think" }],
+};
+
+describe("Azure pronunciation on attempts", () => {
+  it("a speak attempt with an Azure score fills the three columns and adds the pronunciation skill", () => {
+    const built = buildAttempt(single, perfect(single), "speak", NOW, undefined, PRON);
+    expect(built.row).toMatchObject({
+      azure_accuracy: 78,
+      azure_prosody: 55,
+      phoneme_errors: [{ ipa: "θ", accuracy: 20, word: "think" }],
+    });
+    expect(built.row.phoneme_errors).not.toBe(PRON.phonemeErrors); // copied, never shared
+    expect(built.skills).toContainEqual({
+      pattern: single.groups[0].pattern,
+      skill: "pronunciation",
+      modality: "speak",
+      status: "warn",
+    });
+    expect(built.skills).toHaveLength(built.row.checks.length + 1);
+  });
+
+  it("without an Azure score the speak row keeps its old shape", () => {
+    const row = buildAttempt(single, perfect(single), "speak", NOW).row;
+    expect("azure_accuracy" in row).toBe(false);
+    expect("azure_prosody" in row).toBe(false);
+    expect("phoneme_errors" in row).toBe(false);
+  });
+
+  it("a draw never takes pronunciation columns, even if one is passed", () => {
+    const built = buildAttempt(single, perfect(single), "draw", NOW, "good", PRON);
+    expect("azure_accuracy" in built.row).toBe(false);
+    expect(built.skills.some((s) => s.skill === "pronunciation")).toBe(false);
+  });
+
+  it("a pronunciation-only attempt carries just that check and its scores", () => {
+    const built = buildPronunciationAttempt(single, PRON, NOW);
+    expect(built.row).toMatchObject({
+      sentence_id: single.id,
+      modality: "speak",
+      pattern: single.groups[0].pattern,
+      levels: null,
+      shape_score: null,
+      overall: 78,
+      checks: [{ id: "pronunciation", status: "warn" }],
+      azure_accuracy: 78,
+      azure_prosody: 55,
+    });
+    expect(built.skills).toEqual([
+      { pattern: single.groups[0].pattern, skill: "pronunciation", modality: "speak", status: "warn" },
+    ]);
+    expect(JSON.parse(JSON.stringify(built.row))).toEqual(built.row);
   });
 });
 

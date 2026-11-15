@@ -1,16 +1,32 @@
 import { describe, expect, it } from "vitest";
 import { allSentences } from "../learn/content.ts";
-import { COURSES, DRILL_PLAN, buildDrill, courseById, courseSentences, courseStat, courseStatus, daysSince, drillId } from "./courses.ts";
+import {
+  COURSES,
+  DRILL_PLAN,
+  DRAW3_PLAN,
+  FIXED_SENTENCES,
+  SESSION_PLAN,
+  SPEAK3_PLAN,
+  buildDrill,
+  courseById,
+  courseSentences,
+  courseStat,
+  courseStatus,
+  daysSince,
+  drillId,
+  planFor,
+} from "./courses.ts";
 
 const all = allSentences();
 
 describe("practice courses", () => {
-  it("every course has enough sentences for a 10-question drill without leaning on repeats", () => {
-    for (const c of COURSES) expect(courseSentences(c.id, all).length, c.id).toBeGreaterThanOrEqual(5);
+  it("every course has enough sentences for its plan without leaning on repeats", () => {
+    for (const c of COURSES) expect(courseSentences(c.id, all).length, c.id).toBeGreaterThanOrEqual(planFor(c.id).length);
   });
 
   it("each course holds only the sentences it promises", () => {
-    for (const s of courseSentences("falling", all)) expect(s.groups.length === 1 && s.groups[0].pattern === "2-3-1").toBe(true);
+    const isFalling = (s: (typeof all)[number]) => s.groups.length === 1 && s.groups[0].pattern === "2-3-1";
+    for (const id of ["falling", "session", "draw3a", "draw3b"] as const) for (const s of courseSentences(id, all)) expect(isFalling(s), id).toBe(true);
     for (const s of courseSentences("rising", all)) expect(s.groups.every((g) => g.pattern === "2-3")).toBe(true);
     for (const s of courseSentences("nonfinal", all)) expect(s.groups.some((g) => g.pattern === "2-3-2")).toBe(true);
     for (const s of courseSentences("tags", all)) expect(s.kind.startsWith("Tag question")).toBe(true);
@@ -32,18 +48,20 @@ describe("practice courses", () => {
 });
 
 describe("drills", () => {
-  it("has 10 questions in the fixed plan, with unique ids and a sentence for each", () => {
+  it("runs each course's own plan, with unique ids and a sentence for each", () => {
     for (const c of COURSES) {
+      const plan = planFor(c.id);
       const d = buildDrill(c.id, 7, all);
-      expect(d.exercises.map((e) => e.type)).toEqual([...DRILL_PLAN]);
-      expect(new Set(d.exercises.map((e) => e.id)).size).toBe(10);
+      expect(d.exercises.map((e) => e.type), c.id).toEqual([...plan]);
+      expect(new Set(d.exercises.map((e) => e.id)).size, c.id).toBe(plan.length);
       for (const e of d.exercises) expect(d.sentences.some((s) => s.id === e.sentenceId)).toBe(true);
       expect(d.id).toBe(drillId(c.id));
     }
   });
 
-  it("is mostly drawing", () => {
+  it("the standard drill is mostly drawing", () => {
     expect(DRILL_PLAN.filter((t) => t === "draw").length).toBeGreaterThanOrEqual(6);
+    expect(planFor("falling")).toEqual(DRILL_PLAN);
   });
 
   it("is the same for the same seed and different for another", () => {
@@ -53,11 +71,12 @@ describe("drills", () => {
     expect(others.some((o) => o !== a.join())).toBe(true);
   });
 
-  it("never repeats a sentence back to back, and uses 10 different ones when the course is big enough", () => {
+  it("never repeats a sentence back to back, and uses one sentence per plan item when the course is big enough", () => {
     for (const c of COURSES) {
+      const plan = planFor(c.id);
       const ids = buildDrill(c.id, 3, all).exercises.map((e) => e.sentenceId);
       ids.forEach((id, i) => i > 0 && expect(id).not.toBe(ids[i - 1]));
-      if (courseSentences(c.id, all).length >= 10) expect(new Set(ids).size).toBe(10);
+      if (courseSentences(c.id, all).length >= plan.length) expect(new Set(ids).size, c.id).toBe(plan.length);
     }
   });
 
@@ -72,6 +91,76 @@ describe("drills", () => {
 
   it("build questions carry a tile bank", () => {
     for (const e of buildDrill("falling", 1, all).exercises) if (e.type === "build") expect(e.bank.length).toBeGreaterThan(3);
+  });
+});
+
+describe("2-3-1 sessions", () => {
+  const oneGroupFalling = (s: (typeof all)[number]) => s.groups.length === 1 && s.groups[0].pattern === "2-3-1";
+
+  it("the mixed session is five drawings, then two speaking exercises", () => {
+    const d = buildDrill("session", 11, all);
+    expect(d.exercises.map((e) => e.type)).toEqual([...SESSION_PLAN]);
+    expect(d.exercises.slice(0, 5).every((e) => e.type === "draw")).toBe(true);
+    expect(d.exercises.slice(5).every((e) => e.type === "shadow")).toBe(true);
+  });
+
+  it("every session sentence is one thought group in 2-3-1, and the seven are all different", () => {
+    const d = buildDrill("session", 11, all);
+    const byId = new Map(d.sentences.map((s) => [s.id, s]));
+    for (const e of d.exercises) expect(oneGroupFalling(byId.get(e.sentenceId)!)).toBe(true);
+    expect(new Set(d.exercises.map((e) => e.sentenceId)).size).toBe(7);
+  });
+
+  it("both drawing-only sessions are three 2-3-1 drawings", () => {
+    for (const id of ["draw3a", "draw3b"] as const) {
+      const d = buildDrill(id, 4, all);
+      expect(d.exercises.map((e) => e.type), id).toEqual([...DRAW3_PLAN]);
+      for (const s of d.sentences) expect(oneGroupFalling(s), id).toBe(true);
+      expect(new Set(d.exercises.map((e) => e.sentenceId)).size, id).toBe(3);
+    }
+  });
+
+  it("Sets A and B are fixed: the same three sentences in the same order whatever the seed", () => {
+    for (const id of ["draw3a", "draw3b"] as const) {
+      const fixed = FIXED_SENTENCES[id]!;
+      expect(fixed, id).toHaveLength(3);
+      for (const seed of [0, 1, 2, 99, 12345]) {
+        const d = buildDrill(id, seed, all);
+        expect(d.exercises.map((e) => e.sentenceId), `${id} seed ${seed}`).toEqual([...fixed]);
+      }
+      expect(courseSentences(id, all).map((s) => s.id), id).toEqual([...fixed]);
+    }
+    // the two drawing sets are different sentences
+    expect(FIXED_SENTENCES.draw3a).not.toEqual(FIXED_SENTENCES.draw3b);
+  });
+
+  it("the speaking check runs three fixed speaking tasks in a row", () => {
+    const fixed = FIXED_SENTENCES.speak3!;
+    expect(fixed).toHaveLength(3);
+    for (const seed of [0, 1, 2, 99]) {
+      const d = buildDrill("speak3", seed, all);
+      expect(d.exercises.map((e) => e.type)).toEqual([...SPEAK3_PLAN]);
+      expect(d.exercises.every((e) => e.type === "shadow")).toBe(true);
+      expect(d.exercises.map((e) => e.sentenceId)).toEqual([...fixed]);
+    }
+    for (const s of courseSentences("speak3", all)) expect(oneGroupFalling(s)).toBe(true);
+  });
+
+  it("every fixed id still exists and is a one-group 2-3-1 sentence", () => {
+    for (const [course, ids] of Object.entries(FIXED_SENTENCES)) {
+      expect(courseSentences(course as "draw3b", all).map((s) => s.id), course).toEqual([...ids!]);
+      for (const s of courseSentences(course as "draw3b", all)) expect(oneGroupFalling(s), course).toBe(true);
+    }
+  });
+
+  it("each session keeps its own best score, and its card counts tasks rather than the whole pool", () => {
+    const lessons = { [drillId("session")]: { stars: 2, best: 81, completedAt: "2026-11-14T10:00:00.000Z" } };
+    expect(courseStat("session", all, lessons)).toMatchObject({ best: 81, stars: 2, size: 7 });
+    expect(courseStat("draw3a", all, lessons)).toMatchObject({ best: null, size: 3 });
+    expect(courseStat("draw3b", all, lessons)).toMatchObject({ best: null, size: 3 });
+    expect(courseStat("speak3", all, lessons)).toMatchObject({ best: null, size: 3 });
+    // the pool behind the mixed session is much bigger than any one run
+    expect(courseSentences("session", all).length).toBeGreaterThan(7);
   });
 });
 

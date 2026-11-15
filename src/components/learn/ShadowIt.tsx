@@ -8,6 +8,9 @@ import { loadMicProfile } from "@/components/mic/micProfile";
 import { micGate, takeBlocksGrade, takeChips, type GateReason } from "@/lib/audio/micProfile";
 import { KaraokeSentence } from "@/components/lab/KaraokeSentence";
 import { analyzeVoice, type VoiceAnalysis } from "@/lib/audio/analyzeVoice";
+import type { AlignedAnalysis } from "@/lib/azure/align";
+import type { PronunciationScore } from "@/lib/azure/score";
+import { PronunciationCheck } from "@/components/azure/PronunciationCheck";
 import { MicError, MicRecorder } from "@/lib/audio/recorder";
 import { layoutSentence, targetContour } from "@/lib/intonation/contour";
 import type { Sentence } from "@/lib/intonation/types";
@@ -43,6 +46,9 @@ export function ShadowIt({
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
+  /** Azure's optional pronunciation result for this take, and the take re-timed with Azure's word boundaries. */
+  const [pronunciation, setPronunciation] = useState<PronunciationScore | null>(null);
+  const [aligned, setAligned] = useState<AlignedAnalysis | null>(null);
   /** Set while the mic check dialog is open before speaking; the reason says why Melobi is asking. */
   const [gate, setGate] = useState<GateReason | null>(null);
   /** The microphone in use is not the one that was checked (known once the mic is open). */
@@ -75,15 +81,22 @@ export function ShadowIt({
     [],
   );
 
-  // CHECK becomes available once there is a result with a clear voice in it.
+  // CHECK becomes available once there is a result with a clear voice in it. When the learner has asked Azure for a
+  // pronunciation check, its aligned take (with the peak-position check) replaces the plain one.
   const result = analysis?.result ?? null;
+  const gradedResult = aligned ?? result;
   useEffect(() => {
-    if (!result || (analysis && takeBlocksGrade(analysis.quality))) return setCheck(null); // a take too quiet to judge fairly gets no score
+    if (!gradedResult || (analysis && takeBlocksGrade(analysis.quality))) return setCheck(null); // a take too quiet to judge fairly gets no score
     setCheck(() => {
-      const feedback = analysisFeedback(result);
-      return { outcome: graded(exercise.id, "shadow", result.overall, feedback.passed), feedback, analysis: result };
+      const feedback = analysisFeedback(gradedResult);
+      return {
+        outcome: graded(exercise.id, "shadow", gradedResult.overall, feedback.passed),
+        feedback,
+        analysis: gradedResult,
+        pronunciation: pronunciation ?? undefined,
+      };
     });
-  }, [result, analysis, exercise.id, setCheck]);
+  }, [gradedResult, analysis, exercise.id, setCheck, pronunciation]);
 
   const stop = async () => {
     const rec = recRef.current;
@@ -113,6 +126,8 @@ export function ShadowIt({
   const start = async () => {
     setError(null);
     setAnalysis(null);
+    setPronunciation(null);
+    setAligned(null);
     setElapsed(0);
     seenRef.current = 0;
     goRef.current = null;
@@ -296,6 +311,14 @@ export function ShadowIt({
             </p>
           ))}
           {analysis.quality.issues.some((q) => q.level === "fail") && <MicCheckButton className="self-start" />}
+          <PronunciationCheck
+            voice={analysis}
+            sentence={sentence}
+            onScored={(p, a) => {
+              setPronunciation(p);
+              setAligned(a);
+            }}
+          />
           <p className="text-sm text-muted">
             Tap CHECK to see how you did. <span className="thai">กด CHECK เพื่อดูผล</span>
           </p>

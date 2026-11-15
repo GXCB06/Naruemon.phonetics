@@ -17,7 +17,8 @@
     "build:ipa-sounds": "node tools/make-ipa-sounds.ts",
     "build:tts": "node tools/make-tts.ts",
     "build:variants": "node tools/make-variants.ts",
-    "build:variants:psola": "node tools/make-variants-psola.ts"
+    "build:variants:psola": "node tools/make-variants-psola.ts",
+    "build:variants:natural": "node tools/make-variants-natural.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.6.0",

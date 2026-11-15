@@ -81,7 +81,7 @@ describe("buildPath", () => {
   });
 
   it("locked units get one placeholder node (unit title) and no totals", () => {
-    const units = buildPath({}).units;
+    const units = buildPath({}, [{ ...UNITS[1], locked: true, lessons: [] }]).units;
     const locked = units.find((u) => u.locked)!;
     expect(locked).toBeDefined();
     expect(locked.nodes).toHaveLength(1);

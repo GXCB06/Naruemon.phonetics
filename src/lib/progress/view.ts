@@ -42,6 +42,7 @@ export const SKILL_LABEL: Record<Skill, Bilingual> = {
   range: { en: "Range", th: "ช่วงเสียง" },
   break: { en: "Pause", th: "การเว้นวรรค" },
   listening: { en: "Listening", th: "การฟัง" },
+  pronunciation: { en: "Pronunciation", th: "การออกเสียง" },
 };
 
 export const MODALITY_LABEL: Record<MasteryModality, Bilingual> = {
@@ -93,9 +94,11 @@ export interface HeatRow {
   cells: HeatCell[];
 }
 
-/** Listening is only ever listened; every other skill is spoken or drawn. */
+/** Listening is only ever listened; pronunciation is only ever spoken; every other skill is spoken or drawn. */
 function modalitiesFor(skill: Skill): MasteryModality[] {
-  return skill === "listening" ? ["listen"] : ["speak", "draw"];
+  if (skill === "listening") return ["listen"];
+  if (skill === "pronunciation") return ["speak"];
+  return ["speak", "draw"];
 }
 
 /** Patterns the learner has met: any counted attempt on any skill. Known patterns first (course order), then others. */
@@ -234,6 +237,11 @@ export function improvementSentence(pattern: string, skill: string): Bilingual |
       };
     case "listening":
       return { en: `You find it hard to hear the pattern in ${s.en}`, th: `คุณยังฟังรูปแบบเสียงของ${s.th} ได้ไม่ชัด` };
+    case "pronunciation":
+      return {
+        en: `Some sounds in your ${s.en} are still unclear; slow down and say each one`,
+        th: `เสียงบางเสียงใน${s.th} ของคุณยังไม่ชัด ลองพูดช้าลงและออกเสียงให้ครบ`,
+      };
     default:
       return null;
   }
@@ -305,13 +313,17 @@ export interface AttemptPoint {
   modality: string;
   /** 0–100. */
   overall: number;
+  /** The attempt's checks, when known: lets a pronunciation-only check stay out of the intonation trend. */
+  checks?: readonly { id: string }[];
 }
 
 /**
  * Listening attempts are a plain right/wrong (0 or 100), which is not comparable with a graded drawing or recording,
- * so the trend and the first-vs-latest numbers only use speak and draw.
+ * so the trend and the first-vs-latest numbers only use speak and draw. A pronunciation-only row is not an intonation
+ * score either, so it is left out too.
  */
 function isGraded(p: AttemptPoint): boolean {
+  if (p.checks && p.checks.length > 0 && p.checks.every((c) => c.id === "pronunciation")) return false;
   return (p.modality === "speak" || p.modality === "draw") && Number.isFinite(p.overall) && Number.isFinite(Date.parse(p.at));
 }
 
@@ -322,6 +334,7 @@ export function pointsFromQueue(queue: readonly QueuedAttempt[]): AttemptPoint[]
     pattern: q.row.pattern,
     modality: q.row.modality,
     overall: q.row.overall,
+    ...(q.row.checks.length > 0 ? { checks: q.row.checks } : {}),
   }));
 }
 

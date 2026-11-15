@@ -1,6 +1,7 @@
 // Turn an exercise result into an `attempts` row (SPEC section 7) and the per-skill results that feed skill mastery.
 // Pure. Only numbers and statuses ever leave here: no audio, no drawing strokes, no recordings.
 
+import type { PronunciationScore, PhonemeError } from "../azure/score.ts";
 import type { AnalysisResult, PatternId, Sentence } from "../intonation/types.ts";
 import type { MasteryModality, SkillResult } from "../mastery/mastery.ts";
 
@@ -28,6 +29,11 @@ export interface AttemptRow {
   overall: number;
   /** Draw it only (migration 0003): the drawing's Perfect/Good/Miss grade. Absent on every other row. */
   draw_grade?: DrawGrade;
+  /** Azure pronunciation assessment (migration 0001): accuracy and prosody 0–100, only when the learner asked for it. */
+  azure_accuracy?: number | null;
+  azure_prosody?: number | null;
+  /** The sounds that need work, weakest first. Symbols only: never audio. */
+  phoneme_errors?: PhonemeError[] | null;
   /** ISO time the learner pressed CHECK (kept so an offline attempt flushed later keeps its real time). */
   created_at: string;
 }
@@ -51,6 +57,7 @@ export function buildAttempt(
   modality: "speak" | "draw",
   now: Date = new Date(),
   grade?: DrawGrade,
+  pronunciation?: PronunciationScore,
 ): BuiltAttempt {
   const checks: AttemptRow["checks"] = [];
   const skills: SkillResult[] = [];
@@ -66,6 +73,10 @@ export function buildAttempt(
     skills.push({ pattern: whole, skill: c.id, modality, status: c.status });
   }
   const shapes = analysis.groups.map((g) => g.shapeScore).filter((n) => Number.isFinite(n));
+  const azure = modality === "speak" && pronunciation ? pronunciationFields(pronunciation) : {};
+  if (modality === "speak" && pronunciation) {
+    skills.push({ pattern: whole, skill: "pronunciation", modality, status: pronunciation.status });
+  }
   return {
     row: {
       sentence_id: sentence.id,
@@ -76,9 +87,19 @@ export function buildAttempt(
       shape_score: shapes.length ? clamp100(shapes.reduce((a, b) => a + b, 0) / shapes.length) : null,
       overall: clamp100(analysis.overall),
       ...(modality === "draw" && isDrawGrade(grade) ? { draw_grade: grade } : {}),
+      ...azure,
       created_at: now.toISOString(),
     },
     skills,
+  };
+}
+
+/** The attempts-table columns Azure fills, copied so the row never shares an array with the caller. */
+function pronunciationFields(p: PronunciationScore): Pick<AttemptRow, "azure_accuracy" | "azure_prosody" | "phoneme_errors"> {
+  return {
+    azure_accuracy: p.accuracy,
+    azure_prosody: p.prosody,
+    phoneme_errors: p.phonemeErrors.length > 0 ? p.phonemeErrors.map((e) => ({ ...e })) : null,
   };
 }
 
@@ -98,6 +119,32 @@ export function buildListenAttempt(sentence: Sentence, passed: boolean, now: Dat
       created_at: now.toISOString(),
     },
     skills: [{ pattern, skill: "listening", modality: "listen", status }],
+  };
+}
+
+/**
+ * A pronunciation check only (the Speak screen's optional Azure pass). It is a "speak" attempt with the pronunciation
+ * skill and the Azure columns; it carries no intonation checks, so it never counts the tune twice.
+ */
+export function buildPronunciationAttempt(
+  sentence: Sentence,
+  pronunciation: PronunciationScore,
+  now: Date = new Date(),
+): BuiltAttempt {
+  const pattern = sentencePattern(sentence);
+  return {
+    row: {
+      sentence_id: sentence.id,
+      modality: "speak",
+      pattern,
+      levels: null,
+      checks: [{ id: "pronunciation", status: pronunciation.status }],
+      shape_score: null,
+      overall: clamp100(pronunciation.accuracy ?? pronunciation.overall ?? 0),
+      ...pronunciationFields(pronunciation),
+      created_at: now.toISOString(),
+    },
+    skills: [{ pattern, skill: "pronunciation", modality: "speak", status: pronunciation.status }],
   };
 }
 

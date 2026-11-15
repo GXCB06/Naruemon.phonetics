@@ -4,8 +4,28 @@ This is the single source of truth for continuing the project in any coding agen
 Read this file first, then `AGENTS.md` (rules), then the code. Background reading: `docs/PLAN.md` (product plan) and
 `docs/research-open-source-and-apis.md` (tool and API research with licenses and costs).
 
-Status on 2026-11-04: **Phase 0a is done** (rule engine, recorder, pitch tracking, drawing quiz, lab page, 31 tests).
-The next work is **finishing Phase 0a with real recordings**, then **Phase 0b (Azure)**.
+Status on 2026-11-13: **Phases 0a–3 are largely built** — course path, 13 lessons + a mixed review lesson, lesson player
+(Hear it, Find the peak, Draw it, Shadow it, Match pairs, Build the tune, Meaning match), Speak screen, IPA practice, My
+Progress, Supabase sync, Azure token/assessment/alignment/IPA layer, TTS references, PWA shell with a service worker, and
+CI. 636 unit tests, lint/type-check/build clean. Remaining gaps are listed at the end of this section.
+The biggest unfinished work is **real-recording calibration** (A1/A2 below).
+
+Known gaps (2026-11-13):
+
+- **A1/A2 calibration** still needs 20–50 real takes; `recordings/` currently holds only handwriting samples. The
+  SwiftF0/Praat bake-off has not been run, so thresholds remain first guesses. Voice analysis also still runs on the main
+  thread (A3).
+- **Unit 1 “Hearing the 4 levels”** is not built; the path starts at Falling. “Mixed review” is now open and has one
+  six-sentence lesson, but it is static (no adaptive review).
+- **Spaced repetition** (`ts-fsrs`, `skill_mastery.next_review_at`) is not wired.
+- **XP, streaks and lesson progress are device-local.** `profiles`, `xp_events` and `weekly_summaries` exist but are unused,
+  so XP does not follow a learner across devices.
+- **AI weekly summary** is not built (`weekly_summaries` unused). “Ask Myna” is the only AI feature.
+- **Before/after audio** is not stored; the Speak screen offers “you next to the model” playback but no history.
+- Azure's pronunciation check is **optional** in Shadow it and the Speak screen (the learner taps a button). It is not run
+  automatically, to keep the free tier and privacy predictable.
+- **Teacher mode, class dashboard and LINE login** remain Phase 4.
+- Real-device QA (iOS Safari mic, Bluetooth headsets) is still outstanding.
 
 ---
 
@@ -50,15 +70,17 @@ Continuous level = `2 + semitones / 4`.
 
 ---
 
-## 3. Current code (Phase 0a)
+## 3. Current code (Phase 2)
 
 Stack: **Next.js 16.4 (App Router, `cacheComponents` on), React 19.3, TypeScript, Tailwind CSS 4, Vitest 5**, `pitchy` 4.1,
-`perfect-freehand`. Node 22.18+ required (tools run `.ts` files directly; developed on Node 26).
+`perfect-freehand`, `microsoft-cognitiveservices-speech-sdk` 1.53, `@supabase/supabase-js` + `@supabase/ssr`, and
+`@google/genai` / `@anthropic-ai/sdk` for Ask Myna. Node 22.18+ required (tools run `.ts` files directly; developed on
+Node 26).
 
 ```bash
 npm install
-npm run dev            # http://localhost:3000/lab
-npm test               # 31 tests
+npm run dev            # http://localhost:3000
+npm test               # 636 tests
 npm run lint && npx tsc --noEmit && npm run build
 npm run samples        # regenerate public/samples/*.wav + index.json
 npm run pitch:export -- <wav-dir> <out-dir>   # pitch-tracker test, step 1 (see README)
@@ -148,9 +170,13 @@ Each task lists **what to build** and **done when** (acceptance criteria). Do th
   Then tune `THRESHOLDS` / `SCORE_CAP` / `SEMITONES_PER_LEVEL` so correct takes pass and the author's "Thai-style" takes fail
   the right check. Add a test per real failure you fix (synthetic reproduction is fine).
   *Done when* ≥ 90% of correct takes score ≥ 80 and every deliberate error take fails the intended check.
-- **A3. Move voice analysis to a Web Worker** (`analyzeVoice` is pure) so long takes don't block the UI.
+- **A3. Move voice analysis to a Web Worker** (`analyzeVoice` is pure) so long takes don't block the UI. *(Not done.)*
 
 ### Phase 0b — Azure alignment, IPA, TTS references
+
+Status: **B1–B6 are implemented** (`src/app/api/speech-token`, `src/lib/azure/assess.ts`, `align.ts`, `ipa.ts`,
+`tools/build-ipa.ts`, `tools/make-tts.ts`). The optional pronunciation pass is now wired into Shadow it and the Speak
+screen; B7 (Speechace trial) is not done.
 
 Env: `AZURE_SPEECH_KEY`, `AZURE_SPEECH_REGION` (try `southeastasia`; confirm prosody support there, else `eastus`).
 Free tier F0: 5 audio hours/month STT + 0.5M chars/month TTS. The author still needs an Azure account
@@ -192,6 +218,9 @@ Free tier F0: 5 audio hours/month STT + 0.5M chars/month TTS. The author still n
 
 ### Phase 1 — MVP (one unit end to end)
 
+Status: **done** — Supabase auth, content model, lesson player, home path and attempt sync are in the app (the course
+now covers every pattern, not just Unit 2).
+
 - **C1. Supabase** project + auth (Google + email magic link). Tables (SQL in §7). Row-level security: users only read/write
   their own rows. Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (server-only service key if needed).
 - **C2. Content model.** Move lessons to `content/units/<unit>/<lesson>.json` (same `Sentence` type + exercise list).
@@ -204,6 +233,10 @@ Free tier F0: 5 audio hours/month STT + 0.5M chars/month TTS. The author still n
   *Done when* a classmate finishes a lesson on a phone and their attempts appear in Supabase.
 
 ### Phase 2 — full course + personal analytics
+
+Status: **mostly done** — all four patterns and a mixed review lesson, skill mastery (including a `pronunciation` skill),
+draw-vs-speak insight, the Progress heat map/radar/trend, and an IPA practice page. The “Hearing the 4 levels” unit and
+spaced repetition are still open.
 
 - **D1. All units:** 1 Hearing levels · 2 Falling 2-3-1 · 3 Rising 2-3 · 4 Lists & choices · 5 Non-final 2-3-2 · 6 Tag questions
   · 7 Mixed review. ~80 sentences from the course PDFs.

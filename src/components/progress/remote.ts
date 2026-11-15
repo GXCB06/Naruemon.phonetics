@@ -30,6 +30,7 @@ interface AttemptDbRow {
   modality: string;
   overall: number;
   created_at: string;
+  checks: { id: string; status: string }[] | null;
 }
 
 async function fetchRemote(): Promise<RemoteProgress | null> {
@@ -48,7 +49,7 @@ async function fetchRemote(): Promise<RemoteProgress | null> {
   try {
     const { data, error } = await client
       .from("attempts")
-      .select("client_id, pattern, modality, overall, created_at")
+      .select("client_id, pattern, modality, overall, created_at, checks")
       .order("created_at", { ascending: false })
       .limit(RECENT_ATTEMPTS);
     if (!error) {
@@ -59,6 +60,7 @@ async function fetchRemote(): Promise<RemoteProgress | null> {
         pattern: r.pattern,
         modality: r.modality,
         overall: r.overall,
+        checks: r.checks ?? undefined,
       }));
     }
   } catch {

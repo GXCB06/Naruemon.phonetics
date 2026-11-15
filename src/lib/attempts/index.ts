@@ -6,8 +6,9 @@
 // waits (and is flushed after sign-in). No audio is ever stored.
 
 import type { AnalysisResult, Sentence } from "../intonation/types.ts";
+import type { PronunciationScore } from "../azure/score.ts";
 import { applyResults, type SkillResult } from "../mastery/mastery.ts";
-import { buildAttempt, buildListenAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
+import { buildAttempt, buildListenAttempt, buildPronunciationAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
 import { recordDrawGrade } from "../progress/grades.ts";
 import { buildIpaAttempt, flushIpaQueue, storeIpaAttempt } from "./ipa.ts";
 import { flushQueue } from "./flush.ts";
@@ -16,7 +17,7 @@ import { isSupabaseConfigured } from "../supabase/env.ts";
 import { createClient } from "../supabase/client.ts";
 import { supabaseRemote } from "./supabase.ts";
 
-export { buildAttempt, buildAttemptRow, buildListenAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
+export { buildAttempt, buildAttemptRow, buildListenAttempt, buildPronunciationAttempt, skillsFromRow, type AttemptRow, type DrawGrade } from "./build.ts";
 export { flushQueue, type RemoteDb } from "./flush.ts";
 export { loadMastery, loadQueue, MASTERY_KEY, MAX_QUEUE, QUEUE_KEY } from "./queue.ts";
 export { IPA_QUEUE_KEY, IPA_STATS_KEY, loadIpaQueue, loadIpaStats } from "./ipa.ts";
@@ -84,20 +85,33 @@ export function saveAttempt(row: AttemptRow, skills: SkillResult[] = skillsFromR
 export function recordExerciseAttempt(
   sentence: Sentence,
   type: "hear" | "peak" | "draw" | "shadow",
-  result: { passed: boolean; analysis?: AnalysisResult; grade?: DrawGrade },
+  result: { passed: boolean; analysis?: AnalysisResult; grade?: DrawGrade; pronunciation?: PronunciationScore },
 ): void {
   try {
     const built =
       (type === "draw" || type === "shadow") && result.analysis
         ? type === "draw"
           ? buildAttempt(sentence, result.analysis, "draw", new Date(), result.grade)
-          : buildAttempt(sentence, result.analysis, "speak")
+          : buildAttempt(sentence, result.analysis, "speak", new Date(), undefined, result.pronunciation)
         : type === "hear" || type === "peak"
           ? buildListenAttempt(sentence, result.passed)
           : null;
     if (built) saveAttempt(built.row, built.skills);
   } catch {
     // never break the lesson
+  }
+}
+
+/**
+ * The Speak screen's optional Azure pass: a pronunciation-only "speak" attempt. Used when the learner asks for the
+ * extra check after the intonation attempt has already been saved, so the tune is never counted twice.
+ */
+export function recordPronunciationAttempt(sentence: Sentence, pronunciation: PronunciationScore): void {
+  try {
+    const built = buildPronunciationAttempt(sentence, pronunciation);
+    saveAttempt(built.row, built.skills);
+  } catch {
+    // never break the practice
   }
 }
 

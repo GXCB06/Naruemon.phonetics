@@ -6,11 +6,11 @@
 
 import type { CheckId, CheckStatus, PatternId } from "../intonation/types.ts";
 
-/** Skills = the rule engine's check ids plus "listening" (Hear it / Find the peak). */
-export type Skill = CheckId | "listening";
+/** Skills = the rule engine's check ids plus "listening" (Hear it / Find the peak) and "pronunciation" (Azure). */
+export type Skill = CheckId | "listening" | "pronunciation";
 export type MasteryModality = "speak" | "draw" | "listen";
 
-export const SKILLS: readonly Skill[] = ["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening"];
+export const SKILLS: readonly Skill[] = ["start", "singlePeak", "peakPlacement", "ending", "range", "break", "listening", "pronunciation"];
 export const MODALITIES: readonly MasteryModality[] = ["speak", "draw", "listen"];
 
 /** What one attempt says about one skill. */

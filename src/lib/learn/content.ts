@@ -13,7 +13,9 @@ import nonfinal2 from "../../../content/units/nonfinal/nonfinal-2.json" with { t
 import tags1 from "../../../content/units/tags/tags-1.json" with { type: "json" };
 import tags2 from "../../../content/units/tags/tags-2.json" with { type: "json" };
 import tags3 from "../../../content/units/tags/tags-3.json" with { type: "json" };
+import review1 from "../../../content/units/review/review-1.json" with { type: "json" };
 import class2 from "../../../content/units/practice/class-2.json" with { type: "json" };
+import sessionSets from "../../../content/units/practice/session-sets.json" with { type: "json" };
 import { levelsForFallingTag, levelsForGroup, levelsForNonFinalGroup, levelsForRisingGroup } from "../intonation/buildLesson.ts";
 import type { PatternId, Sentence } from "../intonation/types.ts";
 
@@ -39,6 +41,7 @@ const REGISTRY: Record<string, unknown> = {
   "tags/tags-1": tags1,
   "tags/tags-2": tags2,
   "tags/tags-3": tags3,
+  "review/review-1": review1,
 };
 
 /**
@@ -47,6 +50,7 @@ const REGISTRY: Record<string, unknown> = {
  */
 const PACKS: Record<string, unknown> = {
   "practice/class-2": class2,
+  "practice/session-sets": sessionSets,
 };
 
 const isObj = (x: unknown): x is Record<string, unknown> => typeof x === "object" && x !== null && !Array.isArray(x);

@@ -1,69 +1,51 @@
 {
-  "_comment": "Real-voice practice clips per sentence id and tune (made by tools/make-variants.ts and tools/make-variants-psola.ts, or added by hand then run npm run build:variants -- --manifest). The app uses them only when every clip an exercise needs exists.",
+  "_comment": "Real-voice practice clips per sentence id and tune: natural Azure voices, tune asked for with punctuation only (tools/make-variants-natural.ts), or recorded by hand and added with npm run build:variants -- --manifest. The app uses them only when every clip an exercise needs exists.",
   "clips": {
     "class2-01a-know-woman": [
       "falling",
-      "flat",
       "rising"
     ],
     "class2-01b-how-know-woman": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "class2-02a-buy-computer": [
       "falling",
-      "flat",
       "rising"
     ],
     "class2-02b-kind-computer": [
-      "flat",
-      "rising"
+      "falling"
     ],
     "class2-03a-do-you-work": [
       "falling",
-      "flat",
       "rising"
     ],
     "class2-03b-where-work": [
-      "flat",
-      "rising"
+      "falling"
     ],
     "class2-04-sports": [
-      "flat"
+      "finished"
     ],
     "class2-05a-travel-march": [
-      "rising"
+      "finished"
     ],
     "class2-05b-where-going": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "class2-06-july-october": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "finished"
     ],
     "class2-07a-mr-president": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "finished"
     ],
     "class2-07b-emergency": [
       "falling",
-      "flat",
       "rising"
     ],
     "class2-08a-coke-juice": [
-      "falling",
-      "rising"
+      "falling"
     ],
     "class2-08b-thirsty": [
       "falling",
-      "flat",
       "rising"
     ],
     "class2-09a-life-easy": [
@@ -71,202 +53,160 @@
     ],
     "class2-09b-therefore": [
       "falling",
-      "finished",
-      "flat",
       "rising"
     ],
     "class2-10a-coffee-tea": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "falling"
     ],
     "class2-10b-which-one": [
-      "finished",
-      "flat"
+      "finished"
     ],
     "class2-11-dress-colour": [
-      "finished",
-      "flat"
+      "finished"
     ],
     "class2-12-baby-sister": [
-      "finished",
-      "flat"
+      "falling",
+      "rising"
     ],
     "class2-13a-sir-cigar": [
-      "flat"
+      "finished"
     ],
     "class2-13b-pick-up": [
       "falling",
       "rising"
     ],
     "class2-13c-now": [
+      "falling",
       "rising"
     ],
     "class2-14a-bravo": [
-      "flat"
+      "falling",
+      "rising"
     ],
     "class2-14b-opportunity": [
       "falling",
-      "flat",
       "rising"
     ],
     "fall-pretty-woman": [
       "falling",
-      "flat",
       "rising"
     ],
     "fall-what-name": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "falling-1-book-table": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-1-buy-house": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-1-drink-tea": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-1-notebook": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-1-situation": [
+      "falling",
       "rising"
     ],
     "falling-1-work-tomorrow": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-2-how-are-you": [
-      "falling",
-      "flat"
+      "falling"
     ],
     "falling-2-what-name": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "falling-2-when-arrive": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "falling-2-where-going": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "falling-2-why-late": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-3-beautiful-day": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "falling-3-come-see-me": [
       "falling",
       "rising"
     ],
     "falling-3-how-nice": [
-      "falling",
-      "flat"
+      "falling"
     ],
     "falling-3-just-what-need": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-3-let-her-go": [
       "falling",
-      "flat",
       "rising"
     ],
     "falling-3-speak-loudly": [
       "falling",
-      "flat",
       "rising"
     ],
     "lists-1-need": [
-      "flat"
+      "finished"
     ],
     "lists-1-pasta": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "finished"
     ],
     "lists-1-store": [
-      "flat"
+      "finished"
     ],
     "lists-2-coffee": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "finished"
     ],
     "lists-2-inout": [
-      "flat",
       "rising"
     ],
     "lists-2-read": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "lists-2-red": [
-      "falling",
-      "flat",
-      "rising"
+      "falling"
     ],
     "nonfinal-1-fact": [
-      "falling"
+      "falling",
+      "rising"
     ],
     "nonfinal-1-opinion": [
       "falling",
-      "finished",
-      "flat",
       "rising"
     ],
     "nonfinal-1-picnic": [
       "falling",
-      "finished"
+      "rising"
     ],
     "nonfinal-1-rains": [
       "falling",
       "finished"
     ],
     "nonfinal-2-amad": [
-      "falling"
+      "finished"
     ],
     "nonfinal-2-bobby": [
-      "flat",
+      "falling",
       "rising"
     ],
     "nonfinal-2-movies": [
       "falling",
-      "finished",
-      "flat",
-      "rising"
+      "finished"
     ],
     "nonfinal-2-smart": [
       "falling",
-      "flat",
-      "rising"
+      "finished"
     ],
     "nonfinal-rains-bus": [
       "falling",
@@ -274,114 +214,106 @@
     ],
     "rise-student": [
       "falling",
-      "flat",
       "rising"
     ],
     "rising-1-ask-question": [
       "falling",
-      "flat",
       "rising"
     ],
     "rising-1-be-there": [
       "falling",
-      "flat",
       "rising"
     ],
     "rising-1-come-with-me": [
-      "falling",
-      "flat",
       "rising"
     ],
     "rising-1-guitar": [
       "falling",
-      "flat",
       "rising"
     ],
     "rising-1-student": [
       "falling",
-      "flat",
       "rising"
     ],
-    "rising-2-john": [
-      "falling",
-      "flat"
-    ],
     "rising-2-mrs-smith": [
-      "falling",
-      "flat",
       "rising"
     ],
     "rising-2-professor": [
-      "falling",
-      "finished",
-      "flat",
-      "rising"
+      "falling"
     ],
     "rising-2-wow": [
-      "falling",
-      "flat",
-      "rising"
+      "finished"
     ],
     "tag-sure": [
-      "flat",
+      "falling",
       "rising"
     ],
     "tag-unsure": [
-      "flat",
+      "falling",
+      "finished",
       "rising"
     ],
     "tags-1-harry": [
-      "flat",
+      "falling",
       "rising"
     ],
     "tags-1-hungry": [
       "falling",
-      "flat",
       "rising"
     ],
     "tags-1-late": [
-      "flat"
+      "falling",
+      "rising"
     ],
     "tags-1-susan": [
-      "flat"
+      "falling",
+      "rising"
     ],
     "tags-2-harry": [
-      "flat",
+      "falling",
+      "finished",
       "rising"
     ],
     "tags-2-hungry": [
       "falling",
       "finished",
-      "flat",
       "rising"
     ],
     "tags-2-late": [
-      "flat"
+      "falling",
+      "finished",
+      "rising"
     ],
     "tags-2-susan": [
-      "flat"
+      "falling",
+      "finished",
+      "rising"
     ],
     "tags-3-harry": [
-      "flat",
+      "falling",
       "rising"
     ],
     "tags-3-hungry": [
       "falling",
-      "flat",
       "rising"
     ],
     "tags-3-late": [
-      "flat"
+      "falling",
+      "finished",
+      "rising"
     ],
     "tags-3-nice-day": [
       "falling",
       "rising"
     ],
     "tags-3-susan": [
-      "flat"
+      "falling",
+      "finished",
+      "rising"
     ],
     "tags-3-swim": [
-      "flat",
+      "falling",
+      "finished",
       "rising"
     ]
   }

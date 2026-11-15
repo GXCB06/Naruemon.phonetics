@@ -26,6 +26,9 @@ const GROUPS: { title: { en: string; th: string }; ids: CourseId[] }[] = [
   { title: { en: "Quick quiz", th: "ควิซเร็ว" }, ids: ["random"] },
 ];
 
+/** The short sessions at the top of the hub: one 5-draw + 2-speak run, two 3-draw runs, and a 3-speak check (all 2-3-1). */
+const SESSIONS: CourseId[] = ["session", "draw3a", "draw3b", "speak3"];
+
 /** The drill's seed: changes after each finished drill (it comes from the saved time), so the next one has fresh sentences. */
 function seedFor(stat: CourseStat): number {
   const t = stat.lastAt ? Date.parse(stat.lastAt) : NaN;
@@ -55,12 +58,14 @@ export function PracticeHub() {
 
   const stats = useMemo(() => Object.fromEntries(COURSES.map((c) => [c.id, courseStat(c.id, all, progress.lessons)])) as Record<CourseId, CourseStat>, [all, progress.lessons]);
 
-  // Recommended: the practised pattern that is going worst, else the first one not tried yet
+  // Recommended: the practised pattern that is going worst, else the first one not tried yet (sessions and the random
+  // quiz are never recommended; they sit in their own section at the top)
   const pick = useMemo(() => {
-    const practiced = COURSES.filter((c) => c.id !== "random" && stats[c.id].best !== null).sort((a, b) => (stats[a.id].best ?? 0) - (stats[b.id].best ?? 0));
+    const recommendable = COURSES.filter((c) => !c.session && c.id !== "random");
+    const practiced = recommendable.filter((c) => stats[c.id].best !== null).sort((a, b) => (stats[a.id].best ?? 0) - (stats[b.id].best ?? 0));
     const worst = practiced[0];
     if (worst && (stats[worst.id].best ?? 100) < 90) return { course: worst, reason: "weak" as const };
-    const fresh = COURSES.find((c) => c.id !== "random" && stats[c.id].best === null);
+    const fresh = recommendable.find((c) => stats[c.id].best === null);
     return fresh ? { course: fresh, reason: "new" as const } : { course: COURSES.find((c) => c.id === "random")!, reason: "mix" as const };
   }, [stats]);
 
@@ -105,7 +110,13 @@ export function PracticeHub() {
               </span>
             )}
             <span className="text-xs font-bold text-muted">
-              {lang === "th" ? `${stat.size} ประโยค` : `${stat.size} sentences`}
+              {c.session
+                ? lang === "th"
+                  ? `${stat.size} ข้อ`
+                  : `${stat.size} tasks`
+                : lang === "th"
+                  ? `${stat.size} ประโยค`
+                  : `${stat.size} sentences`}
               {last ? ` · ${last}` : ""}
             </span>
           </span>
@@ -139,6 +150,21 @@ export function PracticeHub() {
             </p>
           </div>
         </div>
+
+        <section aria-label={lang === "th" ? "เซสชัน" : "Sessions"} className="flex flex-col gap-3">
+          <h2 className="text-sm font-black uppercase tracking-wider text-muted">
+            <Bi text={{ en: "Sessions", th: "เซสชัน" }} />
+          </h2>
+          <p className="text-sm font-semibold text-muted">
+            <Bi
+              text={{
+                en: "Short runs on 2-3-1: draw the tune or say it.",
+                th: "ชุดสั้น ๆ บน 2-3-1: วาดทำนองหรือลองพูด",
+              }}
+            />
+          </p>
+          {SESSIONS.map((id, i) => card(COURSES.find((c) => c.id === id)!, i === 0))}
+        </section>
 
         <section aria-label={lang === "th" ? "แนะนำสำหรับคุณ" : "Recommended"} className="flex flex-col gap-2">
           <h2 className="text-sm font-black uppercase tracking-wider text-muted">

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { encodeWav } from "../audio/wav.ts";
 import { createPronunciationConfig } from "./assess.ts";
 import { parseAzureResult } from "./parse.ts";
+import { MAX_PHONEME_ERRORS, pronunciationFrom, statusForScore } from "./score.ts";
 import { toWavPcm16 } from "./pcm.ts";
 import { clientIp, createRateLimiter, createTokenCache, isValidRegion, tokenEndpoint, TOKEN_TTL_MS } from "./token.ts";
 
@@ -91,6 +92,33 @@ describe("parseAzureResult", () => {
       NBest: [{ Words: [{ Word: "a", PronunciationAssessment: { Feedback: { Prosody: { Break: { ErrorTypes: ["UnexpectedBreak"] } } } } }] }],
     });
     expect(a.breaks).toEqual([{ wordIndex: 0, type: "unexpected", confidence: 1 }]);
+  });
+});
+
+describe("pronunciationFrom", () => {
+  it("uses the overall PronScore for the verdict and keeps the sub-scores", () => {
+    const good = pronunciationFrom(parseAzureResult(fixture("good-i-need-a-pen.json")));
+    expect(good.accuracy).toBeCloseTo(97.5);
+    expect(good.prosody).toBeCloseTo(91.3);
+    expect(good.overall).toBeCloseTo(94.8);
+    expect(good.status).toBe("pass");
+    expect(good.phonemeErrors).toEqual([]);
+  });
+
+  it("flags a weak sound (and a merely 'warn' take), weakest first, without duplicates", () => {
+    const bad = pronunciationFrom(parseAzureResult(fixture("monotone-missed-n.json")));
+    expect(bad.status).toBe("warn"); // PronScore 78.2 even though overall AccuracyScore is 86.5
+    expect(bad.phonemeErrors).toEqual([{ ipa: "n", accuracy: 0, word: "pen" }]);
+    expect(bad.phonemeErrors.length).toBeLessThanOrEqual(MAX_PHONEME_ERRORS);
+  });
+
+  it("bands 80+ pass, 60+ warn, below fail, and null skip", () => {
+    expect(statusForScore(80)).toBe("pass");
+    expect(statusForScore(79.9)).toBe("warn");
+    expect(statusForScore(60)).toBe("warn");
+    expect(statusForScore(59.9)).toBe("fail");
+    expect(statusForScore(null)).toBe("skip");
+    expect(statusForScore(Number.NaN)).toBe("skip");
   });
 });
 
