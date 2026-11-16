@@ -1,6 +1,26 @@
 {
   "_comment": "Reference clips per sentence id (f = female, m = male) that passed their own pattern. Made by tools/make-tts.ts (npm run build:tts) or added by hand (then run npm run build:tts -- --manifest).",
   "clips": {
+    "class2-01b-how-know-woman": [
+      "f",
+      "m"
+    ],
+    "class2-05b-where-going": [
+      "f",
+      "m"
+    ],
+    "class2-07b-emergency": [
+      "f",
+      "m"
+    ],
+    "class2-13b-pick-up": [
+      "f",
+      "m"
+    ],
+    "class2-14b-opportunity": [
+      "f",
+      "m"
+    ],
     "fall-pretty-woman": [
       "f",
       "m"
@@ -26,6 +46,9 @@
     ],
     "falling-1-situation": [
       "m"
+    ],
+    "falling-1-work-tomorrow": [
+      "f"
     ],
     "falling-2-how-are-you": [
       "f",
@@ -118,6 +141,20 @@
       "m"
     ],
     "rising-2-mrs-smith": [
+      "m"
+    ],
+    "session-a-door": [
+      "m"
+    ],
+    "session-a-home": [
+      "f",
+      "m"
+    ],
+    "session-b-from": [
+      "m"
+    ],
+    "session-b-teacher": [
+      "f",
       "m"
     ],
     "tags-1-hungry": [

@@ -12,8 +12,10 @@ import {
   testTakeVerdict,
   type MicMessage,
   type NoiseFloorReport,
+  type QualityReport,
 } from "@/lib/audio/quality";
 import { MicError, MicRecorder, type MicErrorKind } from "@/lib/audio/recorder";
+import { normalizeTake } from "@/lib/audio/gain";
 import { encodeWav } from "@/lib/audio/wav";
 import type { MicProfile } from "@/lib/audio/micProfile";
 import { playResult } from "@/components/learn/chime";
@@ -99,7 +101,11 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
   const [room, setRoom] = useState<NoiseFloorReport | null>(null);
   const [device, setDevice] = useState<{ label: string; warnings: MicMessage[]; rate: number } | null>(null);
   const [verdict, setVerdict] = useState<MicMessage | null>(null);
+  /** Raw numbers from the test take, for the diagnostics line (and for checking a device we can't hold ourselves). */
+  const [report, setReport] = useState<QualityReport | null>(null);
   const [take, setTake] = useState<Uint8Array | null>(null);
+  /** Make-up gain the practice pipeline would apply to this take (0 = already loud enough). */
+  const [boostDb, setBoostDb] = useState(0);
 
   const recRef = useRef<MicRecorder | null>(null);
   const phaseRef = useRef<Phase>("idle");
@@ -143,8 +149,10 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
     const raw = await rec.stop();
     const sr = rec.sampleRate;
     const clip = raw.subarray(testStartRef.current, testStartRef.current + Math.round(TEST_SEC * sr));
-    const { summary } = testTakeVerdict(clip, sr, roomRef.current?.noiseDb);
+    const { summary, report: measured } = testTakeVerdict(clip, sr, roomRef.current?.noiseDb);
     setVerdict(summary);
+    setReport(measured);
+    setBoostDb(normalizeTake(clip, sr).gainDb);
     // remember how this microphone did, so Melobi only asks again for a different one (or after a bad check)
     const noisyRoom = roomRef.current?.verdict === "noisy";
     const profile: MicProfile = {
@@ -203,6 +211,8 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
     setErrorKind(null);
     setRoom(null);
     setVerdict(null);
+    setReport(null);
+    setBoostDb(0);
     setTake(null);
     setDevice(null);
     setProgress(0);
@@ -390,6 +400,26 @@ export function MicCheck({ compact = false, onDone }: { compact?: boolean; onDon
             <span aria-hidden>↻</span>
             <Bi text={T.again} className="items-start text-left" />
           </button>
+          {report && (
+            <details className="rounded-xl bg-card p-3 text-xs font-semibold text-muted">
+              <summary className="cursor-pointer font-extrabold uppercase tracking-wide">
+                <Bi text={{ en: "Microphone numbers", th: "ตัวเลขจากไมค์" }} />
+              </summary>
+              <p className="mt-2 leading-relaxed tabular-nums">
+                peak {Math.round(20 * Math.log10(Math.max(report.peak, 1e-6)))} dBFS · speech{" "}
+                {Math.round(report.speechDb)} dBFS · room {Math.round(report.noiseDb)} dBFS · SNR{" "}
+                {Math.round(report.snrDb)} dB · boost {boostDb > 0 ? `+${boostDb}` : "0"} dB
+              </p>
+              <p className="mt-1 font-normal leading-relaxed">
+                <Bi
+                  text={{
+                    en: "Practice boosts a quiet take automatically, so a low speech level still gets scored. Share these numbers if your take still sounds faint.",
+                    th: "ในแบบฝึกหัด ระบบจะเพิ่มเสียงให้อัตโนมัติ เทคที่เบาจึงยังได้คะแนน ถ้าเสียงยังเบาอยู่ ส่งตัวเลขนี้ให้เราดูได้เลย",
+                  }}
+                />
+              </p>
+            </details>
+          )}
         </div>
       )}
     </div>

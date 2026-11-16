@@ -115,6 +115,14 @@ export class MicRecorder {
     this.node = null;
     this.source = null;
     this.stream = null;
+    // Hand the audio session back to playback: while it stays "play-and-record" iOS can keep the take's playback routed
+    // or attenuated (a self-listen clip then sounds much quieter than it is).
+    try {
+      const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+      if (session) session.type = "playback";
+    } catch {
+      // not supported
+    }
     const total = this.chunks.reduce((n, c) => n + c.length, 0);
     const out = new Float32Array(total);
     let o = 0;

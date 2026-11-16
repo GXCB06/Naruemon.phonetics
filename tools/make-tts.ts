@@ -51,6 +51,8 @@ const ATTEMPTS: Record<VoiceId, SsmlOptions[]> = {
     { shape: "none" },
     { shape: "group" },
     { prePct: -20, gain: 1.7, fallGain: 1.4, punctuation: "pattern" },
+    // short commands: Jason needs a raised base to put a clear peak on the last word and still fall
+    { gain: 1.6, fallGain: 1.8, punctuation: "pattern", basePct: 10 },
   ],
 };
 

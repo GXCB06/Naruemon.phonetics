@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { analyze } from "../intonation/engine.ts";
 import { getSentence } from "../intonation/lessons.ts";
 import { ERROR_STYLES, synthesizeSentence } from "../synth/voice.ts";
+import { analyzeVoice } from "./analyzeVoice.ts";
 import { speakerBaseline } from "./baseline.ts";
 import { extendTail, median, toLevelContour, trackPitch } from "./pitch.ts";
 import { assessQuality, trimSilence } from "./quality.ts";
@@ -97,6 +98,31 @@ describe("voice pipeline end to end (synthetic voice → pitch → rule engine)"
     const lc = toLevelContour(trackPitch(samples, sampleRate))!;
     const wrong = analyze(s, lc.contour, { modality: "speak", timingKnown: false, durationSec: lc.durationSec });
     expect(status(wrong, 1, "ending")).toBe("fail");
+  });
+});
+
+describe("a quiet iPad-style take", () => {
+  const record = (scale: number) => {
+    const s = getSentence("fall-pretty-woman")!;
+    const { samples, sampleRate } = synthesizeSentence(s, { baseHz: 210 });
+    const scaled = samples.map((v) => v * scale);
+    return { s, sampleRate, analysis: analyzeVoice(scaled, sampleRate, s) };
+  };
+
+  it("is boosted, still gets scored, and does not sound faint", () => {
+    const loud = record(1);
+    const quiet = record(0.02); // ≈ −34 dB: a tablet held at arm's length
+    expect(quiet.analysis.quality.speechDb).toBeLessThan(-40); // the honest raw warning stays
+    expect(quiet.analysis.gainDb).toBeGreaterThan(20);
+    expect(quiet.analysis.result).not.toBeNull();
+    expect(quiet.analysis.result!.overall).toBe(loud.analysis.result!.overall);
+  });
+
+  it("silence is not amplified and gets no score", () => {
+    const s = getSentence("fall-pretty-woman")!;
+    const a = analyzeVoice(new Float32Array(24000), 48000, s);
+    expect(a.gainDb).toBe(0);
+    expect(a.result).toBeNull();
   });
 });
 

@@ -13,9 +13,20 @@ export interface QualityReport {
   issues: { level: "warn" | "fail"; en: string; th: string }[];
 }
 
+/** Loudness (dBFS) of one percentile of the 20 ms frames: 0.9 is "speech", 0.1 is "the quiet room". */
+export function framePercentileDb(samples: Float32Array, sampleRate: number, p: number): number {
+  const dbs = frameDbs(samples, sampleRate).sort((a, b) => a - b);
+  return dbs.length ? dbs[Math.min(dbs.length - 1, Math.floor(p * dbs.length))] : -120;
+}
+
+/** How loud the speech in a take is (90th-percentile frame, dBFS). Also used to pick the make-up gain. */
+export function speechLoudnessDb(samples: Float32Array, sampleRate: number): number {
+  return framePercentileDb(samples, sampleRate, 0.9);
+}
+
 export function assessQuality(samples: Float32Array, sampleRate: number): QualityReport {
-  const frame = Math.round(0.02 * sampleRate);
-  const dbs: number[] = [];
+  const dbs = frameDbs(samples, sampleRate).sort((a, b) => a - b);
+  const pick = (p: number) => dbs[Math.min(dbs.length - 1, Math.floor(p * dbs.length))] ?? -120;
   let peak = 0;
   let clipped = 0;
   for (let i = 0; i < samples.length; i++) {
@@ -23,13 +34,6 @@ export function assessQuality(samples: Float32Array, sampleRate: number): Qualit
     if (a > peak) peak = a;
     if (a >= 0.99) clipped++;
   }
-  for (let s = 0; s + frame <= samples.length; s += frame) {
-    let sum = 0;
-    for (let i = s; i < s + frame; i++) sum += samples[i] * samples[i];
-    dbs.push(10 * Math.log10(sum / frame + 1e-12));
-  }
-  const sorted = dbs.slice().sort((a, b) => a - b);
-  const pick = (p: number) => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))] ?? -120;
   const noiseDb = pick(0.1);
   const speechDb = pick(0.9);
   const snrDb = speechDb - noiseDb;
@@ -38,8 +42,14 @@ export function assessQuality(samples: Float32Array, sampleRate: number): Qualit
   const issues: QualityReport["issues"] = [];
   if (clippedRatio > 0.001)
     issues.push({ level: "warn", en: "Too loud — the sound is clipping. Move the mic a little further away.", th: "เสียงดังเกินไปจนแตก ให้ถอยไมค์ออกไปอีกนิด" });
+  // A quiet take is no longer a dead end: the pipeline boosts it (src/lib/audio/gain.ts) and it can still be scored.
+  // Keep the wording neutral, because the mic check shows this message without applying any boost.
   if (speechDb < -40)
-    issues.push({ level: "fail", en: "Too quiet. Speak up or move closer to the mic.", th: "เสียงเบาเกินไป พูดให้ดังขึ้นหรือเข้าใกล้ไมค์" });
+    issues.push({
+      level: "warn",
+      en: "Too quiet. Move closer to the mic for a cleaner take.",
+      th: "เสียงเบาเกินไป ขยับเข้าใกล้ไมค์อีกนิดเพื่อเสียงที่ชัดขึ้น",
+    });
   if (noiseDb > -45)
     issues.push({ level: "warn", en: "Noisy room. Find a quieter place for better results.", th: "มีเสียงรบกวนมาก ลองหาที่เงียบกว่านี้" });
   if (snrDb < 15)
@@ -225,11 +235,20 @@ export function testTakeVerdict(
     report = { ...report, noiseDb: roomNoiseDb, snrDb, issues };
   }
   const fail = report.issues.find((i) => i.level === "fail");
+  // The mic check judges the microphone, not a lesson take: something the learner would have to shout to use is worth
+  // fixing here even though the practice pipeline would boost it and still score it.
+  const unusable = report.speechDb < -55 || report.snrDb < 6 || report.clippedRatio > 0.05;
   const warn = report.issues.find((i) => i.level === "warn");
   const summary: MicMessage = fail
     ? { level: "fail", en: fail.en, th: fail.th }
-    : warn
-      ? { level: "warn", en: warn.en, th: warn.th }
-      : { level: "ok", en: "Your voice came through loud and clear!", th: "ได้ยินเสียงคุณชัดเจนดีมาก!" };
+    : unusable
+      ? {
+          level: "fail",
+          en: "Too quiet: I could barely hear that. Move closer to the mic, or check that nothing covers it, and try again.",
+          th: "เสียงเบามากจนแทบไม่ได้ยิน ขยับเข้าใกล้ไมค์หรือเช็กว่าไม่มีอะไรปิดไมค์ แล้วลองอีกครั้ง",
+        }
+      : warn
+        ? { level: "warn", en: warn.en, th: warn.th }
+        : { level: "ok", en: "Your voice came through loud and clear!", th: "ได้ยินเสียงคุณชัดเจนดีมาก!" };
   return { report, summary };
 }

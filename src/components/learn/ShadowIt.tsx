@@ -19,6 +19,7 @@ import { analysisFeedback } from "@/lib/learn/feedback";
 import { graded } from "@/lib/learn/score";
 import { Bi } from "@/components/home/lang";
 import { MynaSays, Prompt, SpeakerButton } from "./ui";
+import { meterLevel, rmsDb } from "@/lib/audio/quality";
 import type { ExerciseApi } from "./types";
 
 const MAX_SEC = 10;
@@ -45,6 +46,8 @@ export function ShadowIt({
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  /** Live input loudness, 0..1, so a weak mic shows up before the take is scored. */
+  const [level, setLevel] = useState(0);
   const [analysis, setAnalysis] = useState<VoiceAnalysis | null>(null);
   /** Azure's optional pronunciation result for this take, and the take re-timed with Azure's word boundaries. */
   const [pronunciation, setPronunciation] = useState<PronunciationScore | null>(null);
@@ -55,6 +58,8 @@ export function ShadowIt({
   const [micChanged, setMicChanged] = useState(false);
   const recRef = useRef<MicRecorder | null>(null);
   const timerRef = useRef<number | null>(null);
+  /** Latest chunk loudness, 0..1, sampled by the 100 ms timer (not one setState per chunk). */
+  const levelRef = useRef(0);
   /** Total samples received so far. */
   const seenRef = useRef(0);
   /** Sample index where recording started; null until the mic is open. */
@@ -86,7 +91,9 @@ export function ShadowIt({
   const result = analysis?.result ?? null;
   const gradedResult = aligned ?? result;
   useEffect(() => {
-    if (!gradedResult || (analysis && takeBlocksGrade(analysis.quality))) return setCheck(null); // a take too quiet to judge fairly gets no score
+    // A take the pitch tracker cannot read even after the make-up boost (near-silence, clipped or buried in noise)
+    // gets no score; a merely quiet take was boosted and is graded like any other.
+    if (!gradedResult || (analysis && takeBlocksGrade(analysis.quality))) return setCheck(null);
     setCheck(() => {
       const feedback = analysisFeedback(gradedResult);
       return {
@@ -104,6 +111,8 @@ export function ShadowIt({
     recRef.current = null;
     if (timerRef.current) window.clearInterval(timerRef.current);
     timerRef.current = null;
+    setLevel(0);
+    levelRef.current = 0;
     const go = goRef.current ?? 0;
     goRef.current = null;
     const raw = await rec.stop();
@@ -129,6 +138,8 @@ export function ShadowIt({
     setPronunciation(null);
     setAligned(null);
     setElapsed(0);
+    setLevel(0);
+    levelRef.current = 0;
     seenRef.current = 0;
     goRef.current = null;
     setPhase("starting");
@@ -140,7 +151,10 @@ export function ShadowIt({
         onChunk: (chunk, sr) => {
           seenRef.current += chunk.length;
           const go = goRef.current;
-          if (go !== null && (seenRef.current - go) / sr >= MAX_SEC) void stopRef.current();
+          if (go === null) return; // mic not open yet
+          // the same −60…0 dBFS scale as the mic check meter, so a quiet iPad is visible at once
+          levelRef.current = meterLevel(rmsDb(chunk));
+          if ((seenRef.current - go) / sr >= MAX_SEC) void stopRef.current();
         },
       });
       if (recRef.current !== rec) {
@@ -151,7 +165,10 @@ export function ShadowIt({
       goRef.current = seenRef.current;
       setPhase("recording");
       const t0 = performance.now();
-      timerRef.current = window.setInterval(() => setElapsed((performance.now() - t0) / 1000), 100);
+      timerRef.current = window.setInterval(() => {
+        setElapsed((performance.now() - t0) / 1000);
+        setLevel(levelRef.current);
+      }, 100);
     } catch (e) {
       recRef.current = null;
       setPhase("error");
@@ -231,6 +248,34 @@ export function ShadowIt({
         </button>
       )}
 
+      {phase === "recording" && (
+        <div className="flex flex-col gap-2">
+          <div
+            className="h-3 overflow-hidden rounded-full bg-line"
+            role="meter"
+            aria-label="Input level · ระดับเสียงที่รับ"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(level * 100)}
+          >
+            <div
+              className={`h-full rounded-full motion-safe:transition-[width] motion-safe:duration-100 ${level < 0.2 ? "bg-warn" : "bg-good"}`}
+              style={{ width: `${Math.max(2, Math.round(level * 100))}%` }}
+            />
+          </div>
+          {elapsed > 1 && level < 0.2 && (
+            <p className="text-sm font-semibold text-warn" role="status">
+              <Bi
+                text={{
+                  en: "We can barely hear you. Move a little closer and check that nothing covers the iPad mic.",
+                  th: "ได้ยินเสียงเบามาก ขยับเข้าใกล้ไมค์อีกนิด และเช็กว่าไม่มีอะไรปิดไมค์ของ iPad",
+                }}
+              />
+            </p>
+          )}
+        </div>
+      )}
+
       {micChanged && phase !== "recording" && (
         <div className="flex flex-wrap items-center gap-3 rounded-xl bg-warn-soft p-3 text-sm font-semibold text-warn" role="status">
           <Bi text={{ en: "This looks like a different microphone. A quick check keeps your score fair.", th: "ดูเหมือนเป็นไมค์คนละตัว เช็กสั้น ๆ เพื่อให้คะแนนยุติธรรม" }} className="min-w-0 flex-1" />
@@ -284,6 +329,16 @@ export function ShadowIt({
             </p>
           </div>
           {playbackUrl && <audio controls src={playbackUrl} className="w-full" />}
+          {analysis.gainDb > 0 && (
+            <p className="text-sm font-semibold text-muted">
+              <Bi
+                text={{
+                  en: `Your mic was quiet, so this take was boosted ${analysis.gainDb} dB so it can be scored. It still counts.`,
+                  th: `ไมค์เบา ระบบจึงเพิ่มเสียงให้ ${analysis.gainDb} dB เพื่อให้ตรวจได้ เทคนี้ยังนับคะแนน`,
+                }}
+              />
+            </p>
+          )}
           <div className="flex flex-wrap gap-2" aria-label="Recording quality · คุณภาพเสียงที่อัด">
             {takeChips(analysis.quality).map((c) => (
               <span
@@ -298,19 +353,21 @@ export function ShadowIt({
             ))}
           </div>
           {analysis.quality.issues.slice(0, 1).map((q, i) => (
-            <p
-              key={i}
-              className={`rounded-xl p-3 text-sm font-semibold ${q.level === "fail" ? "bg-bad-soft text-bad" : "bg-warn-soft text-warn"}`}
-            >
+            <p key={i} className="rounded-xl bg-warn-soft p-3 text-sm font-semibold text-warn">
               {q.en} <span className="thai block font-normal">{q.th}</span>
-              {q.level === "fail" && (
-                <span className="mt-1 block font-extrabold">
-                  <Bi text={{ en: "This take can't be scored fairly. Record it again.", th: "เทคนี้ให้คะแนนอย่างยุติธรรมไม่ได้ อัดใหม่อีกครั้งนะ" }} />
-                </span>
-              )}
             </p>
           ))}
-          {analysis.quality.issues.some((q) => q.level === "fail") && <MicCheckButton className="self-start" />}
+          {takeBlocksGrade(analysis.quality) && (
+            <p className="rounded-xl bg-bad-soft p-3 text-sm font-semibold text-bad">
+              <Bi
+                text={{
+                  en: "I can't read a voice in this take. Record it again in a quieter spot.",
+                  th: "เทคนี้ฟังเสียงไม่ชัด อัดใหม่ในที่เงียบขึ้นนะ",
+                }}
+              />
+            </p>
+          )}
+          {takeBlocksGrade(analysis.quality) && <MicCheckButton className="self-start" />}
           <PronunciationCheck
             voice={analysis}
             sentence={sentence}

@@ -7,6 +7,7 @@ import { endingOf, type ClipVariant } from "@/lib/learn/exercises";
 import {
   EMPTY_MANIFEST,
   MANIFEST_URL,
+  clipIdFor,
   parseManifest,
   pickReferenceVoice,
   placeholderClip,
@@ -22,7 +23,7 @@ import { getMelody } from "./clipSound";
 import { getSlow } from "./slow";
 import { EMPTY_VARIANTS, VARIANT_MANIFEST_URL, hasRealVariants, parseVariantManifest, variantUrl, type VariantManifest } from "@/lib/synth/variants";
 
-export type ReferenceSource = "file" | "placeholder";
+export type ReferenceSource = "file" | "placeholder" | "device";
 
 export interface Playing {
   source: ReferenceSource;
@@ -36,6 +37,11 @@ export interface Playing {
 
 let current: AudioBufferSourceNode | null = null;
 let manifest: Promise<ReferenceManifest> | null = null;
+/** The manifest once it has loaded, so a tap can decide about clips without waiting (needed for iOS speechSynthesis). */
+let manifestValue: ReferenceManifest | null = null;
+/** The device-voice sentence playing now (speechSynthesis is outside Web Audio, so it is stopped separately). */
+let speaking: SpeechSynthesisUtterance | null = null;
+let finishSpeech: (() => void) | null = null;
 /** Fetched mp3 bytes by url (may be prefetched before the tap); null = the file failed to load. */
 const bytes = new Map<string, Promise<ArrayBuffer | null>>();
 /** Decoded clips by url. */
@@ -49,7 +55,8 @@ export function loadManifest(): Promise<ReferenceManifest> {
   manifest ??= fetch(MANIFEST_URL)
     .then((res) => (res.ok ? res.json() : null))
     .then(parseManifest)
-    .catch(() => EMPTY_MANIFEST);
+    .then((m) => (manifestValue = m))
+    .catch(() => (manifestValue = EMPTY_MANIFEST));
   return manifest;
 }
 
@@ -101,8 +108,11 @@ function fetchBytes(url: string): Promise<ArrayBuffer | null> {
 
 /** Start downloading a sentence's clip before the learner taps, so playback starts at once. Starts no audio. */
 export async function prefetchReference(sentence: Sentence, fairWith: readonly string[] = []): Promise<void> {
-  const voice = pickReferenceVoice(await loadManifest(), sentence.id, preferredVoice(), fairWith);
-  if (voice) void fetchBytes(referenceUrl(sentence.id, voice));
+  const m = await loadManifest();
+  const clipId = clipIdFor(m, sentence.id);
+  if (!clipId) return;
+  const voice = pickReferenceVoice(m, clipId, preferredVoice(), fairWith);
+  if (voice) void fetchBytes(referenceUrl(clipId, voice));
 }
 
 async function loadFile(c: AudioContext, url: string): Promise<AudioBuffer | null> {
@@ -147,6 +157,35 @@ function placeholderBuffer(c: AudioContext, sentence: Sentence, variant: ClipVar
   return buf;
 }
 
+/**
+ * Speak the sentence with the device's own voice (speechSynthesis): real words, not a hum, when no recording exists.
+ * Returns null when the browser has no speech synthesis. The promise resolves when it ends (or is stopped).
+ */
+function deviceSpeech(text: string, rate: number): Promise<void> | null {
+  if (typeof window === "undefined" || !window.speechSynthesis || typeof SpeechSynthesisUtterance === "undefined") return null;
+  try {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US";
+    // speechSynthesis slows the words without lowering the pitch, so 🐢 stays usable for a tune exercise
+    u.rate = Math.min(1.5, Math.max(0.5, rate));
+    const en = window.speechSynthesis.getVoices().find((v) => /^en[-_]/i.test(v.lang));
+    if (en) u.voice = en;
+    let finish: () => void = () => undefined;
+    const ended = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
+    u.onend = () => finish();
+    u.onerror = () => finish();
+    speaking = u;
+    finishSpeech = finish;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+    return ended;
+  } catch {
+    return null;
+  }
+}
+
 export function stopReference(): void {
   token++;
   const s = current;
@@ -156,14 +195,27 @@ export function stopReference(): void {
   } catch {
     // already stopped
   }
+  const u = speaking;
+  speaking = null;
+  const finish = finishSpeech;
+  finishSpeech = null;
+  if (u) {
+    try {
+      window.speechSynthesis?.cancel();
+    } catch {
+      // not supported
+    }
+    finish?.(); // some browsers don't fire onend after cancel
+  }
 }
 
 /**
  * Play a sentence. The textbook variant (the one that ends the way the sentence should: "falling", or "rising" for 2-3
- * sentences; the default) uses the real clip when the manifest lists one; the mistake variants (used by "Hear it") and
- * sentences without a clip use the placeholder voice. `forceSynth` skips the clip so both clips of a "Hear it" pair have
- * the same voice. `fairWith`: sentence ids that must have a clip in the same voice too, else the placeholder plays (see
- * `pickReferenceVoice`). `voice` overrides the learner's preferred voice. Throws when the browser has no Web Audio.
+ * sentences; the default) uses the real clip when the manifest lists one, else the device voice says the words; the
+ * mistake variants (used by "Hear it") and melody mode use the synthetic placeholder voice. `forceSynth` skips the clip so
+ * both clips of a "Hear it" pair have the same voice. `fairWith`: sentence ids that must have a clip in the same voice
+ * too, else the placeholder plays (see `pickReferenceVoice`). `voice` overrides the learner's preferred voice. Throws
+ * when the browser has no Web Audio.
  */
 export async function playReference(
   sentence: Sentence,
@@ -193,6 +245,8 @@ export async function playReference(
   let voice: ReferenceVoice | null = null;
   let alternative: ReferenceVoice | null = null;
   let buffer: AudioBuffer | null = null;
+  /** Device-voice delivery, when there is no recording at all. */
+  let said: Promise<void> | null = null;
   if (opts.realVariants) {
     const vm = await loadVariantManifest();
     // melody mode: the learner chose the plain tune, so the real recordings are not used for practice clips
@@ -201,15 +255,28 @@ export async function playReference(
       if (buffer) source = "file";
     }
   } else if (variant === textbook && !opts.forceSynth) {
-    const m = await loadManifest();
-    voice = pickReferenceVoice(m, sentence.id, opts.voice ?? preferredVoice(), opts.fairWith);
-    const other = voice === "f" ? "m" : "f";
-    alternative = voice && pickReferenceVoice(m, sentence.id, other, opts.fairWith) === other ? other : null;
-    if (voice) buffer = await loadFile(c, referenceUrl(sentence.id, voice));
-    if (buffer) source = "file";
-    else voice = alternative = null;
+    const decide = async (m: ReferenceManifest) => {
+      const clipId = clipIdFor(m, sentence.id); // a `review-` copy plays the original lesson's clip
+      voice = clipId ? pickReferenceVoice(m, clipId, opts.voice ?? preferredVoice(), opts.fairWith) : null;
+      const other = voice === "f" ? "m" : "f";
+      alternative = voice && clipId && pickReferenceVoice(m, clipId, other, opts.fairWith) === other ? other : null;
+      if (voice && clipId) buffer = await loadFile(c, referenceUrl(clipId, voice));
+      if (buffer) {
+        source = "file";
+        return;
+      }
+      voice = alternative = null;
+      // No recording of this sentence: speak the real words with the device voice instead of the wordless hum. The hum
+      // stays for melody mode and for "Hear it" pairs (a device voice on one of two tunes would give the answer away).
+      const pairHasNoClip = !opts.fairWith?.length || opts.fairWith.every((id) => !clipIdFor(m, id));
+      if (!getMelody() && pairHasNoClip) said = deviceSpeech(sentence.text, opts.rate ?? clipRate(getSlow()));
+    };
+    // With the manifest already in memory this decides inside the tap, which iOS needs before it will speak.
+    const loaded = manifestValue;
+    await (loaded ? decide(loaded) : decide(await loadManifest()));
   }
   if (mine !== token) return { source, voice, alternative, ended: Promise.resolve() }; // a newer tap took over while the file loaded
+  if (said) return { source: "device", voice: null, alternative: null, ended: said };
   buffer ??= placeholderBuffer(c, sentence, variant);
 
   const node = c.createBufferSource();

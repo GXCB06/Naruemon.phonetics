@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { contentKeys, loadLesson } from "./content.ts";
-import { parseManifest, pickReferenceVoice, referenceUrl, referenceVoices, sameTextIds } from "./reference.ts";
+import { clipIdFor, parseManifest, pickReferenceVoice, referenceUrl, referenceVoices, sameTextIds } from "./reference.ts";
 
 const manifest = parseManifest({
   clips: { a: ["f", "m"], b: ["m"], c: ["f"], junk: "f", bad: ["x", "f", "f"] },
@@ -33,6 +33,14 @@ describe("reference manifest", () => {
   it("names files the way tools/make-tts.ts writes them", () => {
     expect(referenceUrl("tags-1-harry")).toBe("/audio/tags-1-harry--f.mp3");
     expect(referenceUrl("tags-1-harry", "m")).toBe("/audio/tags-1-harry--m.mp3");
+  });
+
+  it("plays the original lesson's clip for a `review-` copy of the same sentence", () => {
+    expect(clipIdFor(manifest, "review-a")).toBe("a");
+    expect(referenceVoices(manifest, "review-a")).toEqual(["f", "m"]);
+    expect(pickReferenceVoice(manifest, "review-b", "f")).toBe("m");
+    expect(clipIdFor(manifest, "review-missing")).toBeNull();
+    expect(clipIdFor(manifest, "a")).toBe("a");
   });
 });
 

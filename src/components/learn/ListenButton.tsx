@@ -41,7 +41,8 @@ const VOICE_NAME: Record<ReferenceVoice, { en: string; th: string }> = {
 };
 
 /**
- * Plays a sentence (the real reference clip if there is one, otherwise the placeholder voice) and says which one it was.
+ * Plays a sentence (the real reference clip if there is one; otherwise the device voice says the words, or the synthetic
+ * placeholder for a tune-only exercise) and says which one it was.
  * After a real clip, a small button plays the other voice and remembers it as the learner's choice.
  * `onPlay` fires when playback starts, so a parent can unlock things that need the learner to have listened first.
  */
@@ -117,6 +118,12 @@ export function ListenButton({
         )}
       </button>
       {source === "placeholder" && <PlaceholderBadge kind={forceSynth ? "practice" : "placeholder"} />}
+      {source === "device" && (
+        <span className="inline-flex items-center rounded-full bg-warn-soft px-2 py-0.5 text-xs font-extrabold text-warn">
+          Device voice
+          <span className="thai ml-1 font-semibold">เสียงพูดจากอุปกรณ์</span>
+        </span>
+      )}
       {source === "file" && other && (
         <button
           type="button"

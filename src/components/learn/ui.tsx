@@ -5,7 +5,7 @@ import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
 import { Bi, useLang } from "@/components/home/lang";
 import type { Bilingual, Sentence } from "@/lib/intonation/types";
 import type { ClipVariant } from "@/lib/learn/exercises";
-import { playReference, stopReference, type ReferenceSource } from "./playReference";
+import { loadManifest, playReference, stopReference, type ReferenceSource } from "./playReference";
 import { setMelody, useMelody } from "./clipSound";
 import { setSlow, useSlow } from "./slow";
 
@@ -153,6 +153,11 @@ export function SpeakerButton({
 }) {
   const { play, playing } = useClip();
   const lang = useLang();
+  // Know which clips exist before the first tap: then a sentence with no recording can start the device voice inside the
+  // tap, which iOS requires.
+  useEffect(() => {
+    void loadManifest();
+  }, []);
   const dim = size === "lg" ? "size-16 sm:size-20" : "size-12";
   return (
     <div className="flex shrink-0 flex-col items-center gap-1.5">

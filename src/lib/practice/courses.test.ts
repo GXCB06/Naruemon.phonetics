@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { existsSync, readFileSync } from "node:fs";
 import { allSentences } from "../learn/content.ts";
+import { parseManifest, referenceVoices } from "../learn/reference.ts";
 import {
   COURSES,
   DRILL_PLAN,
@@ -18,6 +20,20 @@ import {
 } from "./courses.ts";
 
 const all = allSentences();
+
+/**
+ * Sentences used by a session whose Azure clip never passes the tune gate: the app speaks them with the device voice.
+ * A `review-` sentence is not listed here: it plays the original lesson's clip (see reference.ts).
+ */
+const DEVICE_VOICE_ONLY = new Set([
+  "falling-2-why-late",
+  "class2-02b-kind-computer",
+  "class2-03b-where-work",
+  "class2-13c-now",
+  "class2-14a-bravo",
+  "session-a-book",
+  "session-b-driver",
+]);
 
 describe("practice courses", () => {
   it("every course has enough sentences for its plan without leaning on repeats", () => {
@@ -161,6 +177,18 @@ describe("2-3-1 sessions", () => {
     expect(courseStat("speak3", all, lessons)).toMatchObject({ best: null, size: 3 });
     // the pool behind the mixed session is much bigger than any one run
     expect(courseSentences("session", all).length).toBeGreaterThan(7);
+  });
+
+  it("every sentence a session can speak has a real clip, or is a documented device-voice fallback", () => {
+    // Azure's own tune fails our gate for these, so the app says the words with the device voice (review- copies use the
+    // original lesson's clip). Add a clip or list a new sentence here deliberately: silence or a hum is never acceptable.
+    if (!existsSync("public/audio/manifest.json")) return;
+    const m = parseManifest(JSON.parse(readFileSync("public/audio/manifest.json", "utf8")));
+    for (const course of ["session", "draw3a", "draw3b", "speak3"] as const)
+      for (const s of courseSentences(course, all)) {
+        const playable = referenceVoices(m, s.id).length > 0 || DEVICE_VOICE_ONLY.has(s.id);
+        expect(playable, `${course}: ${s.id} "${s.text}"`).toBe(true);
+      }
   });
 });
 

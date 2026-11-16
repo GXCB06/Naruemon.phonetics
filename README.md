@@ -12,7 +12,7 @@ across speaking, drawing and listening.
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # 636 unit tests
+npm test           # 647 unit tests
 npm run lint && npx tsc --noEmit && npm run build
 npm run samples    # regenerate the synthetic test recordings in public/samples
 ```

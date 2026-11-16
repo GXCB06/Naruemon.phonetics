@@ -11,6 +11,7 @@ import { playResult } from "@/components/learn/chime";
 import { MynaSays, SpeakerButton, SpeakerIcon, useClip } from "@/components/learn/ui";
 import { MicCheckButton } from "@/components/mic/MicCheckButton";
 import { MicGateDialog } from "@/components/mic/MicGateDialog";
+import { prepareToPlay } from "@/components/audio/webAudio";
 import { loadMicProfile } from "@/components/mic/micProfile";
 import { Immersive } from "@/components/nav/TabBar";
 import { MynaBot, type BotMood } from "@/components/mascot/MynaBot";
@@ -79,6 +80,7 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
 
   const playYou = () => {
     if (!take.playbackUrl) return;
+    prepareToPlay(); // inside the tap: switch the iOS audio session back to playback before the take plays
     audioRef.current?.pause();
     const a = new Audio(take.playbackUrl);
     audioRef.current = a;
@@ -236,6 +238,16 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
                 {q.en} <span className="thai block font-normal">{q.th}</span>
               </p>
             ))}
+            {analysis.gainDb > 0 && (
+              <p className="text-sm font-semibold text-muted">
+                <Bi
+                  text={{
+                    en: `Your mic was quiet, so this take was boosted ${analysis.gainDb} dB so it can be scored. It still counts.`,
+                    th: `ไมค์เบา ระบบจึงเพิ่มเสียงให้ ${analysis.gainDb} dB เพื่อให้ตรวจได้ เทคนี้ยังนับคะแนน`,
+                  }}
+                />
+              </p>
+            )}
 
             {/* where the tune went off */}
             {result && !blocked && (
@@ -269,6 +281,11 @@ function Take({ topicId, sentenceId }: { topicId: string; sentenceId: string }) 
               {clip.source === "placeholder" && (
                 <div className="col-span-2">
                   <PlaceholderBadge />
+                </div>
+              )}
+              {clip.source === "device" && (
+                <div className="col-span-2 inline-flex w-fit items-center rounded-full bg-warn-soft px-2 py-0.5 text-xs font-extrabold text-warn">
+                  <Bi text={{ en: "Device voice (no recording of this sentence yet)", th: "เสียงพูดจากอุปกรณ์ (ยังไม่มีไฟล์เสียงของประโยคนี้)" }} />
                 </div>
               )}
             </div>

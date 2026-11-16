@@ -80,7 +80,7 @@ Node 26).
 ```bash
 npm install
 npm run dev            # http://localhost:3000
-npm test               # 636 tests
+npm test               # 647 tests
 npm run lint && npx tsc --noEmit && npm run build
 npm run samples        # regenerate public/samples/*.wav + index.json
 npm run pitch:export -- <wav-dir> <out-dir>   # pitch-tracker test, step 1 (see README)
@@ -101,8 +101,9 @@ npm run pitch:export -- <wav-dir> <out-dir>   # pitch-tracker test, step 1 (see 
 | `src/lib/audio/pitch.ts` | `trackPitch` (pitchy MPM, 40 ms window, 10 ms hop, clarity + loudness gate, octave repair, median filter, short-run removal), `toLevelContour`, `makeLivePitch` |
 | `src/lib/audio/resample.ts` | Windowed-sinc resampler (48 → 16 kHz for Azure) |
 | `src/lib/audio/wav.ts` | WAV encode (16-bit PCM) / decode (8/16/24/32-bit, float) — Node + browser |
-| `src/lib/audio/quality.ts` | `assessQuality` (too quiet, clipping, noisy room, SNR), `trimSilence` |
-| `src/lib/audio/analyzeVoice.ts` | Voice pipeline: trim → quality → pitch → levels → `analyze` → playback WAV + 16 kHz WAV |
+| `src/lib/audio/quality.ts` | `assessQuality` (quiet = warning, clipping, noisy room, SNR), `trimSilence`, mic-check helpers |
+| `src/lib/audio/gain.ts` | `normalizeTake`: make-up gain (≤ +24 dB, peak ceiling 0.98) so a quiet tablet take is scored **and** audible |
+| `src/lib/audio/analyzeVoice.ts` | Voice pipeline: trim → quality on the raw take → make-up gain → pitch → levels → `analyze` → playback WAV + 16 kHz WAV |
 | `src/lib/synth/voice.ts` | Synthetic "robot voice" following target levels + `ERROR_STYLES` (flat, wrongEnding, everyWordTone) for tests/demos |
 | `src/components/lab/*` | Lab UI: `Lab`, `SentenceView` (IPA under words), `ContourChart` (SVG level chart), `DrawingPad`, `VoicePanel`, `ResultPanel` |
 | `src/app/lab/page.tsx` | `/lab` route |
@@ -213,6 +214,9 @@ Free tier F0: 5 audio hours/month STT + 0.5M chars/month TTS. The author still n
   female + one male; SSML `<prosody contour>` over the whole sentence (contours don't work on short phrases like tags).
   Run every clip through our own pipeline; only keep clips that pass their own pattern; otherwise regenerate with adjusted
   contour or flag for a human recording. Save to `public/audio/<sentenceId>--<voice>.mp3`.
+  Playback order (`src/components/learn/playReference.ts`): the real clip (a `review-` copy plays the original lesson's
+  clip) → the device's own voice (`speechSynthesis`, labelled "Device voice") → the wordless placeholder **only** for
+  tune-only work ("Hear it" pairs and melody mode). A speaking task must never play just a hum.
   *Done when* every lesson has two passing reference clips and the lab can play them.
 - (Optional) **B7.** 14-day Speechace trial as a second opinion on rise/fall for tag questions. Not a replacement (ARPAbet only).
 

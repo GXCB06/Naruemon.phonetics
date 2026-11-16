@@ -42,7 +42,22 @@ export function parseManifest(data: unknown): ReferenceManifest {
 
 /** The voices that have a clip for this sentence. */
 export function referenceVoices(manifest: ReferenceManifest, sentenceId: string): ReferenceVoice[] {
-  return Object.hasOwn(manifest.clips, sentenceId) ? manifest.clips[sentenceId] : [];
+  const id = clipIdFor(manifest, sentenceId);
+  return id ? manifest.clips[id] : [];
+}
+
+/**
+ * Sentence ids whose audio may stand in for this one: the sentence itself first, then the lesson sentence a `review-`
+ * copy repeats. Review packs re-use the same words and tune, so the same recording applies.
+ */
+export function clipIdsFor(sentenceId: string): string[] {
+  const base = /^review-(.+)$/.exec(sentenceId)?.[1];
+  return base ? [sentenceId, base] : [sentenceId];
+}
+
+/** The id that actually has a clip for this sentence (itself, or the `review-` original), else null. */
+export function clipIdFor(manifest: ReferenceManifest, sentenceId: string): string | null {
+  return clipIdsFor(sentenceId).find((id) => Object.hasOwn(manifest.clips, id) && manifest.clips[id].length > 0) ?? null;
 }
 
 /**

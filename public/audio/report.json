@@ -65,6 +65,12 @@
         "gain": 1.7,
         "fallGain": 1.4,
         "punctuation": "pattern"
+      },
+      {
+        "gain": 1.6,
+        "fallGain": 1.8,
+        "punctuation": "pattern",
+        "basePct": 10
       }
     ]
   },
@@ -96,12 +102,10 @@
       "text": "I won't go to work tomorrow.",
       "patterns": "2-3-1",
       "missing": [
-        "f",
         "m"
       ],
       "why": {
-        "f": "group 1 (2-3-1) peakPlacement: fail in 4/6 attempts; group 1 (2-3-1) ending: warn in 2/6 attempts",
-        "m": "group 1 (2-3-1) peakPlacement: fail in 5/5 attempts"
+        "m": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts"
       }
     },
     {
@@ -114,7 +118,7 @@
       ],
       "why": {
         "f": "group 1 (2-3-1) ending: fail in 6/6 attempts",
-        "m": "group 1 (2-3-1) ending: fail in 5/5 attempts; group 1 (2-3-1) peakPlacement: fail in 3/5 attempts; group 1 (2-3-1) range: fail in 1/5 attempts"
+        "m": "group 1 (2-3-1) ending: fail in 5/6 attempts; group 1 (2-3-1) peakPlacement: fail in 3/6 attempts; group 1 (2-3-1) ending: warn in 1/6 attempts"
       }
     },
     {
@@ -272,6 +276,106 @@
       "why": {
         "f": "group 2 (2-3-1) peakPlacement: fail in 4/6 attempts; group 1 (2-3-2) ending: warn in 3/6 attempts; group 1 (2-3-2) peakPlacement: fail in 3/6 attempts",
         "m": "group 2 (2-3-1) peakPlacement: fail in 5/5 attempts; group 1 (2-3-2) peakPlacement: fail in 3/5 attempts; group 1 (2-3-2) ending: warn in 1/5 attempts"
+      }
+    },
+    {
+      "id": "class2-02b-kind-computer",
+      "text": "What kind of computer did you buy?",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 5/6 attempts; group 1 (2-3-1) singlePeak: fail in 2/6 attempts; group 1 (2-3-1) ending: fail in 2/6 attempts",
+        "m": "group 1 (2-3-1) ending: fail in 5/6 attempts; group 1 (2-3-1) peakPlacement: fail in 4/6 attempts"
+      }
+    },
+    {
+      "id": "class2-03b-where-work",
+      "text": "Where do you work?",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) ending: fail in 6/6 attempts",
+        "m": "group 1 (2-3-1) ending: fail in 6/6 attempts; group 1 (2-3-1) peakPlacement: fail in 3/6 attempts; group 1 (2-3-1) range: fail in 2/6 attempts"
+      }
+    },
+    {
+      "id": "class2-13c-now",
+      "text": "Now!",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts",
+        "m": "group 1 (2-3-1) peakPlacement: fail in 5/6 attempts; group 1 (2-3-1) ending: fail in 4/6 attempts; group 1 (2-3-1) range: fail in 4/6 attempts"
+      }
+    },
+    {
+      "id": "class2-14a-bravo",
+      "text": "Bravo!",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts; group 1 (2-3-1) ending: fail in 6/6 attempts; group 1 (2-3-1) range: fail in 5/6 attempts",
+        "m": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts"
+      }
+    },
+    {
+      "id": "session-a-book",
+      "text": "Where did you put the book?",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts; group 1 (2-3-1) ending: warn in 3/6 attempts; group 1 (2-3-1) ending: fail in 2/6 attempts",
+        "m": "group 1 (2-3-1) ending: fail in 6/6 attempts; group 1 (2-3-1) peakPlacement: fail in 2/6 attempts; group 1 (2-3-1) range: fail in 1/6 attempts"
+      }
+    },
+    {
+      "id": "session-a-door",
+      "text": "Please close the door.",
+      "patterns": "2-3-1",
+      "missing": [
+        "f"
+      ],
+      "why": {
+        "f": "peak position not checked (words not aligned) in 6/6 attempts"
+      }
+    },
+    {
+      "id": "session-b-driver",
+      "text": "His brother is a bus driver.",
+      "patterns": "2-3-1",
+      "missing": [
+        "f",
+        "m"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 5/6 attempts; group 1 (2-3-1) ending: warn in 1/6 attempts",
+        "m": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts; group 1 (2-3-1) ending: fail in 2/6 attempts"
+      }
+    },
+    {
+      "id": "session-b-from",
+      "text": "Where do you come from?",
+      "patterns": "2-3-1",
+      "missing": [
+        "f"
+      ],
+      "why": {
+        "f": "group 1 (2-3-1) peakPlacement: fail in 6/6 attempts"
       }
     },
     {
@@ -991,12 +1095,12 @@
       "id": "falling-1-work-tomorrow",
       "text": "I won't go to work tomorrow.",
       "patterns": "2-3-1",
-      "signature": "628916663335",
+      "signature": "6062c43dbd6f",
       "clips": [
         {
           "voice": "f",
-          "pass": false,
-          "kept": null,
+          "pass": true,
+          "kept": 1,
           "attempts": [
             {
               "options": {
@@ -1022,78 +1126,10 @@
                 "gain": 1.5,
                 "punctuation": "pattern"
               },
-              "pass": false,
-              "overall": 69,
+              "pass": true,
+              "overall": 79,
               "aligned": true,
-              "reasons": [
-                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
-              ],
-              "warnings": [
-                "group 1 (2-3-1) start: warn",
-                "group 1 (2-3-1) singlePeak: warn"
-              ]
-            },
-            {
-              "options": {
-                "prePct": -20,
-                "gain": 1.7,
-                "fallGain": 1.4,
-                "punctuation": "pattern"
-              },
-              "pass": false,
-              "overall": 74,
-              "aligned": true,
-              "reasons": [
-                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end.)"
-              ],
-              "warnings": [
-                "group 1 (2-3-1) singlePeak: warn"
-              ]
-            },
-            {
-              "options": {
-                "shape": "group",
-                "gain": 1.5,
-                "punctuation": "pattern"
-              },
-              "pass": false,
-              "overall": 72,
-              "aligned": true,
-              "reasons": [
-                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
-              ],
-              "warnings": [
-                "group 1 (2-3-1) start: warn",
-                "group 1 (2-3-1) singlePeak: warn"
-              ]
-            },
-            {
-              "options": {
-                "prePct": -8,
-                "gain": 1.3
-              },
-              "pass": false,
-              "overall": 64,
-              "aligned": true,
-              "reasons": [
-                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
-              ],
-              "warnings": [
-                "group 1 (2-3-1) start: fail"
-              ]
-            },
-            {
-              "options": {
-                "prePct": -8,
-                "gain": 1.4,
-                "basePct": 15
-              },
-              "pass": false,
-              "overall": 72,
-              "aligned": true,
-              "reasons": [
-                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
-              ],
+              "reasons": [],
               "warnings": [
                 "group 1 (2-3-1) start: warn",
                 "group 1 (2-3-1) singlePeak: warn"
@@ -1181,6 +1217,23 @@
               "warnings": [
                 "group 1 (2-3-1) start: fail",
                 "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 66,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MOR.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
               ]
             }
           ]
@@ -1402,7 +1455,7 @@
       "id": "falling-2-why-late",
       "text": "Why are you late?",
       "patterns": "2-3-1",
-      "signature": "af723df845f4",
+      "signature": "a6ff5cc9c40c",
       "clips": [
         {
           "voice": "f",
@@ -1463,7 +1516,7 @@
               "overall": 50,
               "aligned": true,
               "reasons": [
-                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2 semitones lower (compared with your normal voice in this take).)"
               ],
               "warnings": [
                 "group 1 (2-3-1) start: warn",
@@ -1512,11 +1565,11 @@
                 "gain": 1.3
               },
               "pass": false,
-              "overall": 50,
+              "overall": 69,
               "aligned": true,
               "reasons": [
                 "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LATE.)",
-                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)"
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1.5 semitones lower (compared with your normal voice in this take).)"
               ],
               "warnings": [
                 "group 1 (2-3-1) range: warn"
@@ -1560,7 +1613,7 @@
               "aligned": true,
               "reasons": [
                 "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on LATE.)",
-                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3 semitones lower (compared with your normal voice in this take).)",
                 "group 1 (2-3-1) range: fail (Too flat / monotone (1.1 semitones). English needs a big rise and fall here.)"
               ],
               "warnings": []
@@ -1581,6 +1634,21 @@
               "warnings": [
                 "group 1 (2-3-1) range: warn"
               ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
             }
           ]
         }
@@ -4756,6 +4824,2191 @@
               "warnings": [
                 "group 1 (2-3-2) range: warn"
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-01b-how-know-woman",
+      "text": "How do you know that woman?",
+      "patterns": "2-3-1",
+      "signature": "55d9b61f0324",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 1,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 73,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WO.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 74,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 4,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 79,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WO.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WO.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 61,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WO.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 68,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WO.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 92,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-02b-kind-computer",
+      "text": "What kind of computer did you buy?",
+      "patterns": "2-3-1",
+      "signature": "5ba72ad083df",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 60,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on KIND (too early). Put it on BUY, the stressed syllable of the last content word.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 54,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) singlePeak: fail (I found 3 rises. Use only ONE peak per thought group — don't give every word its own tone.)",
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 49,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) singlePeak: fail (I found 3 rises. Use only ONE peak per thought group — don't give every word its own tone.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 63,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 64,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on KIND (too early). Put it on BUY, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 75,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BUY.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-03b-where-work",
+      "text": "Where do you work?",
+      "patterns": "2-3-1",
+      "signature": "759dddfc76d8",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (0.2 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) range: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on WORK.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.1 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-05b-where-going",
+      "text": "And where are you going to?",
+      "patterns": "2-3-1",
+      "signature": "fa5e06a8ef14",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": true,
+              "overall": 80,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-07b-emergency",
+      "text": "This is an emergency.",
+      "patterns": "2-3-1",
+      "signature": "383a4d70ae03",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 1,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 46,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on IS (too early). Put it on MER, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 82,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 4,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 73,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MER.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 46,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MER.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 64,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on MER.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 89,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-13b-pick-up",
+      "text": "Pick it up, please.",
+      "patterns": "2-3-1",
+      "signature": "77d09e9eff75",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 93,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 1,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 75,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on PLEASE.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 91,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-13c-now",
+      "text": "Now!",
+      "patterns": "2-3-1",
+      "signature": "8b0171aaa3ab",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 60,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 64,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 88,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 64,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 65,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 60,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 36,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (0.8 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 30,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)",
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1.5 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 37,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.1 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 36,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.0 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 36,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on NOW.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (0.9 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": null,
+              "aligned": false,
+              "reasons": [
+                "no pitch found"
+              ],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-14a-bravo",
+      "text": "Bravo!",
+      "patterns": "2-3-1",
+      "signature": "f8e112aacea9",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 29,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.1 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 19,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.6 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 18,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.2 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 19,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.6 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 23,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3.5 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail",
+                "group 1 (2-3-1) range: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 29,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 2.5 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (1.1 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 62,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 61,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 67,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 62,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 57,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 57,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BRA.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "class2-14b-opportunity",
+      "text": "It's an excellent opportunity!",
+      "patterns": "2-3-1",
+      "signature": "dabc0b0a89c2",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 92,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 2,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 78,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TU.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 70,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TU.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": true,
+              "overall": 92,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-a-home",
+      "text": "I left my keys at home.",
+      "patterns": "2-3-1",
+      "signature": "8de0996c7640",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 87,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": true,
+              "overall": 77,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: warn",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-a-book",
+      "text": "Where did you put the book?",
+      "patterns": "2-3-1",
+      "signature": "5b5c8ee3f19c",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 64,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1 semitone lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 67,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1 semitone lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 61,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1.5 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DID (too early). Put it on BOOK, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 34,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail",
+                "group 1 (2-3-1) peakPlacement: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) peakPlacement: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BOOK.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on BOOK.)",
+                "group 1 (2-3-1) ending: fail (Not falling enough. Drop to your low voice (level 1) at the end. Your end needs to be about 3 semitones lower (compared with your normal voice in this take).)",
+                "group 1 (2-3-1) range: fail (Too flat / monotone (0.3 semitones). English needs a big rise and fall here.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-a-door",
+      "text": "Please close the door.",
+      "patterns": "2-3-1",
+      "signature": "14630e0dd7db",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 86,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 85,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 89,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 77,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 83,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 86,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": []
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 5,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": false,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 40,
+              "aligned": false,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 71,
+              "aligned": false,
+              "reasons": [
+                "peak position not checked (words not aligned)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 58,
+              "aligned": false,
+              "reasons": [
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 1.5 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 48,
+              "aligned": false,
+              "reasons": [
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": true,
+              "overall": 78,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-b-teacher",
+      "text": "He is not a teacher.",
+      "patterns": "2-3-1",
+      "signature": "52617b688b04",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": true,
+          "kept": 0,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 1,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 69,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on TEACH.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": true,
+              "overall": 82,
+              "aligned": true,
+              "reasons": [],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-b-driver",
+      "text": "His brother is a bus driver.",
+      "patterns": "2-3-1",
+      "signature": "ead1fa85c7c0",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 59,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 65,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 73,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) ending: warn (Good direction — fall a bit lower at the end. Your end needs to be about 0.5 semitones lower (compared with your normal voice in this take).)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 66,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 68,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 59,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 68,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 70,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": false,
+              "overall": 70,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail"
+              ]
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 63,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on DRIV.)"
+              ],
+              "warnings": [
+                "group 1 (2-3-1) start: fail",
+                "group 1 (2-3-1) singlePeak: warn"
+              ]
+            },
+            {
+              "options": {
+                "gain": 1.6,
+                "fallGain": 1.8,
+                "punctuation": "pattern",
+                "basePct": 10
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on BROTH (too early). Put it on DRIV, the stressed syllable of the last content word.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "session-b-from",
+      "text": "Where do you come from?",
+      "patterns": "2-3-1",
+      "signature": "5e5031df9005",
+      "clips": [
+        {
+          "voice": "f",
+          "pass": false,
+          "kept": null,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DO (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -12,
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DO (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -20,
+                "gain": 1.7,
+                "fallGain": 1.4,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DO (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group",
+                "gain": 1.5,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 76,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DO (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 79,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on YOU (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.4,
+                "basePct": 15
+              },
+              "pass": false,
+              "overall": 79,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (Your rise is on DO (too early). Put it on FROM, the stressed syllable of the last content word.)"
+              ],
+              "warnings": []
+            }
+          ]
+        },
+        {
+          "voice": "m",
+          "pass": true,
+          "kept": 3,
+          "attempts": [
+            {
+              "options": {
+                "prePct": -8,
+                "gain": 1.3
+              },
+              "pass": false,
+              "overall": 84,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FROM.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "gain": 1.4,
+                "fallGain": 1.6,
+                "punctuation": "pattern"
+              },
+              "pass": false,
+              "overall": 50,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FROM.)",
+                "group 1 (2-3-1) ending: fail (Your voice went UP at the end. This pattern must go DOWN to sound finished.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "none"
+              },
+              "pass": false,
+              "overall": 80,
+              "aligned": true,
+              "reasons": [
+                "group 1 (2-3-1) peakPlacement: fail (No clear rise found. Rise up to level 3 on FROM.)"
+              ],
+              "warnings": []
+            },
+            {
+              "options": {
+                "shape": "group"
+              },
+              "pass": true,
+              "overall": 94,
+              "aligned": true,
+              "reasons": [],
+              "warnings": []
             }
           ]
         }

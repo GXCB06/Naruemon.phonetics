@@ -73,7 +73,7 @@ export interface TakeChip {
 export function takeChips(q: QualityReport): TakeChip[] {
   const volume: TakeChip =
     q.speechDb < -40
-      ? { key: "volume", level: "fail", label: { en: "Volume", th: "ระดับเสียง" }, value: { en: "too quiet", th: "เบาไป" } }
+      ? { key: "volume", level: "warn", label: { en: "Volume", th: "ระดับเสียง" }, value: { en: "quiet (boosted)", th: "เบา (เพิ่มให้แล้ว)" } }
       : { key: "volume", level: "good", label: { en: "Volume", th: "ระดับเสียง" }, value: { en: "good", th: "ดี" } };
   const noise: TakeChip =
     q.noiseDb > -45 || q.snrDb < 15
@@ -87,9 +87,10 @@ export function takeChips(q: QualityReport): TakeChip[] {
 }
 
 /**
- * A take the pitch tracker cannot judge fairly: too quiet to hear. Such a take gets no score (CHECK stays off) so a weak
- * microphone can never cost the learner points; noise and clipping only warn, because the pitch is usually still readable.
+ * A take the pitch tracker cannot judge even after make-up gain: almost no signal, or so noisy/clipped that the tune is
+ * unreadable. A merely quiet take is boosted and graded (src/lib/audio/gain.ts), because an iPad held at arm's length
+ * should never cost the learner a score.
  */
 export function takeBlocksGrade(q: QualityReport): boolean {
-  return q.issues.some((i) => i.level === "fail");
+  return q.snrDb < 6 || q.clippedRatio > 0.05;
 }

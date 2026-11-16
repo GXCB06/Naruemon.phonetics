@@ -47,10 +47,19 @@ describe("one recording", () => {
     expect(takeBlocksGrade(quality())).toBe(false);
   });
 
-  it("flags a quiet take as a fail and blocks grading", () => {
-    const q = quality({ speechDb: -50, issues: [{ level: "fail", en: "Too quiet", th: "เบา" }] });
-    expect(takeChips(q)[0]).toMatchObject({ key: "volume", level: "fail" });
-    expect(takeBlocksGrade(q)).toBe(true);
+  it("marks a quiet take as a warning, not a dead end", () => {
+    const q = quality({ speechDb: -50, issues: [{ level: "warn", en: "Too quiet", th: "เบา" }] });
+    expect(takeChips(q)[0]).toMatchObject({ key: "volume", level: "warn" });
+    expect(takeBlocksGrade(q)).toBe(false); // boosted, then graded
+  });
+
+  it("blocks only a take with no usable signal", () => {
+    const silent = quality({ speechDb: -120, noiseDb: -120, snrDb: 0 });
+    expect(takeBlocksGrade(silent)).toBe(true);
+    const buried = quality({ speechDb: -45, noiseDb: -44, snrDb: 1 });
+    expect(takeBlocksGrade(buried)).toBe(true);
+    const broken = quality({ clippedRatio: 0.2 });
+    expect(takeBlocksGrade(broken)).toBe(true);
   });
 
   it("warns about a noisy room or clipping but still grades", () => {
