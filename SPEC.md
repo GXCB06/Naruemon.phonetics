@@ -80,7 +80,7 @@ Node 26).
 ```bash
 npm install
 npm run dev            # http://localhost:3000
-npm test               # 647 tests
+npm test               # 648 tests
 npm run lint && npx tsc --noEmit && npm run build
 npm run samples        # regenerate public/samples/*.wav + index.json
 npm run pitch:export -- <wav-dir> <out-dir>   # pitch-tracker test, step 1 (see README)
