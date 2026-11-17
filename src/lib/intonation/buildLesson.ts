@@ -68,6 +68,11 @@ export interface SentenceSource {
   groupPatterns?: PatternId[];
   /** Syllable spelling chunks for words of 2+ syllables, keyed by the lower-case word: `{ "table": "ta-ble" }`. */
   spelling?: Record<string, string>;
+  /**
+   * Optional wording for the sentence's hint, when the generated one (see `noteFor`) would be wrong or vague — e.g. a
+   * statement whose peak sits earlier than the last content word.
+   */
+  note?: Bilingual;
 }
 
 export interface LessonSource {
@@ -372,7 +377,7 @@ export function buildSentence(src: SentenceSource, table: Readonly<Record<string
     id: src.id,
     text: src.text,
     kind: src.kind === "tag" ? (patterns[patterns.length - 1] === "3-1" ? "Tag question (sure)" : "Tag question (not sure)") : KIND_LABEL[src.kind],
-    note: noteFor(src.kind, labels, patterns),
+    note: src.note ?? noteFor(src.kind, labels, patterns),
     groups,
   };
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { allSentences } from "../learn/content.ts";
 import { parseManifest, referenceVoices } from "../learn/reference.ts";
+import { layoutSentence, targetKeyPoints } from "../intonation/contour.ts";
 import {
   COURSES,
   DRILL_PLAN,
@@ -32,7 +33,6 @@ const DEVICE_VOICE_ONLY = new Set([
   "class2-13c-now",
   "class2-14a-bravo",
   "session-a-book",
-  "session-b-driver",
 ]);
 
 describe("practice courses", () => {
@@ -160,6 +160,14 @@ describe("2-3-1 sessions", () => {
       expect(d.exercises.map((e) => e.sentenceId)).toEqual([...fixed]);
     }
     for (const s of courseSentences("speak3", all)) expect(oneGroupFalling(s)).toBe(true);
+  });
+
+  it("the bus sentence peaks on BUS, not on DRIVER", () => {
+    const s = all.find((x) => x.id === "session-b-driver")!;
+    const layout = layoutSentence(s);
+    const top = targetKeyPoints(layout).reduce((a, b) => (b.v > a.v ? b : a));
+    const slot = layout.slots.find((sl) => top.t >= sl.start && top.t <= sl.end)!;
+    expect(s.groups[0].words[slot.wordIndex].text.toLowerCase()).toBe("bus");
   });
 
   it("every fixed id still exists and is a one-group 2-3-1 sentence", () => {

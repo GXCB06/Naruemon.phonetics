@@ -11,8 +11,12 @@
       "id": "session-b-driver",
       "text": "His brother is a bus driver.",
       "kind": "statement",
-      "nucleusWord": 5,
-      "spelling": { "brother": "broth-er", "driver": "driv-er" }
+      "nucleusWord": 4,
+      "spelling": { "brother": "broth-er", "driver": "driv-er" },
+      "note": {
+        "en": "Statements fall: 2-3-1. The rise is on BUS (the word that carries the answer), then drop to 1 through DRIVER.",
+        "th": "ประโยคบอกเล่าใช้เสียงตก 2-3-1 ขึ้นสูงที่ BUS (คำที่ต้องการเน้น) แล้วลงต่ำผ่าน DRIVER"
+      }
     },
     { "id": "session-b-from", "text": "Where do you come from?", "kind": "wh", "nucleusWord": 4 }
   ]

@@ -354,8 +354,8 @@
       "text": "His brother is a bus driver.",
       "kind": "Statement",
       "note": {
-        "en": "Statements fall: 2-3-1. The rise is on DRIV- (last content word), then drop to 1.",
-        "th": "ประโยคบอกเล่าใช้เสียงตก 2-3-1 ขึ้นสูงที่ DRIV- (คำสำคัญคำสุดท้าย) แล้วลงต่ำ"
+        "en": "Statements fall: 2-3-1. The rise is on BUS (the word that carries the answer), then drop to 1 through DRIVER.",
+        "th": "ประโยคบอกเล่าใช้เสียงตก 2-3-1 ขึ้นสูงที่ BUS (คำที่ต้องการเน้น) แล้วลงต่ำผ่าน DRIVER"
       },
       "groups": [
         {
@@ -424,8 +424,9 @@
                   "text": "bus",
                   "ipa": "bʌs",
                   "levels": [
-                    2
-                  ]
+                    3
+                  ],
+                  "stressed": true
                 }
               ]
             },
@@ -436,7 +437,7 @@
                   "text": "driv",
                   "ipa": "dɹaɪ",
                   "levels": [
-                    3
+                    1
                   ],
                   "stressed": true
                 },
@@ -451,7 +452,7 @@
             }
           ],
           "nucleus": {
-            "word": 5,
+            "word": 4,
             "syllable": 0
           }
         }
